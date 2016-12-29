@@ -39,7 +39,7 @@
   </a>
   <a class="w3-padding-large w3-hover-black" href="#contact">
     <i class="fa fa-envelope w3-xxlarge"></i>
-    <p>CONTACT</p>
+    <p>CONTACTO</p>
   </a>
 </nav>
 
@@ -49,10 +49,9 @@
 <!-- Navbar on small screens (Hidden on medium and large screens) -->
 <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
   <ul class="w3-navbar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
-    <li class="w3-left" style="width:25% !important"><a href="#">HOME</a></li>
-    <li class="w3-left" style="width:25% !important"><a href="#about">ABOUT</a></li>
-    <li class="w3-left" style="width:25% !important"><a href="#photos">PHOTOS</a></li>
-    <li class="w3-left" style="width:25% !important"><a href="#contact">CONTACT</a></li>
+    <li class="w3-left" style="width:25% !important"><a href="#">INICIO</a></li>
+    <li class="w3-left" style="width:25% !important"><a href="#about">FIN DE AÑO</a></li>
+    <li class="w3-left" style="width:25% !important"><a href="#contact">CONTACTO</a></li>
   </ul>
 </div>
 
@@ -64,11 +63,16 @@
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- HEADER -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
-  <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+  <header class="w3-container w3-padding-16 w3-center w3-black" id="home">
 
     <h1 class="w3-jumbo"><span class="w3-hide-small"></span>Astrotiempo</h1>
 
     <h3>Significados astronómicos para<br/>nuestra medida cotidiana del tiempo.</h3>
+
+    <div id="clock" style="width:70%;border:solid white 0px;text-align:center;margin:auto;margin-top:2em">
+      <span class="w3-text-grey">Tiempo para el próximo perihelio:</span>
+      <div class="clock" style="margin:2em;"></div>
+    </div>
 
   </header>
 
@@ -79,21 +83,28 @@
   <div class="w3-content w3-justify w3-text-grey" id="inicio">
     <h2 class="w3-text-light-grey">Presentación</h2>
     <hr style="width:200px" class="w3-opacity">
-    <p>Some text about me. Some text about me. I am lorem ipsum
-      consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-      labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-      nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in
-      voluptate velit esse cillum dolore eu fugiat nulla
-      pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-      in culpa qui officia deserunt mollit anim id est laborum
-      consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-      labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-      nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat.
+    <p>
+      <i>Medio día, bisciesto, equinoccio, fin de año, estaciones,
+      ocaso, luna nueva</i> etc. son palabras que usamos con mayor o
+      menor frecuencia en la vida cotidiana para referirnos a la
+      medida del tiempo.  Todos corresponden a términos astronómicos o
+      están inspirados en fenómenos celestes.  Sin embargo, desde hace
+      tiempo nuestros dispositivos tecnológicos (primero mecánicos y
+      después electrónicos) aprendieron a imitar los ciclos en los que
+      se basa nuestra medida del tiempo y nos desconectamos del cielo
+      y de los fenómenos astronómicos que los inspiran.
+    </p>
+    <p>
+      Este sitio es un esfuerzo para recuperar algunos de los
+      significados astronómicos de nuestra medida cotidiana del
+      tiempo.  También para reconocer algunas peculiaridades de esos
+      mismos fenómenos que se desconocían en el tiempo en el que
+      inventamos el calendario y que nos podrían obligar a reevaluar
+      la manera como concebimos algunos eventos cruciales que ocurren
+      en el año.
     </p>
     
-    <p class="w3-text-gray w3-center">Un proyecto
+    <p class="w3-text-gray w3-center">Una inicitiva de
       de: <a href="http://astronomia-udea.co" target="_blank">
 	<img src="img/LogoAstronomiaUdeA-Transparente.png" width="250" align="center"></a>
       <!--Pregrado Astronomía de la Universidad de Antioquia-->
@@ -122,9 +133,11 @@
       commodo consequat.
     </p>
 
+    <!--
     <div id="clock" style="width:70%;border:solid white 0px;text-align:center;margin:auto">
       <div class="clock" style="margin:2em;"></div>
     </div>
+    -->
 
     <p>Some text about me. Some text about me. I am lorem ipsum
       consectetur adipiscing elit, sed do eiusmod tempor incididunt ut

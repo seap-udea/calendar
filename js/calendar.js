@@ -45,7 +45,7 @@ function perihelionCounter(target)
     if(diff==0)	$('.clock-end').show();
 
     //Change perihelion date
-    $('.perihelion-date').html(futureDate.toLocaleString());
+    $('.perihelion-date').html(futureDate.toLocaleString()+' (hora local)');
 
     //Manual
     //var currentDate = new Date(2016,11,31,23,59,50);

@@ -17,6 +17,14 @@ spy.furnsh("bin/kernels/naif0011.tls")
 spy.furnsh("bin/kernels/de421.bsp")
 
 #//////////////////////////////
+#BODIES
+#//////////////////////////////
+SSB=0
+SUN=10
+EMB=3
+EARTH=399
+
+#//////////////////////////////
 #NUMERICAL CONSTANTS
 #//////////////////////////////
 DEG=np.pi/180
@@ -32,3 +40,15 @@ MUSUN=132712440040.944000 #mu_Sun for DE421
 #######################################################################
 #FUNCTIONS
 #######################################################################
+def distanceBodies(et,body=EARTH,wrt=SUN):
+    x,l=spy.spkgps(body,et,"ECLIPJ2000",wrt)
+    r=spy.vnorm(x)
+    return r
+
+def stateBody(et,body=EARTH,wrt=SUN):
+    x,l=spy.spkgeo(body,et,"ECLIPJ2000",wrt)
+    return x
+
+def positionBody(et,body=EARTH,wrt=SUN):
+    x,l=spy.spkgps(body,et,"ECLIPJ2000",wrt)
+    return x

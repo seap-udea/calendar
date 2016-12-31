@@ -172,12 +172,17 @@
 
 	  // Grab the current date
 	  var currentDate = new Date();
+	  //var currentDate = new Date(2016,11,31,23,59,50);
 	  
 	  // Set some date in the future. In this case, it's always Jan 1
-	  var futureDate  = new Date(2017,0,4,9,30,0);
+	  var futureDate=new Date(Date.UTC(2017,0,4,14,17,03));
+	  //var futureDate=new Date(Date.UTC(2016,11,30,19,59,00));
+	  //var futureDate  = new Date(2017,0,4,9,30,0);
 	  
 	  // Calculate the difference in seconds between the future and current date
 	  var diff = futureDate.getTime() / 1000 - currentDate.getTime() / 1000;
+
+	  //var futureDate=new Date(Date.UTC(2017,0,4,14,17,03));
 	  
 	  // Instantiate a coutdown FlipClock
 	  clock = $('.clock').FlipClock(diff, {
@@ -186,15 +191,15 @@
 	      countdown: true
 	  });
 
-	  var perihelio=new Date('2017-01-04 14:17:03 UTC');
-	  $('.perihelio').html(perihelio.toLocaleString());
+	  //var perihelio=new Date(Date.UTC(2017,1,4,14,17,03));
+	  $('.perihelio').html(futureDate.toLocaleString());
 
       });
     </script>
   </div>
 
   <div class="w3-center">
-    <img src="img/man-at-work.png" width="20%"></img>
+    <img src="img/man-at-work.png" width="200px"></img>
   </div>
   
   <!-- Footer -->

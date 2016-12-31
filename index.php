@@ -56,14 +56,14 @@
     <p>¿FIN DE AÑO?</p>
   </a>
 
-  <a class="w3-padding-large w3-hover-black" href="#estaciones">
-    <i class="fa fa-snowflake-o fa-spin w3-xxlarge"></i>
-    <p>ESTACIONES</p>
-  </a>
-
   <a class="w3-padding-large w3-hover-black" href="#quehoraes">
     <i class="fa fa-clock-o w3-xxlarge"></i>
     <p>¿QUÉ HORA ES?</p>
+  </a>
+
+  <a class="w3-padding-large w3-hover-black" href="#estaciones">
+    <i class="fa fa-snowflake-o fa-spin w3-xxlarge"></i>
+    <p>ESTACIONES</p>
   </a>
 
   <a class="w3-padding-large w3-hover-black" href="#tiemposolar">
@@ -196,36 +196,39 @@
     <p>
       La definición del día de año nuevo es bastante arbitraria. Por
       casi cada cultura del planeta existe un día diferente para
-      marcar el inicio del año.  En la mayoría de los casos esta fecha
-      viene determinada por fiestas religiosas, razones culturales e
-      incluso políticas.  Lamentablemente, en casi ningún caso el día
-      del fin e inicio de año se basa en fenómenos astronómicos.
+      marcar el inicio del año <a href="#bib:WikiNewYear">[3]</a>.  En
+      la mayoría de los casos esta fecha viene determinada por fiestas
+      religiosas, asntos culturales e incluso razones políticas.
+      Lamentablemente, en casi ningún caso el día del fin e inicio de
+      año se basa en fenómenos astronómicos.
     </p>
 
     <p>
-      En occidente el fin de año se definió desde los calendarios
-      romanos más antiguos (de los que viene nuestro calendario), como
-      el último día del mes de diciembre (el último mes del año).  En
-      la edad media (para ser exactos después del 567 e.c.) se
-      modifico la fecha del inicio del año, del primero de enero a una
-      de varias fechas: el 25 de diciembre (fecha mitíca del
-      nacimiento de Jesús), el primero de marzo o el 25 de marzo
-      (fiesta de la Anunciación).  Muchos países mantuvieron esta
-      directiva hasta bien entrados los siglos 1700s 1800s.  Sin
-      embargo la instauración en los 1500s del calendario Gregoriano
-      (el que usamos hoy en día) reestableció en casi todos los países
-      católicos el primero de enero como el día del inicio del año.
+      En occidente el fin de año corresponde al último día del mes de
+      diciembre (el último mes del año). Así esta definido desde los
+      calendarios romanos más antiguos (de los que viene nuestro
+      calendario actual) .  En la edad media (para ser exactos después
+      en el año 567 e.c.<a href="bib:WikiNewYear">[3]</a>) se modifico
+      la fecha del inicio del año a una de varias fechas: el 25 de
+      diciembre (fecha mitíca del nacimiento de Jesús), el primero de
+      marzo o el 25 de marzo (fiesta católica de la Anunciación).
+      Muchos países mantuvieron esta directiva hasta bien entrado los
+      1700s.  Sin embargo la instauración en 1582 del calendario
+      Gregoriano (el que usamos hoy en día) reestableció en casi todos
+      los países católicos el primero de enero como el día del inicio
+      del año.
     </p>
     
     <p>
       Pero no hay ningún evento astronómico de relevancia que ocurra
-      siempre el 31 de diciembre o el primero de enero: no hay un
+      cada año el 31 de diciembre o el primero de enero. No hay un
       cambio de estación, el Sol no ocupa un lugar especial en el
-      cielo y ni siquiera la Tierra esta en un lugar especial de su
-      órbita.  Por la misma razón definir estas como las fechas del
-      final o el inicio de "año" (astronómicamente hablando) es
-      arbitrario y basado en tradiciones religiosas y culturales en
-      franco desuso.
+      cielo y ni siquiera la Tierra esta en un lugar particular de su
+      órbita (tampoco esta cada 31 de diciembre en el mismo lugar).
+      Por la misma razón definir esta fecha como el final o el inicio
+      de "año" es astronómicamente hablando arbitrario y se basa
+      únicamente en tradiciones religiosas y culturales en franco
+      desuso.
     </p> 
 
     <center><img src="img/OrbitaTierra.png"
@@ -283,7 +286,7 @@
     </div>
 
     <p>
-      Para una reflexión más completa (y en tono más desenfadado) lea
+      Para una reflexión más completa (y en un tono más informal) lea
       el
       artículo <a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts/fin-de-ao-14837"
       target="_blank">"¿Fin de Año?"</a>, entrada
@@ -295,21 +298,198 @@
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
-  <!-- ESTACIONES -->
-  <!-- ----------------------------------------------------------------------------------------------------------------- -->
-  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="estaciones">
-    <h2 class="w3-text-light-grey">Estaciones</h2>
-    <hr style="width:200px" class="w3-opacity">
-    <p>
-      <?php echo $MENATWORK ?>
-    </p>
-  </div>
-
-  <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- ¿QUÉ HORA ES? -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="quehoraes">
     <h2 class="w3-text-light-grey">¿Qué hora es?</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>
+      ¿Sabe usted a ciencia cierta qué hora es?
+    </p>
+    <center>
+    <table class="time-table" width="80%">
+
+      <tr>
+	<td style="width:10%"></td>
+	<td style="width:30%"></td>
+	<td class="w3-hide-small"></td>
+      </tr>
+
+      <tr>
+	<td  class="time-table time-table-name">
+	  <a href="#hora:LT">LT</a>
+	</td>
+	<td class="time-table time-table-clock">
+	  <div id="LT" class="digclock" style="text-align:center">
+	    14<span class="blink_me">:</span>20<span class="blink_me">:</span>30
+	  </div>
+	</td>
+	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	  <a href="#hora:LT">Tiempo local</a>, tiempo que marcan los
+	  relojes del huso horario en el que se encuentra actualmente.
+	</td>
+      </tr>
+
+      <tr>
+	<td  class="time-table time-table-name">
+	  <a href="#hora:TSM">TSM</a>
+	</td>
+	<td class="time-table time-table-clock">
+	  <div id="TSM" class="digclock" style="text-align:center">
+	    14<span class="blink_me">:</span>20<span class="blink_me">:</span>30
+	  </div>
+	</td>
+	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	  <a href="#hora:TSM">Tiempo solar medio</a>, hora solar media en el
+	  lugar exacto en el que se encuentra.
+	</td>
+      </tr>
+
+      <tr>
+	<td  class="time-table time-table-name">
+	  <a href="#hora:UTC">UTC</a>
+	</td>
+	<td class="time-table time-table-clock">
+	  <div id="UTC" class="digclock" style="text-align:center">
+	    14<span class="blink_me">:</span>20<span class="blink_me">:</span>30
+	  </div>
+	</td>
+	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	  <a href="#hora:UTC">Tiempo atómico Universal</a>, tiempo
+	  universal coordinado o tiempo local en Greenwich.
+	</td>
+      </tr>
+
+      <tr>
+	<td  class="time-table time-table-name">
+	  <a href="#hora:TAI">TAI</a>
+	</td>
+	<td class="time-table time-table-clock">
+	  <div id="TAI" class="digclock" style="text-align:center">
+	    14<span class="blink_me">:</span>20<span class="blink_me">:</span>30
+	  </div>
+	</td>
+	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	  <a href="#hora:TAI">Tiempo Atómico Internacional</a>, tiempo
+	  que marcan los relojes atómicos del mundo.
+	</td>
+      </tr>
+
+      <tr>
+	<td  class="time-table time-table-name">
+	  <a href="#hora:TDB">TDB</a>
+	</td>
+	<td class="time-table time-table-clock">
+	  <div id="TDB" class="digclock" style="text-align:center">
+	    14<span class="blink_me">:</span>20<span class="blink_me">:</span>30
+	  </div>
+	</td>
+	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	  <a href="#hora:TDB">Tiempo Dinámico del Baricentro</a>.
+	  Tiempo atómico en el Baricentro del Sistema Solar.
+	</td>
+      </tr>
+
+      <tr>
+	<td  class="time-table time-table-name">
+	  <a href="#hora:ET">ET</a>
+	</td>
+	<td class="time-table time-table-clock">
+	  <div id="ET" class="digclock" style="text-align:center">
+	    14<span class="blink_me">:</span>20<span class="blink_me">:</span>30
+	  </div>
+	</td>
+	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	  <a href="#hora:ET">Tiempo de Efemérides</a>.  Tiempo atómico
+	  referido al centro de la Tierra.
+	</td>
+      </tr>
+
+      <tr>
+	<td  class="time-table time-table-name">
+	  <a href="#hora:GST">GST</a>
+	</td>
+	<td class="time-table time-table-clock">
+	  <div id="GST" class="digclock" style="text-align:center">
+	    14<span class="blink_me">:</span>20<span class="blink_me">:</span>30
+	  </div>
+	</td>
+	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	  <a href="#hora:GST">Tiempo sideral en Greenwich</a>,
+	  ascensión recta de los cuerpos que están culminando en
+	  Greenwich.
+	</td>
+      </tr>
+
+      <tr>
+	<td  class="time-table time-table-name">
+	  <a href="#hora:LST">LST</a>
+	</td>
+	<td class="time-table time-table-clock">
+	  <div id="LST" class="digclock" style="text-align:center">
+	    14<span class="blink_me">:</span>20<span class="blink_me">:</span>30
+	  </div>
+	</td>
+	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	  <a href="#hora:LST">Tiempo sideral local</a>, ascensión
+	  recta de los cuerpos que están culminando en Greenwich.
+	</td>
+      </tr>
+
+      <tr>
+	<td  class="time-table time-table-name">
+	  <a href="#hora:JD">JD</a>
+	</td>
+	<td class="time-table time-table-clock">
+	  <div id="JD" class="digclock" style="text-align:center">
+	    <span class="smalldig">2567650</span>.08567
+	  </div>
+	</td>
+	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	  <a href="#hora:LST">Día juliano referido a UTC</a>, días
+	  transcurridos desde Enero 1 de 4713 a.e.c.
+	</td>
+      </tr>
+
+      <tr>
+	<td  class="time-table time-table-name">
+	  <a href="#hora:JDB">JDB</a>
+	</td>
+	<td class="time-table time-table-clock">
+	  <div id="JDB" class="digclock" style="text-align:center">
+	    <span class="smalldig">2567650</span>.08567
+	  </div>
+	</td>
+	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	  <a href="#hora:JDB">Día juliano en el baricentro</a>, días
+	  transcurridos desde Enero 1 de 4713 a.e.c. en el barientro del sistema solar.
+	</td>
+      </tr>
+
+      <tr>
+	<td  class="time-table time-table-name">
+	  <a href="#hora:UNIX">UNIX</a>
+	</td>
+	<td class="time-table time-table-clock">
+	  <div id="UNIX" class="digclock" style="text-align:center">
+	    <span class="smalldig">14578</span>8567
+	  </div>
+	</td>
+	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	  <a href="#hora:UNIX">Tiempo de UNIX</a>. Número de segundos
+	  transcurridos desde Enero 1 de 1970.
+	</td>
+      </tr>
+
+    </table>
+    </center>
+  </div>
+
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <!-- ESTACIONES -->
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="estaciones">
+    <h2 class="w3-text-light-grey">Estaciones</h2>
     <hr style="width:200px" class="w3-opacity">
     <p>
       <?php echo $MENATWORK ?>
@@ -345,18 +525,22 @@
     <h2 class="w3-text-light-grey">Saber más</h2>
     <hr style="width:200px" class="w3-opacity">
 
-    <ul>
+    <ol>
 
-      <li><a href="http://www.investigacionyciencia.es/revistas/investigacion-y-ciencia/numero/445/historias-del-calendario-11464">Historias
-      del calendario</a>, Norbert Treitz, Investigación y Ciencia, Octubre
-      de 2013.</li>
+      <li><a name="bib:Treitz2013"></a><a href="http://www.investigacionyciencia.es/revistas/investigacion-y-ciencia/numero/445/historias-del-calendario-11464">Historias
+      del calendario</a>, Norbert Treitz, Investigación y Ciencia,
+      Octubre de 2013.</li>
 
-      <li><a href="http://www.investigacionyciencia.es/revistas/investigacion-y-ciencia/numero/423/el-futuro-del-tiempo-8834">El futuro del tiempo</a>, Finkleman, David Allen, Steve Seago, John H., Investigación y Ciencia, Diciembre de 2011.</li>
+      <li><a name="bib:Finkleman2011"></a><a href="http://www.investigacionyciencia.es/revistas/investigacion-y-ciencia/numero/423/el-futuro-del-tiempo-8834">El futuro del tiempo</a>, Finkleman, David Allen, Steve Seago, John H., Investigación y Ciencia, Diciembre de 2011.</li>
 
-      <li><a href="https://en.wikipedia.org/wiki/New_Year%27s_Day">New
+      <li><a name="bib:WikiNewYear"></a><a href="https://en.wikipedia.org/wiki/New_Year%27s_Day">New
       year's day</a>, Artículo de Wikipedia en Inglés.</li>
 
-    </ul>
+      <li><a name="bib:Zuluaga2016"></a><a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts/fin-de-ao-14837">¿Año
+      Nuevo?</a>, Jorge I. Zuluaga, SciLogs de Investigación y
+      Ciencia, Diciembre 29 de 2016.</li>
+
+    </ol>
 
   </div>
 

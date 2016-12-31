@@ -6,3 +6,48 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 #main {margin-left: 120px}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
+
+.blink_me {
+  animation: blinker 1s linear infinite;
+  padding:5px;
+}
+
+@keyframes blinker {  
+  50% { opacity: 0; }
+}
+
+.digclock {
+    display:table-cell;
+    font-family:'Orbitron';
+    padding:2px;
+    color:red;
+    font-size:2em;
+    background-image:url('../img/FondoClock.png');
+    border:solid #333333 5px;
+    border-radius:5px
+    text-align:center;
+    width:14em;
+}
+
+.slink{
+    text-decoration:none:
+}
+
+.smalldig{
+    font-size:0.5em;
+}
+
+.time-table{
+    padding:2px;
+}
+
+.time-table-name{
+    text-align:center;
+    font-size:2em;
+}
+.time-table-clock{
+    margin:auto;
+}
+.time-table-explanation{
+
+}

@@ -68,6 +68,7 @@ $(document).ready(function() {
     var nyear=year+1;
 
     //GET PERIHELIA LIST
+    /*
     $.ajax({
 	url:'actions.php?action=perihelia&year='+pyear,
 	success:function(result){
@@ -84,5 +85,8 @@ $(document).ready(function() {
 	    perihelionCounter('clock-ano');
 	}
     });
- 
+    */
+
+    //UPDATE TIME
+    fecha.getHours();
 });

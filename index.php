@@ -255,9 +255,7 @@
       último perihelio.
     </p>
 
-    <table>
-      
-    </table>
+    <center id="perihelia-table"></center>
     
     <p>
       Para que no se pierda ninguna celebración en lo sucesivo le

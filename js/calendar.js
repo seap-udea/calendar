@@ -68,4 +68,12 @@ function perihelionCounter(target)
 $(document).ready(function() {
     perihelionCounter('clock');
     perihelionCounter('clock-ano');
+
+    $.ajax({
+	url:'actions.php?action=perihelia&year=2016',
+	success:function(result){
+	    $('#perihelia-table').html(result);
+	}
+    });
+
 });

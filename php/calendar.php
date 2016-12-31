@@ -6,6 +6,14 @@ $MENATWORK=<<<M
 <!--<img src="img/man-at-work.png" width="200px"></img>-->
 <i class="fa fa-cogs w3-jumbo"></i><span class="w3-large" style="margin-left:10px">Men at work</span>
 M;
+foreach(array_keys($_GET) as $field){
+    $$field=$_GET[$field];
+}
+foreach(array_keys($_POST) as $field){
+    $$field=$_POST[$field];
+}
+
+$PYTHON="/usr/loca/src/anaconda2/bin/python";
 
 ////////////////////////////////////////////////////////////////////////
 //FUNCTIONS

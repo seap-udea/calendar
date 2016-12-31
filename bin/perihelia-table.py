@@ -13,14 +13,15 @@ et=spy.str2et(date)
 sol=minimize(distanceBodies,(et,et+100*DAY),tol=1e-10,args=(EARTH,SUN))
 tper_old=sol.x
 
-print """<table>
-<th>
-<td>Año</td>
-<td>Fecha del perihelio (UTC)</td>
-<td>Tiempo desde el último (días)</td>
-</th>
+print """<table border='2px' style='border-collapse:collapse'>
+<tr>
+<td><b>Año</b></td>
+<td><b>Fecha del perihelio (UTC)</b></td>
+<td><b>Distancia Tierra-Sol (km)</b></td>
+<td><b>Tiempo último perihelio (días)</b></td>
+</tr>
 """
-for dy in xrange(1,5):
+for dy in xrange(1,10):
     nyear=year+dy
 
     date="01/01/%s 02:00:00"%nyear
@@ -32,14 +33,19 @@ for dy in xrange(1,5):
     dt=spy.deltet(tper,"et");
     dper=spy.etcal(tper-dt,100)
 
+    # Distance
+    dmin=distanceBodies(tper,EARTH,SUN)
+
     # Time since last perihelion
     dtper=(tper-tper_old)/DAY
 
+    tper_old=tper;
     print """<tr>
-<td>%d</td>
-<td>%s</td>
-<td>%.4f</td>
-</tr>"""%(nyear,dper,dtper)
+<td class='w3-center'>%d</td>
+<td class='w3-center'>%s</td>
+<td class='w3-center'>%.0f</td>
+<td class='w3-center'>%.4f</td>
+</tr>"""%(nyear,dper,dmin,dtper)
 
     
 print """</table>"""

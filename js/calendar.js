@@ -36,12 +36,17 @@ function perihelionCounter()
     
     // Set some date in the future. In this case, it's always Jan 1
     var futureDate=new Date(Date.UTC(2017,0,4,14,17,03));
+    //var futureDate=currentDate;
 
     //Manual
     //var futureDate=new Date(Date.UTC(2016,11,30,19,59,00));
     
     // Calculate the difference in seconds between the future and current date
     var diff = futureDate.getTime() / 1000 - currentDate.getTime() / 1000;
+
+    if(diff==0){
+	$('.clock-end').show();
+    }
 
     //Manual
     //var futureDate=new Date(Date.UTC(2017,0,4,14,17,03));

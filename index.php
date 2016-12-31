@@ -24,6 +24,7 @@
 
   <!-- Font awesome: http://fontawesome.io/icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="css/calendar.css">
 
   <link rel="stylesheet" href="js/flipclock/flipclock.large.css">
@@ -41,9 +42,9 @@
 <!-- ICON BAR (LARGE AND MEDIUM SCREENS) -->
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <!-- Icon Bar (Sidenav - hidden on small screens) -->
-<nav class="w3-sidenav w3-center w3-small w3-hide-small" style="width:12%">
-  <!-- Avatar image in top left corner -->
-  <img src="img/LogoSimbolo.png" width="80%">
+<nav class="w3-sidenav w3-center w3-small w3-hide-small" style="width:120px">
+
+  <img class="w3-hide-small" src="img/LogoSimbolo.png" width="80%">
 
   <a class="w3-padding-large w3-black" href="#">
     <i class="fa fa-home w3-xxlarge"></i>
@@ -75,6 +76,11 @@
     <p>FASES LUNARES</p>
   </a>
 
+  <a class="w3-padding-large w3-hover-black" href="#sabermas">
+    <i class="fa fa-book w3-xxlarge"></i>
+    <p>SABER MÁS</p>
+  </a>
+
   <a class="w3-padding-large w3-hover-black" href="#footer">
     <i class="fa fa-facebook w3-xxlarge"></i>
     <p>COMPARTE</p>
@@ -85,13 +91,18 @@
 <!-- ICON BAR (SMALL SCREENS) -->
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <!-- Navbar on small screens (Hidden on medium and large screens) -->
+<!--
 <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
   <ul class="w3-navbar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
     <li class="w3-left" style="width:25% !important"><a href="#">INICIO</a></li>
-    <li class="w3-left" style="width:25% !important"><a href="#perihelio">PERIHELIO</a></li>
-    <li class="w3-left" style="width:25% !important"><a href="#contact">CONTACTO</a></li>
+    <li class="w3-left" style="width:25% !important"><a href="#finano">¿FIN DE AÑO?</a></li>
+    <li class="w3-left" style="width:25% !important"><a href="#estaciones">ESTACIONES</a></li>
+    <li class="w3-left" style="width:25% !important"><a href="#quehoraes">¿QUÉ HORA ES?</a></li>
+    <li class="w3-left" style="width:25% !important"><a href="#quehoraes">TIEMPO SOLAR</a></li>
+    <li class="w3-left" style="width:25% !important"><a href="#footer">COMPARTE</a></li>
   </ul>
 </div>
+-->
 
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <!-- PAGE CONTENT -->
@@ -103,19 +114,32 @@
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <header class="w3-container w3-padding-16 w3-center w3-black" id="home">
 
-    <!--<h1 class="w3-jumbo w3-hide-small">Astrotiempo</h1>
-    <h3 class="w3-xxlarge w3-hide-medium w3-hide-large">Astrotiempo</h3>-->
-    <img src="img/AstroTiempoLogo.png" width="40%"/>
+    <!--
+	<h1 class="w3-jumbo w3-hide-small">Astrotiempo</h1>
+	<h3 class="w3-xxlarge w3-hide-medium w3-hide-large">Astrotiempo</h3>
+    -->
+    <img class="w3-hide-small" src="img/AstroTiempoLogo.png" width="40%"/>
+    <img class="w3-hide-medium w3-hide-large" src="img/AstroTiempoLogo.png" width="80%"/>
 
     <h4 class="w3-hide-small">Significados astronómicos para nuestra medida cotidiana del tiempo.</h4>
     <h6 class="w3-hide-medium w3-hide-large">Significados astronómicos para nuestra medida cotidiana del tiempo.</h6>
+
+    <i class="w3-small w3-hide-medium w3-hide-large w3-opacity">Es mejor si ves esta página en tu
+    dispositivo móvil en posición horizontal</i>
 
   </header>
 
   <div id="clock" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;">
     <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelio"></span>:</span>
     <br><br/>
+
     <div class="clock" style="border:solid white 0px;"></div>
+    <div class="clock-end w3-xxlarge" style="display:none">
+      <i class="fa fa-star fa-spin"></i>
+      ¡Feliz Perihelio 2017!
+      <i class="fa fa-star fa-spin"></i>
+    </div>
+
     <div class="w3-text-grey w3-xlarge w3-center">
       <div id="fb-root"></div>
       <?php echo facebookLink("http://astronomia-udea.co/calendar") ?>
@@ -222,6 +246,17 @@
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <!-- SABER MAS -->
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="sabermas">
+    <h2 class="w3-text-light-grey">Saber más</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>
+      <?php echo $MENATWORK ?>
+    </p>
+  </div>
+
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- FOOTER -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge w3-center" id="footer">
@@ -229,6 +264,7 @@
     <?php echo facebookLink("http://astronomia-udea.co/calendar") ?>
     <?php echo twitterLink("http://astronomia-udea.co/calendar","Astrotiempo: significados astronómicos para nuestra medida cotidiana del tiempo.","zuluagajorge") ?>
     <span class="w3-small">/ Desarrollado por Jorge I. Zuluaga <i class="fa fa-copyright"></i> 2016</span>
+    <!-- <span style="font-family:'Orbitron',sans serif;">12:04</span>-->
   </footer>
   <!-- End footer -->
 

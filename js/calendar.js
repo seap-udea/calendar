@@ -28,29 +28,12 @@ ga('send', 'pageview');
 ////////////////////////////////////////////////////////////////////////
 function perihelionCounter(target)
 {
-    //Current Date
+    //Perihelion date
+    var periTime=$('#perihelion-time').html()*1000;
+    var futureDate=new Date(periTime);
     var currentDate = new Date();
-
-    //Manual
-    //var currentDate = new Date(2016,11,31,23,59,50);
-    
-    // Set some date in the future. In this case, it's always Jan 1
-    var futureDate=new Date(Date.UTC(2017,0,4,14,17,03));
-    //var futureDate=currentDate;
-
-    //Manual
-    //var futureDate=new Date(Date.UTC(2016,11,30,19,59,00));
-    
-    // Calculate the difference in seconds between the future and current date
     var diff = futureDate.getTime() / 1000 - currentDate.getTime() / 1000;
 
-    if(diff==0){
-	$('.clock-end').show();
-    }
-
-    //Manual
-    //var futureDate=new Date(Date.UTC(2017,0,4,14,17,03));
-    
     //Create clock
     var clock = $('.'+target).FlipClock(diff, {
 	clockFace: 'DailyCounter',
@@ -58,22 +41,48 @@ function perihelionCounter(target)
 	countdown: true
     });
 
-    //var perihelio=new Date(Date.UTC(2017,1,4,14,17,03));
-    $('.perihelio').html(futureDate.toLocaleString());
+    //If we have arrived show 'Happy Perihelion'
+    if(diff==0)	$('.clock-end').show();
+
+    //Change perihelion date
+    $('.perihelion-date').html(futureDate.toLocaleString());
+
+    //Manual
+    //var currentDate = new Date(2016,11,31,23,59,50);
+    //var futureDate=new Date(Date.UTC(2017,0,4,14,17,03));
+    //var futureDate=new Date();
+    //var futureDate=currentDate;
+    //var futureDate=new Date(Date.UTC(2016,11,30,19,59,00));
+    //var futureDate=new Date(Date.UTC(2017,0,4,14,17,03));
 }
 
 ////////////////////////////////////////////////////////////////////////
 //ON DOCUMENT READY
 ////////////////////////////////////////////////////////////////////////
 $(document).ready(function() {
-    perihelionCounter('clock');
-    perihelionCounter('clock-ano');
 
+    //DATE
+    var fecha=new Date();
+    var year=fecha.getFullYear();
+    var pyear=year-1;
+    var nyear=year+1;
+
+    //GET PERIHELIA LIST
     $.ajax({
-	url:'actions.php?action=perihelia&year=2016',
+	url:'actions.php?action=perihelia&year='+pyear,
 	success:function(result){
 	    $('#perihelia-table').html(result);
 	}
     });
 
+    //GET YEAR PERIHELION DATE
+    $.ajax({
+	url:'actions.php?action=perihelion&year='+nyear,
+	success:function(result){
+	    $('#perihelion-time').html(result);
+	    perihelionCounter('clock');
+	    perihelionCounter('clock-ano');
+	}
+    });
+ 
 });

@@ -46,6 +46,5 @@ for dy in xrange(1,10):
 <td class='w3-center'>%.0f</td>
 <td class='w3-center'>%.4f</td>
 </tr>"""%(nyear,dper,dmin,dtper)
-
     
 print """</table>"""

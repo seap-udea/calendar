@@ -2,7 +2,7 @@
 /* Get the bourbon mixin from http://bourbon.io */
 /* Reset */
 .flip-container{
-    width:410.0px;
+    width:450.0px;
 }
 .flip-clock-wrapper * {
     -webkit-box-sizing: border-box;

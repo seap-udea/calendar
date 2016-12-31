@@ -2,7 +2,8 @@
 /* Get the bourbon mixin from http://bourbon.io */
 /* Reset */
 .flip-container{
-    width:670.0px;
+    width:690.0px;
+    border:solid white 1px;
 }
 .flip-clock-wrapper * {
     -webkit-box-sizing: border-box;

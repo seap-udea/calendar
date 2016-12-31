@@ -5,6 +5,7 @@ from spiceypy import wrapper as spy
 from sys import argv,exit
 import numpy as np
 from scipy.optimize import minimize_scalar as minimize
+from datetime import date
 
 #######################################################################
 #CONSTANTS AND MACROS

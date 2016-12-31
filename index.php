@@ -126,7 +126,7 @@
   </header>
 
   <div id="clock" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;">
-    <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelio"></span>:</span>
+    <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelion-date"></span>:</span>
     <br><br/>
 
     <div class="clock" style="border:solid white 0px;"></div>
@@ -256,6 +256,7 @@
     </p>
 
     <center id="perihelia-table"></center>
+    <span id="perihelion-time" class="w3-hide"></span>
     
     <p>
       Para que no se pierda ninguna celebración en lo sucesivo le
@@ -264,7 +265,7 @@
     </p>
     
     <div id="clock" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;">
-      <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelio"></span>:</span>
+      <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelion-date"></span>:</span>
       <br><br/>
       
       <div class="clock-ano" style="border:solid white 0px;"></div>

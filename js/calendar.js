@@ -26,7 +26,7 @@ ga('send', 'pageview');
 ////////////////////////////////////////////////////////////////////////
 //ROUTINES
 ////////////////////////////////////////////////////////////////////////
-function perihelionCounter()
+function perihelionCounter(target)
 {
     //Current Date
     var currentDate = new Date();
@@ -52,7 +52,7 @@ function perihelionCounter()
     //var futureDate=new Date(Date.UTC(2017,0,4,14,17,03));
     
     //Create clock
-    var clock = $('.clock').FlipClock(diff, {
+    var clock = $('.'+target).FlipClock(diff, {
 	clockFace: 'DailyCounter',
 	language: 'spanish',
 	countdown: true
@@ -66,5 +66,6 @@ function perihelionCounter()
 //ON DOCUMENT READY
 ////////////////////////////////////////////////////////////////////////
 $(document).ready(function() {
-    perihelionCounter();
+    perihelionCounter('clock');
+    perihelionCounter('clock-ano');
 });

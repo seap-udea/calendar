@@ -1,9 +1,12 @@
+<!DOCTYPE html>
+
+<!-- ----------------------------------------------------------------------------------------------------------------- -->
+<!-- PHP CODE -->
+<!-- ----------------------------------------------------------------------------------------------------------------- -->
 <?php
-   $timezone=date_default_timezone_get();
-   $img=urlencode("http://astronomia-udea.co/calendar/img/FelizAno-square.png");
+   require_once("php/calendar.php");
 ?>
 
-<!DOCTYPE html>
 <html>
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <!-- HEADER -->
@@ -18,9 +21,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-  <!--
-      Font awesome: ttp://fontawesome.io/icons/
-  -->
+
+  <!-- Font awesome: http://fontawesome.io/icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="css/calendar.css">
 
@@ -29,35 +31,50 @@
 
   <script src="js/jquery.js"></script>
   <script src="js/flipclock/flipclock.js"></script>	
-
-  <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-89567672-1', 'auto');
-  ga('send', 'pageview');
-  </script>
+  <script src="js/calendar.js"></script>	
 
 </head>
 
 <body class="w3-black">
-<!--<img src="img/FelizAno.png" style="display:block"></img>-->
+
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <!-- ICON BAR (LARGE AND MEDIUM SCREENS) -->
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <!-- Icon Bar (Sidenav - hidden on small screens) -->
-<nav class="w3-sidenav w3-center w3-small w3-hide-small">
+<nav class="w3-sidenav w3-center w3-small w3-hide-small" style="width:12%">
   <!-- Avatar image in top left corner -->
-  <img src="img/LogoSimbolo.png" width="100%">
+  <img src="img/LogoSimbolo.png" width="80%">
+
   <a class="w3-padding-large w3-black" href="#">
     <i class="fa fa-home w3-xxlarge"></i>
     <p>INICIO</p>
   </a>
-  <a class="w3-padding-large w3-hover-black" href="#perihelio">
+
+  <a class="w3-padding-large w3-hover-black" href="#finano">
     <i class="fa fa-circle-o-notch fa-spin w3-xxlarge"></i>
-    <p>PERIHELIO</p>
+    <p>¿FIN DE AÑO?</p>
   </a>
+
+  <a class="w3-padding-large w3-hover-black" href="#estaciones">
+    <i class="fa fa-snowflake-o fa-spin w3-xxlarge"></i>
+    <p>ESTACIONES</p>
+  </a>
+
+  <a class="w3-padding-large w3-hover-black" href="#quehoraes">
+    <i class="fa fa-clock-o w3-xxlarge"></i>
+    <p>¿QUÉ HORA ES?</p>
+  </a>
+
+  <a class="w3-padding-large w3-hover-black" href="#tiemposolar">
+    <i class="fa fa-sun-o fa-spin w3-xxlarge"></i>
+    <p>TIEMPO SOLAR</p>
+  </a>
+
+  <a class="w3-padding-large w3-hover-black" href="#faseslunares">
+    <i class="fa fa-moon-o w3-xxlarge"></i>
+    <p>FASES LUNARES</p>
+  </a>
+
   <a class="w3-padding-large w3-hover-black" href="#footer">
     <i class="fa fa-facebook w3-xxlarge"></i>
     <p>COMPARTE</p>
@@ -86,8 +103,9 @@
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <header class="w3-container w3-padding-16 w3-center w3-black" id="home">
 
-    <h1 class="w3-jumbo w3-hide-small">Astrotiempo</h1>
-    <h3 class="w3-xxlarge w3-hide-medium w3-hide-large">Astrotiempo</h3>
+    <!--<h1 class="w3-jumbo w3-hide-small">Astrotiempo</h1>
+    <h3 class="w3-xxlarge w3-hide-medium w3-hide-large">Astrotiempo</h3>-->
+    <img src="img/AstroTiempoLogo.png" width="40%"/>
 
     <h4 class="w3-hide-small">Significados astronómicos para nuestra medida cotidiana del tiempo.</h4>
     <h6 class="w3-hide-medium w3-hide-large">Significados astronómicos para nuestra medida cotidiana del tiempo.</h6>
@@ -100,8 +118,8 @@
     <div class="clock" style="border:solid white 0px;"></div>
     <div class="w3-text-grey w3-xlarge w3-center">
       <div id="fb-root"></div>
-      <a href="JavaScript:window.open('https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fastronomia-udea.co%2Fcalendar&amp;src=sdkpreparse&p[images][0]=<?php echo $img?>','Facebook','width=500,height=300')"><i class="fa fa-facebook-official w3-hover-text-indigo"></i></a>
-      <a href="JavaScript:window.open('https://twitter.com/intent/tweet?text=¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?&via=zuluagajorge&url=http://astronomia-udea.co/calendar','Tweet','width=500,height=300')"><i class="fa fa-twitter w3-hover-text-light-blue"></i></a>
+      <?php echo facebookLink("http://astronomia-udea.co/calendar") ?>
+      <?php echo twitterLink("http://astronomia-udea.co/calendar","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge") ?>
     </div>
   </div>
 
@@ -142,10 +160,10 @@
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
-  <!-- PERIHELIO -->
+  <!-- ¿FIN DE AÑO? -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- About Section -->
-  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="perihelio">
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="finano">
     <h2 class="w3-text-light-grey">¿Fin de año?</h2>
     <hr style="width:200px" class="w3-opacity">
     <p>
@@ -157,59 +175,60 @@
 	Investigación y Ciencia</a>.
     </p>
     <center><img src="img/FelizAno.png"></img></center>
-
-    <script type="text/javascript">
-
-      (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v2.8";
-      fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
-
-      $(document).ready(function() {
-
-	  // Grab the current date
-	  var currentDate = new Date();
-	  //var currentDate = new Date(2016,11,31,23,59,50);
-	  
-	  // Set some date in the future. In this case, it's always Jan 1
-	  var futureDate=new Date(Date.UTC(2017,0,4,14,17,03));
-	  //var futureDate=new Date(Date.UTC(2016,11,30,19,59,00));
-	  //var futureDate  = new Date(2017,0,4,9,30,0);
-	  
-	  // Calculate the difference in seconds between the future and current date
-	  var diff = futureDate.getTime() / 1000 - currentDate.getTime() / 1000;
-
-	  //var futureDate=new Date(Date.UTC(2017,0,4,14,17,03));
-	  
-	  // Instantiate a coutdown FlipClock
-	  clock = $('.clock').FlipClock(diff, {
-	      clockFace: 'DailyCounter',
-	      language: 'spanish',
-	      countdown: true
-	  });
-
-	  //var perihelio=new Date(Date.UTC(2017,1,4,14,17,03));
-	  $('.perihelio').html(futureDate.toLocaleString());
-
-      });
-    </script>
   </div>
 
-  <div class="w3-center">
-    <img src="img/man-at-work.png" width="200px"></img>
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <!-- ESTACIONES -->
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="estaciones">
+    <h2 class="w3-text-light-grey">Estaciones</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>
+      <?php echo $MENATWORK ?>
+    </p>
   </div>
-  
-  <!-- Footer -->
+
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <!-- ¿QUÉ HORA ES? -->
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="quehoraes">
+    <h2 class="w3-text-light-grey">¿Qué hora es?</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>
+      <?php echo $MENATWORK ?>
+    </p>
+  </div>
+
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <!-- TIEMPO SOLAR -->
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="tiemposolar">
+    <h2 class="w3-text-light-grey">Tiempo solar</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>
+      <?php echo $MENATWORK ?>
+    </p>
+  </div>
+
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <!-- FASES LUNARES -->
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="faseslunares">
+    <h2 class="w3-text-light-grey">Fases lunares</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>
+      <?php echo $MENATWORK ?>
+    </p>
+  </div>
+
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <!-- FOOTER -->
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge w3-center" id="footer">
-    <i class="fa fa-facebook-official w3-hover-text-indigo"></i>
-    <i class="fa fa-instagram w3-hover-text-purple"></i>
-    <i class="fa fa-snapchat w3-hover-text-yellow"></i>
-    <i class="fa fa-pinterest-p w3-hover-text-red"></i>
-    <i class="fa fa-twitter w3-hover-text-light-blue"></i>
-    <i class="fa fa-linkedin w3-hover-text-indigo"></i>
+    <center><hr style="width:80%" class="w3-opacity"/></center>
+    <?php echo facebookLink("http://astronomia-udea.co/calendar") ?>
+    <?php echo twitterLink("http://astronomia-udea.co/calendar","Astrotiempo: significados astronómicos para nuestra medida cotidiana del tiempo.","zuluagajorge") ?>
+    <span class="w3-small">/ Desarrollado por Jorge I. Zuluaga <i class="fa fa-copyright"></i> 2016</span>
   </footer>
   <!-- End footer -->
 

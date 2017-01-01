@@ -99,15 +99,17 @@
     SunCalc.getPosition = function (date, lat, lng) {
 
         var lw = rad * -lng,
-            phi = rad * lat,
-            d = toDays(date),
-
-            c = sunCoords(d),
-            H = siderealTime(d, lw) - c.ra;
-
+        phi = rad * lat,
+        d = toDays(date),
+        c = sunCoords(d),
+	gst = siderealTime(d,0),
+	lst = siderealTime(d,lw),
+        H = lst - c.ra;
         return {
             azimuth: azimuth(H, phi, c.dec),
-            altitude: altitude(H, phi, c.dec)
+            altitude: altitude(H, phi, c.dec),
+	    lst: lst,
+	    gst: gst
         };
     };
 

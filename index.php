@@ -5,6 +5,7 @@
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <?php
    require_once("php/calendar.php");
+   if(!isset($type)){$type="single";}
 ?>
 
 <html>
@@ -32,6 +33,8 @@
 
   <script src="js/jquery.js"></script>
   <script src="js/flipclock/flipclock.js"></script>	
+  <script src="js/suncalc.js"></script>	
+  <script src="js/orb/core.js"></script>	
   <script src="js/calendar.js"></script>	
 
 </head>
@@ -44,34 +47,34 @@
 <!-- Icon Bar (Sidenav - hidden on small screens) -->
 <nav class="w3-sidenav w3-center w3-small w3-hide-small" style="width:120px">
 
-  <img class="w3-hide-small" src="img/LogoSimbolo.png" width="80%">
-
-  <a class="w3-padding-large w3-black" href="#">
+  <a href="?"><img class="w3-hide-small" src="img/LogoSimbolo.png" width="80%"></a>
+  
+  <a class="w3-padding-large w3-black" href="<?php echo ilink('home',$type)?>">
     <i class="fa fa-home w3-xxlarge"></i>
     <p>INICIO</p>
   </a>
 
-  <a class="w3-padding-large w3-hover-black" href="#finano">
+  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('finano',$type)?>">
     <i class="fa fa-circle-o-notch fa-spin w3-xxlarge"></i>
     <p>¿FIN DE AÑO?</p>
   </a>
 
-  <a class="w3-padding-large w3-hover-black" href="#quehoraes">
+  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('quehoraes',$type)?>">
     <i class="fa fa-clock-o w3-xxlarge"></i>
     <p>¿QUÉ HORA ES?</p>
   </a>
 
-  <a class="w3-padding-large w3-hover-black" href="#estaciones">
+  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('estaciones',$type)?>">
     <i class="fa fa-snowflake-o fa-spin w3-xxlarge"></i>
     <p>ESTACIONES</p>
   </a>
 
-  <a class="w3-padding-large w3-hover-black" href="#tiemposolar">
+  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('tiemposolar',$type)?>">
     <i class="fa fa-sun-o fa-spin w3-xxlarge"></i>
     <p>TIEMPO SOLAR</p>
   </a>
 
-  <a class="w3-padding-large w3-hover-black" href="#faseslunares">
+  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('faseslunares',$type)?>">
     <i class="fa fa-moon-o w3-xxlarge"></i>
     <p>FASES LUNARES</p>
   </a>
@@ -100,6 +103,8 @@
 </div>
 -->
 
+<?php 
+echo<<<CONTENT
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <!-- PAGE CONTENT -->
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
@@ -110,11 +115,7 @@
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <header class="w3-container w3-padding-16 w3-center w3-black" id="home">
 
-    <!--
-	<h1 class="w3-jumbo w3-hide-small">Astrotiempo</h1>
-	<h3 class="w3-xxlarge w3-hide-medium w3-hide-large">Astrotiempo</h3>
-    -->
-    <img class="w3-hide-small" src="img/AstroTiempoLogo.png" width="40%"/>
+    <a href="?type=multiple"><img class="w3-hide-small" src="img/AstroTiempoLogo.png" width="40%"/></a>
     <img class="w3-hide-medium w3-hide-large" src="img/AstroTiempoLogo.png" width="80%"/>
 
     <h4 class="w3-hide-small">Significados astronómicos para nuestra medida cotidiana del tiempo.</h4>
@@ -125,7 +126,31 @@
 
   </header>
 
+CONTENT;
+if($type=="single" or (!isset($section) or $section=="home")){ 
+  $fblink=facebookLink("http://astronomia-udea.co/calendar");
+  $tlink=twitterLink("http://astronomia-udea.co/calendar","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge");
+
+echo<<<CONTENT
+  <script>
+  $(document).ready(function() {
+      //DATE
+      var fecha=new Date();
+      var year=fecha.getFullYear();
+      var pyear=year-1;
+      var nyear=year+1;
+      
+      $.ajax({
+	url:'actions.php?action=perihelion',
+	    success:function(result){
+	    $('#perihelion-time').html(result);
+	    perihelionCounter('clock');
+	  }
+	});
+    });
+  </script>
   <div id="clock" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;">
+    <span id="perihelion-time" class="w3-hide"></span>
     <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelion-date"></span>:</span>
     <br><br/>
 
@@ -138,8 +163,8 @@
 
     <div class="w3-text-grey w3-xlarge w3-center">
       <div id="fb-root"></div>
-      <?php echo facebookLink("http://astronomia-udea.co/calendar") ?>
-      <?php echo twitterLink("http://astronomia-udea.co/calendar","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge") ?>
+      $fblink
+      $tlink
     </div>
   </div>
 
@@ -176,11 +201,14 @@
     </p>
 
   </div>
-
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- ¿FIN DE AÑO? -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
-  <!-- About Section -->
+CONTENT;
+}if($type=="single" or $section=="finano"){ 
+  $fblink=facebookLink("http://astronomia-udea.co/calendar");
+  $tlink=twitterLink("http://astronomia-udea.co/calendar","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge");
+echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="finano">
     <h2 class="w3-text-light-grey">¿Fin de año?</h2>
     <hr style="width:200px" class="w3-opacity">
@@ -259,15 +287,39 @@
     </p>
 
     <center id="perihelia-table"></center>
-    <span id="perihelion-time" class="w3-hide"></span>
-    
     <p>
       Para que no se pierda ninguna celebración en lo sucesivo le
       ofrecemos aquí un contador regresivo hasta la fecha del próximo
       perihelio. 
     </p>
     
+    <script>
+      $(document).ready(function() {
+	  //DATE
+	  var fecha=new Date();
+	  var year=fecha.getFullYear();
+	  var pyear=year-1;
+	  var nyear=year+1;
+
+	  $.ajax({
+	    url:'actions.php?action=perihelia&year='+pyear,
+		success:function(result){
+		$('#perihelia-table').html(result);
+	      }
+	    });
+	  
+	  $.ajax({
+	    url:'actions.php?action=perihelion',
+		success:function(result){
+		$('#perihelion-time').html(result);
+		perihelionCounter('clock-ano');
+	      }
+	    });
+	});
+    </script>
+  
     <div id="clock" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;">
+      <span id="perihelion-time" class="w3-hide"></span>
       <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelion-date"></span>:</span>
       <br><br/>
       
@@ -280,8 +332,8 @@
       
       <div class="w3-text-grey w3-xlarge w3-center">
 	<div id="fb-root"></div>
-	<?php echo facebookLink("http://astronomia-udea.co/calendar") ?>
-	<?php echo twitterLink("http://astronomia-udea.co/calendar","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge") ?>
+	$fblink
+	$tlink
       </div>
     </div>
 
@@ -300,13 +352,28 @@
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- ¿QUÉ HORA ES? -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
+CONTENT;
+}if($type=="single" or $section=="quehoraes"){ 
+echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="quehoraes">
     <h2 class="w3-text-light-grey">¿Qué hora es?</h2>
     <hr style="width:200px" class="w3-opacity">
     <p>
       ¿Sabe usted a ciencia cierta qué hora es?
     </p>
+
     <center>
+      <script>
+	  $(document).ready(function() {
+	      var fecha=new Date();
+	      var time=new Orb.Time(fecha);
+	      gmst=time.gmst();
+	      var pos=SunCalc.getPosition(fecha,6.2,-75.34);
+	      var gst=pos.gst;
+	      alert(gst+","+floatMod(gst,24));
+	    });
+      </script>
+
     <table class="time-table" width="80%">
 
       <tr>
@@ -488,36 +555,52 @@
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- ESTACIONES -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
+CONTENT;
+}if($type=="single" or $section=="estaciones"){ 
+echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="estaciones">
     <h2 class="w3-text-light-grey">Estaciones</h2>
     <hr style="width:200px" class="w3-opacity">
     <p>
-      <?php echo $MENATWORK ?>
+      $MENATWORK
     </p>
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- TIEMPO SOLAR -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
+CONTENT;
+}if($type=="single" or $section=="tiemposolar"){ 
+echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="tiemposolar">
     <h2 class="w3-text-light-grey">Tiempo solar</h2>
     <hr style="width:200px" class="w3-opacity">
     <p>
-      <?php echo $MENATWORK ?>
+      $MENATWORK
     </p>
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- FASES LUNARES -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
+CONTENT;
+}if($type=="single" or $section=="faseslunares"){ 
+echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="faseslunares">
     <h2 class="w3-text-light-grey">Fases lunares</h2>
     <hr style="width:200px" class="w3-opacity">
     <p>
-      <?php echo $MENATWORK ?>
+      $MENATWORK
     </p>
   </div>
 
+CONTENT;
+}
+
+  $fblink=facebookLink("http://astronomia-udea.co/calendar");
+  $tlink=twitterLink("http://astronomia-udea.co/calendar","Astrotiempo: significados astronómicos para nuestra medida cotidiana del tiempo.","zuluagajorge");
+
+echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- SABER MAS -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
@@ -549,8 +632,8 @@
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge w3-center" id="footer">
     <center><hr style="width:80%" class="w3-opacity"/></center>
-    <?php echo facebookLink("http://astronomia-udea.co/calendar") ?>
-    <?php echo twitterLink("http://astronomia-udea.co/calendar","Astrotiempo: significados astronómicos para nuestra medida cotidiana del tiempo.","zuluagajorge") ?>
+    $fblink
+    $tlink
     <span class="w3-small">/ Desarrollado por Jorge I. Zuluaga <i class="fa fa-copyright"></i> 2016</span>
     <!-- <span style="font-family:'Orbitron',sans serif;">12:04</span>-->
   </footer>
@@ -561,3 +644,5 @@
 
 </body>
 </html>
+CONTENT;
+?>

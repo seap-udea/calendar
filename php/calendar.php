@@ -40,4 +40,11 @@ F;
 
   return $fstr;
 }
+
+function ilink($aname,$type)
+{
+  if($type=="multiple"){$symb="?type=multiple&section=";}
+  else{$symb="#";}
+  return $symb.$aname;
+}
 ?>

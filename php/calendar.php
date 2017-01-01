@@ -13,7 +13,7 @@ foreach(array_keys($_POST) as $field){
     $$field=$_POST[$field];
 }
 
-$PYTHON="/usr/loca/src/anaconda2/bin/python";
+$PYTHON="/usr/bin/python";
 
 ////////////////////////////////////////////////////////////////////////
 //FUNCTIONS

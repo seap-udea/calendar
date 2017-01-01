@@ -1,14 +1,7 @@
 #-*- coding:utf-8 -*-
-from calendar import *
+from astrotiempo import *
 
-"""
-try:
-    year=int(argv[1])
-except:
-    print "You must provide an initial year."
-    exit(1)
-"""
-today=date.today()
+today=dt.date.today()
 sdate=today.strftime("%m/%d/%y %H:%M:%S")
 #sdate="01/06/2017 00:00:00"
 

@@ -42,6 +42,15 @@ if(isset($action)){
     $out=shell_exec("cat $fper");
     echo date("U",strtotime($out."+000"));
   }
+
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  //PERIHELION DATE
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if($action=="time"){
+    $out=shell_exec("$PYTHON bin/time.py");
+    echo $out;
+  }
+    
 }
 
 ?>

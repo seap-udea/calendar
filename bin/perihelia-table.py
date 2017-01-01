@@ -1,5 +1,5 @@
 #-*- coding:utf-8 -*-
-from calendar import *
+from astrotiempo import *
 
 try:
     year=int(argv[1])

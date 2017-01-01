@@ -5,7 +5,8 @@ from spiceypy import wrapper as spy
 from sys import argv,exit
 import numpy as np
 from scipy.optimize import minimize_scalar as minimize
-from datetime import date
+import datetime as dt
+import time
 
 #######################################################################
 #CONSTANTS AND MACROS
@@ -16,6 +17,10 @@ from datetime import date
 #//////////////////////////////
 spy.furnsh("bin/kernels/naif0011.tls")
 spy.furnsh("bin/kernels/de421.bsp")
+spy.furnsh("bin/kernels/earth_assoc_itrf93.tf")
+spy.furnsh("bin/kernels/earth_fixed.tf")
+spy.furnsh("bin/kernels/earth_latest_high_prec.bpc")
+spy.furnsh("bin/kernels/frame.tk")
 
 #//////////////////////////////
 #BODIES

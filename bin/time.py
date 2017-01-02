@@ -6,9 +6,11 @@ utc=dt.datetime.utcnow()
 #utc=dt.datetime.strptime("01/01/2017 00:00:00","%m/%d/%Y %H:%M:%S")
 print>>stderr, "UTC: ",utc
 
+utc_mil=float("%.3f"%(utc.microsecond/1e6))*1000
+
 ut=calendar.timegm(utc.timetuple())
 print>>stderr, "UNIX: ",ut
-ut_m=ut*1000
+ut_m=ut*1000+utc_mil
 
 #GET ASTRONOMY TIME
 sdate=utc.strftime("%m/%d/%y %H:%M:%S UTC")
@@ -54,4 +56,13 @@ tdt_m=et_m+(tdt-et)*1000
 tdtcal=spy.etcal(tdt,100)
 print>>stderr, "TDT cal: ",tdtcal
 
-print """{"UTC":%d,"DT":%.6f,"ET":%d,"TAI":%d,"TDB":%d,"TDT":%d,"JD":%.9f,"JDB":%.9f,"JDT":%.9f,"UNIX":%d}"""%(ut_m,dt_m,et_m,tai_m,tdb_m,tdt_m,jd,jdb,jdt,ut_m)
+MJT=spy.pxform("J2000","EARTHTRUEEPOCH",et)
+MIJ=spy.pxform("ITRF93","J2000",et)
+
+
+
+lst_m=ut_m
+gst_m=ut_m
+
+print """{"UTC":%d,"DT":%.6f,"ET":%d,"TAI":%d,"TDB":%d,"TDT":%d,"JD":%.9f,"JDB":%.9f,"JDT":%.9f,"UNIX":%d,"LMT":%d,"LMST":%d,"LST":%d,"GST":%d}"""%(ut_m,dt_m,et_m,tai_m,tdb_m,tdt_m,jd,jdb,jdt,ut_m,ut_m,ut_m,lst_m,gst_m)
+

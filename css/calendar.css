@@ -8,7 +8,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
 
 .blink_me {
-  animation: blinker 1s linear infinite;
+  /*animation: blinker 1s linear infinite;*/
   padding:5px;
 }
 
@@ -18,7 +18,8 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
 .digclock {
     display:table-cell;
-    font-family:'Orbitron';
+    /*font-family:'Orbitron';*/
+    font-family:courier;
     padding:2px;
     color:red;
     font-size:2em;
@@ -36,7 +37,8 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 }
 
 .digconst{
-    font-family:'Orbitron';
+    /*font-family:'Orbitron';*/
+    font-family:courier;
     color:red;
 }
 

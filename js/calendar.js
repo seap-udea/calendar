@@ -26,7 +26,27 @@ ga('send', 'pageview');
 ////////////////////////////////////////////////////////////////////////
 //CONSTANTS
 ////////////////////////////////////////////////////////////////////////
-var RAD=180;
+var RAD=180/Math.PI;
+var TIME_KEYS=[];
+
+//INITIAL VALUES OF CONTROL VARIABLES
+var FECHA=new Date();
+//Timezone
+var TZ=-FECHA.getTimezoneOffset()/60.0;
+var UPDATE=1;
+var INIDATE=0;
+var TIMEOUT=0;
+var LDELTAT=0;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//CONFIGURATION
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//Time between updates
+var TIMEUPDATE=30;//Seconds
+//Refresh times
+var DELTAT=100;//Milliseconds
+//Maximum number of updates
+var MAXUPDATE=6;
 
 ////////////////////////////////////////////////////////////////////////
 //ROUTINES
@@ -130,16 +150,20 @@ function pad(num, size){
     return s.substr(s.length-size);
 }
 
-function setTime(times,key,field,type){
-    var stime=times[key];
+function fillTime(stime,field,type){
 
+    stime=parseFloat(stime);
+    //console.log("Filling "+field+" with: "+stime);
+    //$("#"+field+"_plain").html(stime);
     if(0){
     }else if(type=="time"){
-	var fecha=new Date(stime);
-	var H=pad(fecha.getHours(),2);
-	var M=pad(fecha.getMinutes(),2);
-	var S=pad(fecha.getSeconds(),2);
-	var m=pad(fecha.getMilliseconds(),3);
+	//console.log(field+"="+stime);
+	FECHA=new Date(stime);
+	var H=pad(FECHA.getUTCHours(),2);
+	var M=pad(FECHA.getMinutes(),2);
+	var S=pad(FECHA.getSeconds(),2);
+	var m=pad(FECHA.getMilliseconds(),3);
+	if(field.indexOf("L")>=0) var H=pad(FECHA.getHours(),2);
 	var text=
 	    H+'<span class="blink_me">:</span>'+
 	    M+'<span class="blink_me">:</span>'+
@@ -160,40 +184,101 @@ function setTime(times,key,field,type){
 	var pfra=Math.round10((stime/1e6-pint)*1e6,-3);
 	var pfra_int=Math.floor(pfra);
 	var pfra_mil=pad(Math.floor((pfra-pfra_int)*1000),3);
-	console.log(pfra+","+Math.round10(1.23456,-3));
 	$("#"+field+"_int").html(pint1+" "+pint2+"'");
 	$("#"+field+"_fra").html(pfra_int+'<span class="blink_me">.</span><span class="w3-small">'+pfra_mil+'</span>');
     }
 }
 
-function updateTime(){
+function fillTimes(){
+
+    //SET CLOCKS
+    var times={};
+    for(var i=0;i<TIME_KEYS.length;i++){
+	var key=TIME_KEYS[i];
+	var time=$("#"+key+"_plain").html();
+	//console.log(key+":"+time);
+	times[key]=time;
+	if(0){
+	}else if(key=="DT"){
+	    continue;
+	}else if(key=="ET"){
+	    continue;
+	}else if(key.indexOf("UNIX")>=0){
+	    fillTime(time,key,"UNIX");
+	}else if(key.indexOf("JD")>=0){
+	    fillTime(time,key,"JD");
+	}else{
+	    fillTime(time,key,"time");
+	}
+    }
+}
+
+function updateTime(qrepeat=1){
+
+    var now=new Date();
+    var deltat=now.getTime()-INIDATE.getTime();
+    for(var i=0;i<TIME_KEYS.length;i++){
+	var key=TIME_KEYS[i];
+	var time=parseFloat($("#"+key+"_plain").html());
+	var ntime=time+deltat;
+	if(0){
+	}else if(key=="DT"){
+	    continue;
+	}else if(key.indexOf("UNIX")>=0){
+	    fillTime(time+deltat,key,"UNIX");
+	}else if(key.indexOf("JD")>=0){
+	    fillTime(time+(deltat/1e3)/86400,key,"JD");
+	}else{
+	    fillTime(time+deltat,key,"time");
+	}
+    }
+
+    //UPDATE EVERY MINUTE OR SO
+    if(qrepeat){
+	if(UPDATE>MAXUPDATE) return 0;
+	if((deltat-LDELTAT)>(TIMEUPDATE*1000)){
+	    console.log("Actualiza "+UPDATE);
+	    getTimes();
+	    LDELTAT=deltat;
+	    UPDATE++;
+	}else{
+	    TIMEOUT=setTimeout(updateTime,DELTAT);
+	}
+    }
+    return 0;
+}
+
+function getTimes(qrepeat=1){
+
+    var lon=parseFloat($("#lon").val());
     $.ajax({
 	url:'actions.php?action=time',
 	success:function(result){
+	    //GET TIMES
+	    INIDATE=new Date();
 	    var times=JSON.parse(result);
-	    var keys=Object.keys(times);
 	    console.log(times);
-	    for(var i=0;i<keys.length;i++){
-		var key=keys[i];
-		$("#"+key+"_plain").html(times[key]);
-		if(0){
-		}else if(key=="DT"){
-		    continue;
-		}else if(key=="ET"){
-		    continue;
-		}else if(key.indexOf("UNIX")>=0){
-		    setTime(times,key,key,"UNIX");
-		    console.log(key+':'+$('#'+key+'_plain').html());
-		}else if(key.indexOf("JD")>=0){
-		    setTime(times,key,key,"JD");
-		    console.log(key+':'+$('#'+key+'_plain').html());
-		}else{
-		    setTime(times,key,key,"time");
-		    console.log(key+':'+$('#'+key+'_plain').html());
+
+	    //GET KEY OF TIMES
+	    TIME_KEYS=Object.keys(times);
+
+	    //SET PLAIN TIMES
+	    for(var i=0;i<TIME_KEYS.length;i++){
+		var key=TIME_KEYS[i];
+
+		//CORRECT LOCAL TIMES
+		if(key=="LMST" || key=="LST"){
+		    var dt=lon-TZ*15;
+		    times[key]=parseFloat(times[key])+1000*dt/15*3600;
 		}
+		
+		$("#"+key+"_plain").html(times[key]);
 	    }
-	    setTime(times,"UTC","LMT","time");
-	    setTime(times,"UTC","LMST","time");
+	    //FILE TIMES
+	    fillTimes();
+
+	    //UPDATE
+	    if(qrepeat) TIMEOUT=setTimeout(updateTime,DELTAT);
 	}
     });
 }
@@ -202,38 +287,5 @@ function updateTime(){
 //ON DOCUMENT READY
 ////////////////////////////////////////////////////////////////////////
 $(document).ready(function() {
-
-    //DATE
-    var fecha=new Date();
-    var year=fecha.getFullYear();
-    var pyear=year-1;
-    var nyear=year+1;
-
-    //GET PERIHELIA LIST
-    /*
-    $.ajax({
-	url:'actions.php?action=perihelia&year='+pyear,
-	success:function(result){
-	    $('#perihelia-table').html(result);
-	}
-    });
-
-    //GET YEAR PERIHELION DATE
-    $.ajax({
-	url:'actions.php?action=perihelion&year='+nyear,
-	success:function(result){
-	    $('#perihelion-time').html(result);
-	    perihelionCounter('clock');
-	    perihelionCounter('clock-ano');
-	}
-    });
-    */
-
-    //UPDATE TIME
-    hora=fecha.getHours();
-
-    var nfecha=new Date(1483319971000);
-    
-    //alert(nfecha.toLocaleString());
     
 });

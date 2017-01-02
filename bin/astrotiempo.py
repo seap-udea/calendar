@@ -19,7 +19,8 @@ spy.furnsh("bin/kernels/naif0011.tls")
 spy.furnsh("bin/kernels/de421.bsp")
 spy.furnsh("bin/kernels/earth_assoc_itrf93.tf")
 spy.furnsh("bin/kernels/earth_fixed.tf")
-spy.furnsh("bin/kernels/earth_latest_high_prec.bpc")
+spy.furnsh("bin/kernels/earth_070425_370426_predict.bpc")
+spy.furnsh("bin/kernels/earth_720101_070426.bpc")
 spy.furnsh("bin/kernels/frame.tk")
 
 #//////////////////////////////

@@ -354,6 +354,17 @@ echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
 CONTENT;
 }if($type=="single" or $section=="quehoraes"){ 
+$buttons=<<<B
+	<tr>
+	  <td colspan=3 class="w3-xxlarge w3-center">
+	    <a id="play" href="JavaScript:void(0)" onclick="$('#play').hide();UPDATE=1;getTimes()" style="display:none;"><i class="fa fa-play w3-hover-text-red"></i></a>
+	    <a href="JavaScript:void(0)" onclick="$('#play').show();UPDATE=1;clearTimeout(TIMEOUT)"><i class="fa fa-pause w3-hover-text-red"></i></a>
+	    <a href="JavaScript:void(0)" onclick="UPDATE=1;updateTime(0)"><i class="fa fa-step-forward w3-hover-text-red"></i></a>
+	    <a href="JavaScript:void(0)" onclick="UPDATE=1;getTimes(0)"><i class="fa fa-repeat w3-hover-text-red"></i></a>
+	  </td>
+	</tr>
+B;
+
 echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="quehoraes">
     <h2 class="w3-text-light-grey">¿Qué hora es?</h2>
@@ -371,225 +382,225 @@ echo<<<CONTENT
     <center>
       <script>
 	  $(document).ready(function() {
-	      var fecha=new Date();
-	      var TZ=-fecha.getTimezoneOffset()/60.0
 	      var lon=TZ*15.0;
 	      $("#lon").val(lon);
-	      updateTime();
+	      getTimes();
 	  });
       </script>
 
-    <table class="time-table" width="80%">
+      <div id="DT_plain" class="w3-hide"></div>
+      <div id="ET_plain" class="w3-hide"></div>
 
-      <tr>
-	<td style="width:10%"></td>
-	<td style="width:35%"></td>
-	<td class="w3-hide-small"></td>
-      </tr>
-      
-      <tr>
-	<td colspan=3 class="w3-large">
-	</td>
-      </tr>
+      <table class="time-table" width="80%">
 
-      <tr>
-	<td  class="time-table time-table-name">
-	  <a href="#hora:LMT">LMT</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="LMT_plain" class="w3-hide"></div>
-	  <div id="LMT" class="digclock" style="text-align:center">
-	    --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:LMT">Tiempo en el meridiano local</a>, tiempo que marcan los
-	  relojes en el huso horario.
-	</td>
-      </tr>
+	<tr>
+	  <td style="width:10%"></td>
+	  <td style="width:35%"></td>
+	  <td class="w3-hide-small"></td>
+	</tr>
+	
+	$buttons
 
-      <tr>
-	<td  class="time-table time-table-name">
-	  <a href="#hora:LMST">LMST</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="LMST_plain" class="w3-hide"></div>
-	  <div id="LMST" class="digclock" style="text-align:center">
-	    --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:TSM">Tiempo solar medio local</a>, hora solar media en el
-	  lugar exacto en el que se encuentra.
-	</td>
-      </tr>
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:LMT">LMT</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="LMT_plain" class="w3-hide"></div>
+	    <div id="LMT" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:LMT">Tiempo en el meridiano local</a>, tiempo que marcan los
+	    relojes en el huso horario.
+	  </td>
+	</tr>
 
-      <tr>
-	<td  class="time-table time-table-name">
-	  <a href="#hora:UTC">UTC</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="UTC_plain" class="w3-hide"></div>
-	  <div id="UTC" class="digclock" style="text-align:center">
-	    --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:UTC">Tiempo atómico Universal</a>, tiempo
-	  universal coordinado o tiempo local en Greenwich.
-	</td>
-      </tr>
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:LMST">LMST</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="LMST_plain" class="w3-hide"></div>
+	    <div id="LMST" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:TSM">Tiempo solar medio local</a>, hora solar media en el
+	    lugar exacto en el que se encuentra.
+	  </td>
+	</tr>
 
-      <tr>
-	<td  class="time-table time-table-name">
-	  <a href="#hora:TAI">TAI</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="TAI_plain" class="w3-hide"></div>
-	  <div id="TAI" class="digclock" style="text-align:center">
-	    --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:TAI">Tiempo Atómico Internacional</a>, tiempo
-	  que marcan los relojes atómicos del mundo.
-	</td>
-      </tr>
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:UTC">UTC</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="UTC_plain" class="w3-hide"></div>
+	    <div id="UTC" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:UTC">Tiempo atómico Universal</a>, tiempo
+	    universal coordinado o tiempo local en Greenwich.
+	  </td>
+	</tr>
 
-      <tr>
-	<td  class="time-table time-table-name">
-	  <a href="#hora:TDB">TDB</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="TDB_plain" class="w3-hide"></div>
-	  <div id="TDB" class="digclock" style="text-align:center">
-	    --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:TDB">Tiempo Dinámico del Baricentro</a>.
-	  Tiempo atómico en el Baricentro del Sistema Solar.
-	</td>
-      </tr>
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:TAI">TAI</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="TAI_plain" class="w3-hide"></div>
+	    <div id="TAI" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:TAI">Tiempo Atómico Internacional</a>, tiempo
+	    que marcan los relojes atómicos del mundo.
+	  </td>
+	</tr>
 
-      <tr>
-	<td  class="time-table time-table-name">
-	  <a href="#hora:TDT">TDT</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="TDT_plain" class="w3-hide"></div>
-	  <div id="TDT" class="digclock" style="text-align:center">
-	    --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:TDT">Tiempo Dinámico Terrestre</a>.  Tiempo atómico en el centro de la Tierra.
-	</td>
-      </tr>
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:TDB">TDB</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="TDB_plain" class="w3-hide"></div>
+	    <div id="TDB" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:TDB">Tiempo Dinámico del Baricentro</a>.
+	    Tiempo atómico en el Baricentro del Sistema Solar.
+	  </td>
+	</tr>
 
-      <tr>
-	<td  class="time-table time-table-name">
-	  <a href="#hora:GST">GST</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="GST_plain" class="w3-hide"></div>
-	  <div id="GST" class="digclock" style="text-align:center">
-	    --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:GST">Tiempo sideral en Greenwich</a>,
-	  ascensión recta de los cuerpos que están culminando en
-	  Greenwich.
-	</td>
-      </tr>
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:TDT">TDT</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="TDT_plain" class="w3-hide"></div>
+	    <div id="TDT" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:TDT">Tiempo Dinámico Terrestre</a>.  Tiempo atómico en el centro de la Tierra.
+	  </td>
+	</tr>
 
-      <tr>
-	<td  class="time-table time-table-name">
-	  <a href="#hora:LST">LST</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="LST_plain" class="w3-hide"></div>
-	  <div id="LST" class="digclock" style="text-align:center">
-	    --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:LST">Tiempo sideral local</a>, ascensión
-	  recta de los cuerpos que están culminando en Greenwich.
-	</td>
-      </tr>
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:GST">GST</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="GST_plain" class="w3-hide"></div>
+	    <div id="GST" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:GST">Tiempo sideral en Greenwich</a>,
+	    ascensión recta de los cuerpos que están culminando en
+	    Greenwich.
+	  </td>
+	</tr>
 
-      <tr>
-	<td  class="time-table time-table-name" valign="top">
-	  <a href="#hora:UNIX">UNIX</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="UNIX_plain" class="w3-hide"></div>
-	  <div id="UNIX_int" style="font-family:'Orbitron';color:red">- ---'</div>
-	  <div id="UNIX_fra" class="digclock" style="text-align:center">
-	    ------.<span class="w3-small">---</span>
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:UNIX">Tiempo de UNIX</a>. Número de segundos
-	  transcurridos desde Enero 1 de 1970.
-	</td>
-      </tr>
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:LST">LST</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="LST_plain" class="w3-hide"></div>
+	    <div id="LST" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:LST">Tiempo sideral local</a>, ascensión
+	    recta de los cuerpos que están culminando en Greenwich.
+	  </td>
+	</tr>
 
-      <tr>
-	<td  class="time-table time-table-name" valign="top">
-	  <a href="#hora:JD">JD</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="JD_plain" class="w3-hide"></div>
-	  <div id="JD_int" style="font-family:'Orbitron';color:red">-------.</div>
-	  <div id="JD_fra" class="digclock" style="text-align:center">
-	    ---------
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:LST">Día juliano referido a UTC</a>, días
-	  transcurridos desde Enero 1 de 4713 a.e.c.
-	</td>
-      </tr>
+	<tr>
+	  <td  class="time-table time-table-name" valign="top">
+	    <a href="#hora:UNIX">UNIX</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="UNIX_plain" class="w3-hide"></div>
+	    <div id="UNIX_int" style="font-family:courier;color:red">- ---'</div>
+	    <div id="UNIX_fra" class="digclock" style="text-align:center">
+	      ------.<span class="w3-small">---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:UNIX">Tiempo de UNIX</a>. Número de segundos
+	    transcurridos desde Enero 1 de 1970.
+	  </td>
+	</tr>
 
-      <tr>
-	<td  class="time-table time-table-name" valign="top">
-	  <a href="#hora:JDB">JDB</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="JDB_plain" class="w3-hide"></div>
-	  <div id="JDB_int" style="font-family:'Orbitron';color:red">-------.</div>
-	  <div id="JDB_fra" class="digclock" style="text-align:center">
-	    ---------
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:LST">Día juliano referido al baricentro</a>,
-	  días transcurridos desde Enero 1 de 4713 a.e.c referidos al
-	  baricentro del Sistema Solar.
-	</td>
-      </tr>
+	<tr>
+	  <td  class="time-table time-table-name" valign="top">
+	    <a href="#hora:JD">JD</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="JD_plain" class="w3-hide"></div>
+	    <div id="JD_int" style="font-family:courier;color:red">-------.</div>
+	    <div id="JD_fra" class="digclock" style="text-align:center">
+	      ---------
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:LST">Día juliano referido a UTC</a>, días
+	    transcurridos desde Enero 1 de 4713 a.e.c.
+	  </td>
+	</tr>
 
-      <tr>
-	<td  class="time-table time-table-name" valign="top">
-	  <a href="#hora:JDT">JDT</a>
-	</td>
-	<td class="time-table time-table-clock">
-	  <div id="JDT_plain" class="w3-hide"></div>
-	  <div id="JDT_int" style="font-family:'Orbitron';color:red">-------.</div>
-	  <div id="JDT_fra" class="digclock" style="text-align:center">
-	    ---------
-	  </div>
-	</td>
-	<td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	  <a href="#hora:LST">Día juliano referido al centro de la Tierra</a>, días
-	  transcurridos desde Enero 1 de 4713 a.e.c referidos al centro de la Tierra.
-	</td>
-      </tr>
+	<tr>
+	  <td  class="time-table time-table-name" valign="top">
+	    <a href="#hora:JDB">JDB</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="JDB_plain" class="w3-hide"></div>
+	    <div id="JDB_int" style="font-family:courier;color:red">-------.</div>
+	    <div id="JDB_fra" class="digclock" style="text-align:center">
+	      ---------
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:LST">Día juliano referido al baricentro</a>,
+	    días transcurridos desde Enero 1 de 4713 a.e.c referidos al
+	    baricentro del Sistema Solar.
+	  </td>
+	</tr>
 
-    </table>
+	<tr>
+	  <td  class="time-table time-table-name" valign="top">
+	    <a href="#hora:JDT">JDT</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div id="JDT_plain" class="w3-hide"></div>
+	    <div id="JDT_int" style="font-family:courier;color:red">-------.</div>
+	    <div id="JDT_fra" class="digclock" style="text-align:center">
+	      ---------
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:LST">Día juliano referido al centro de la Tierra</a>, días
+	    transcurridos desde Enero 1 de 4713 a.e.c referidos al centro de la Tierra.
+	  </td>
+	</tr>
+
+	$buttons
+
+      </table>
     </center>
   </div>
 
@@ -676,7 +687,7 @@ echo<<<CONTENT
     $fblink
     $tlink
     <span class="w3-small">/ Desarrollado por Jorge I. Zuluaga <i class="fa fa-copyright"></i> 2016</span>
-    <!-- <span style="font-family:'Orbitron',sans serif;">12:04</span>-->
+    <!-- <span style="font-family:courier,sans serif;">12:04</span>-->
   </footer>
   <!-- End footer -->
 

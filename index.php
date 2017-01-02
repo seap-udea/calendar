@@ -355,8 +355,8 @@ CONTENT;
 $buttons=<<<B
 	<tr>
 	  <td colspan=3 class="w3-xxlarge w3-center">
-	    <a id="play" href="JavaScript:void(0)" onclick="$('#play').hide();UPDATE=1;getTimes()" style="display:none;"><i class="fa fa-play w3-hover-text-red"></i></a>
-	    <a href="JavaScript:void(0)" onclick="$('#play').show();UPDATE=1;clearTimeout(TIMEOUT)"><i class="fa fa-pause w3-hover-text-red"></i></a>
+	    <a class="play" href="JavaScript:void(0)" onclick="$('.play').hide();UPDATE=1;getTimes()" style="display:none;"><i class="fa fa-play w3-hover-text-red"></i></a>
+	    <a href="JavaScript:void(0)" onclick="$('.play').show();UPDATE=1;clearTimeout(TIMEOUT)"><i class="fa fa-pause w3-hover-text-red"></i></a>
 	    <a href="JavaScript:void(0)" onclick="UPDATE=1;updateTime(0)"><i class="fa fa-step-forward w3-hover-text-red"></i></a>
 	    <a href="JavaScript:void(0)" onclick="UPDATE=1;getTimes(0)"><i class="fa fa-repeat w3-hover-text-red"></i></a>
 	  </td>

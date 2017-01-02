@@ -5,7 +5,8 @@
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <?php
    require_once("php/calendar.php");
-   if(!isset($type)){$type="single";}
+   if(isset($section)){$type="multiple";}
+   else if(!isset($type)){$type="single";}
 ?>
 
 <html>
@@ -204,8 +205,8 @@ echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
 CONTENT;
 }if($type=="single" or $section=="finano"){ 
-  $fblink=facebookLink("http://astronomia-udea.co/calendar");
-  $tlink=twitterLink("http://astronomia-udea.co/calendar","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge");
+  $fblink=facebookLink("http://astronomia-udea.co/calendar?section=finano");
+  $tlink=twitterLink("http://astronomia-udea.co/calendar?section=finano","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge");
 echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="finano">
     <h2 class="w3-text-light-grey">¿Fin de año?</h2>
@@ -352,6 +353,8 @@ echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
 CONTENT;
 }if($type=="single" or $section=="quehoraes"){ 
+  $fblink=facebookLink("http://astronomia-udea.co/calendar?section=quehoraes");
+  $tlink=twitterLink("http://astronomia-udea.co/calendar?section=quehoraes","¿Qué hora es?, la respuesta de la astronomía","zuluagajorge");
 $buttons=<<<B
 	<tr>
 	  <td colspan=3 class="w3-xxlarge w3-center">
@@ -359,6 +362,8 @@ $buttons=<<<B
 	    <a href="JavaScript:void(0)" onclick="$('.play').show();UPDATE=1;clearTimeout(TIMEOUT)"><i class="fa fa-pause w3-hover-text-red"></i></a>
 	    <a href="JavaScript:void(0)" onclick="UPDATE=1;updateTime(0)"><i class="fa fa-step-forward w3-hover-text-red"></i></a>
 	    <a href="JavaScript:void(0)" onclick="UPDATE=1;getTimes(0)"><i class="fa fa-repeat w3-hover-text-red"></i></a>
+	    $fblink
+	    $tlink
 	  </td>
 	</tr>
 B;

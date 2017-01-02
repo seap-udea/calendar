@@ -15,7 +15,7 @@ import time,calendar
 #//////////////////////////////
 #SPICE KERNELS
 #//////////////////////////////
-spy.furnsh("bin/kernels/naif0011.tls")
+spy.furnsh("bin/kernels/naif0012.tls")
 spy.furnsh("bin/kernels/de421.bsp")
 spy.furnsh("bin/kernels/earth_assoc_itrf93.tf")
 spy.furnsh("bin/kernels/earth_fixed.tf")

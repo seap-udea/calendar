@@ -19,7 +19,7 @@ et=spy.str2et(sdate)
 print>>stderr, "ET: ",et
 
 dtt=spy.deltet(et,"ET")
-print>>stderr, "DT: ",dt
+print>>stderr, "DT: ",dtt
 dt_m=dtt*1000
 et_m=ut_m+dt_m
 

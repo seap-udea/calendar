@@ -216,6 +216,9 @@ function fillTimes(){
 function updateTime(qrepeat=1){
 
     var now=new Date();
+    var lon=parseFloat($("#lon").val());
+    var dt=lon-TZ*15;
+
     var deltat=now.getTime()-INIDATE.getTime();
     for(var i=0;i<TIME_KEYS.length;i++){
 	var key=TIME_KEYS[i];
@@ -224,6 +227,8 @@ function updateTime(qrepeat=1){
 	if(0){
 	}else if(key=="DT"){
 	    continue;
+	}else if(key=="GST" || key=="LST"){
+	    fillTime(time+deltat*1.0027379,key,"time");
 	}else if(key.indexOf("UNIX")>=0){
 	    fillTime(time+deltat,key,"UNIX");
 	}else if(key.indexOf("JD")>=0){

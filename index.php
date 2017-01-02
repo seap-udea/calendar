@@ -377,7 +377,7 @@ echo<<<CONTENT
     te encuentras.  Si sabes tu longitud precisa indicala a
     continuación (con solo cambiarla se actualizaran las horas abajo),
     tu longitud geográfica: <input id="lon" type="text" name="lat"
-    value="-75.3" class="coordinput">
+    value="-75.3" class="coordinput" onchange="getTimes(0)">
 
     <center>
       <script>

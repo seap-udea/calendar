@@ -44,6 +44,9 @@ DAY=86400.0
 YEAR=365*DAY
 MUSUN=132712440040.944000 #mu_Sun for DE421
 
+REARTH=6378.1366
+FEARTH=0.0033528131084554717
+
 #######################################################################
 #FUNCTIONS
 #######################################################################
@@ -60,3 +63,12 @@ def positionBody(et,body=EARTH,wrt=SUN):
     x,l=spy.spkgps(body,et,"ECLIPJ2000",wrt)
     return x
 
+def dec2sex(dec):
+    H=np.floor(dec);
+    mm=(dec-H)*60
+    M=np.floor(mm);
+    ss=(mm-M)*60;
+    S=np.floor(ss);
+
+    #return "%02d:%02d:%02.3f"%(H,M,ss)
+    return H,M,ss

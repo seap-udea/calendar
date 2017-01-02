@@ -4,9 +4,14 @@
 <!-- PHP CODE -->
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <?php
-   require_once("php/calendar.php");
-   if(isset($section)){$type="multiple";}
-   else if(!isset($type)){$type="single";}
+require_once("php/calendar.php");
+if(isset($section)){$type="multiple";}
+else if(!isset($type)){$type="single";}
+if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
+    $title="Astrotiempo (dev)";
+}else{
+    $title="Astrotiempo";
+}
 ?>
 
 <html>
@@ -14,7 +19,7 @@
 <!-- HEADER -->
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <head>
-  <title>Astrotiempo</title>
+  <title><?php echo $title?></title>
 
   <meta property="og:image" content="http://astronomia-udea.co/calendar/img/FelizAno-square.png"/>
   <link rel="image_src" href="img/FelizAno-square.png"/>
@@ -373,7 +378,7 @@ echo<<<CONTENT
     <h2 class="w3-text-light-grey">¿Qué hora es?</h2>
     <hr style="width:200px" class="w3-opacity">
     <p>
-      ¿Sabe usted a ciencia cierta qué hora es?
+      ¿Sabe usted a ciencia cierta qué hora es?.  
     </p>
 
     Algunas de las horas dependen de la longitud geográfica en la que

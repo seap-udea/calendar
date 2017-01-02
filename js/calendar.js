@@ -240,7 +240,10 @@ function updateTime(qrepeat=1){
 
     //UPDATE EVERY MINUTE OR SO
     if(qrepeat){
-	if(UPDATE>MAXUPDATE) return 0;
+	if(UPDATE>MAXUPDATE){
+	    $('.play').show();
+	    return 0;
+	}
 	if((deltat-LDELTAT)>(TIMEUPDATE*1000)){
 	    console.log("Actualiza "+UPDATE);
 	    getTimes();

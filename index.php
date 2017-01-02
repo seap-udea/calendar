@@ -33,8 +33,6 @@
 
   <script src="js/jquery.js"></script>
   <script src="js/flipclock/flipclock.js"></script>	
-  <script src="js/suncalc.js"></script>	
-  <script src="js/orb/core.js"></script>	
   <script src="js/calendar.js"></script>	
 
 </head>

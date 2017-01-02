@@ -2,11 +2,11 @@
 #EXTERNAL MODULES
 #######################################################################
 from spiceypy import wrapper as spy
-from sys import argv,exit
+from sys import argv,exit,stderr,stdout
 import numpy as np
 from scipy.optimize import minimize_scalar as minimize
 import datetime as dt
-import time
+import time,calendar
 
 #######################################################################
 #CONSTANTS AND MACROS
@@ -58,3 +58,4 @@ def stateBody(et,body=EARTH,wrt=SUN):
 def positionBody(et,body=EARTH,wrt=SUN):
     x,l=spy.spkgps(body,et,"ECLIPJ2000",wrt)
     return x
+

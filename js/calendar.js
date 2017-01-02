@@ -125,6 +125,79 @@ function floatMod(val,per){
     return rem;
 }
 
+function pad(num, size){
+    var s = "000"+num;
+    return s.substr(s.length-size);
+}
+
+function setTime(times,key,field,type){
+    var stime=times[key];
+
+    if(0){
+    }else if(type=="time"){
+	var fecha=new Date(stime);
+	var H=pad(fecha.getHours(),2);
+	var M=pad(fecha.getMinutes(),2);
+	var S=pad(fecha.getSeconds(),2);
+	var m=pad(fecha.getMilliseconds(),3);
+	var text=
+	    H+'<span class="blink_me">:</span>'+
+	    M+'<span class="blink_me">:</span>'+
+	    S+'.<span class="w3-small">'+
+	    m+'</span>';
+	$("#"+field).html(text);
+    }else if(type=="JD"){
+	var pint=Math.floor10(stime);
+	var pfra=Math.floor10(1e9*(stime-pint));
+	$("#"+field+"_int").html(pint);
+	$("#"+field+"_fra").html("<span class='blink_me'>.</span>"+pfra);
+    }else if(type=="UNIX"){
+	stime=stime/1e3;
+	var pint=Math.floor10(stime/1e6);
+	var pstr=pint+"";
+	var pint1=pstr.substring(0,1);
+	var pint2=pstr.substring(1,4);
+	var pfra=Math.round10((stime/1e6-pint)*1e6,-3);
+	var pfra_int=Math.floor(pfra);
+	var pfra_mil=pad(Math.floor((pfra-pfra_int)*1000),3);
+	console.log(pfra+","+Math.round10(1.23456,-3));
+	$("#"+field+"_int").html(pint1+" "+pint2+"'");
+	$("#"+field+"_fra").html(pfra_int+'<span class="blink_me">.</span><span class="w3-small">'+pfra_mil+'</span>');
+    }
+}
+
+function updateTime(){
+    $.ajax({
+	url:'actions.php?action=time',
+	success:function(result){
+	    var times=JSON.parse(result);
+	    var keys=Object.keys(times);
+	    console.log(times);
+	    for(var i=0;i<keys.length;i++){
+		var key=keys[i];
+		$("#"+key+"_plain").html(times[key]);
+		if(0){
+		}else if(key=="DT"){
+		    continue;
+		}else if(key=="ET"){
+		    continue;
+		}else if(key.indexOf("UNIX")>=0){
+		    setTime(times,key,key,"UNIX");
+		    console.log(key+':'+$('#'+key+'_plain').html());
+		}else if(key.indexOf("JD")>=0){
+		    setTime(times,key,key,"JD");
+		    console.log(key+':'+$('#'+key+'_plain').html());
+		}else{
+		    setTime(times,key,key,"time");
+		    console.log(key+':'+$('#'+key+'_plain').html());
+		}
+	    }
+	    setTime(times,"UTC","LMT","time");
+	    setTime(times,"UTC","LMST","time");
+	}
+    });
+}
+
 ////////////////////////////////////////////////////////////////////////
 //ON DOCUMENT READY
 ////////////////////////////////////////////////////////////////////////
@@ -157,5 +230,10 @@ $(document).ready(function() {
     */
 
     //UPDATE TIME
-    fecha.getHours();
+    hora=fecha.getHours();
+
+    var nfecha=new Date(1483319971000);
+    
+    //alert(nfecha.toLocaleString());
+    
 });

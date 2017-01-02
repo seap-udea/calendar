@@ -2,39 +2,56 @@
 from astrotiempo import *
 
 #GET THE TIME
-now=dt.datetime.now()
-now=dt.datetime.strptime("01/01/2017 00:00:00","%m/%d/%y %H:%M:%S")
+utc=dt.datetime.utcnow()
+#utc=dt.datetime.strptime("01/01/2017 00:00:00","%m/%d/%Y %H:%M:%S")
+print>>stderr, "UTC: ",utc
 
-sdate=now.strftime("%m/%d/%y %H:%M:%S")
-print sdate
+ut=calendar.timegm(utc.timetuple())
+print>>stderr, "UNIX: ",ut
+ut_m=ut*1000
 
-#GET THE EPHEMERIS TIME
+#GET ASTRONOMY TIME
+sdate=utc.strftime("%m/%d/%y %H:%M:%S UTC")
+
 et=spy.str2et(sdate)
-print et
+print>>stderr, "ET: ",et
 
 dt=spy.deltet(et,"ET")
-print dt
+print>>stderr, "DT: ",dt
+dt_m=dt*1000
+et_m=ut_m+dt_m
 
-jed=spy.unitim(et,"ET","JED");
-print jed
-
-jd=jed-dt/DAY
-print jd
-
-tai=spy.unitim(et,"ET","TAI");
-print tai
-
-tdb=spy.unitim(et,"ET","TDB");
-print tdb
-
-tdt=spy.unitim(et,"ET","TDT");
-print tdt
+etcal=spy.etcal(et,100)
+print>>stderr, "ET cal:",etcal
 
 jdb=spy.unitim(et,"ET","JDTDB");
-print jdb
+print>>stderr, "JDB: %.9f"%jdb
 
 jdt=spy.unitim(et,"ET","JDTDT");
-print jdt
+print>>stderr, "JDT: %.9f"%jdt
 
-ut=time.mktime(now.timetuple())
-print ut
+jd=jdb-dt/DAY
+print>>stderr, "JD: %.8f"%jd
+
+tai=spy.unitim(et,"ET","TAI");
+print>>stderr, "TAI: ",tai
+tai_m=ut_m+(tai-(et-dt))*1000
+
+taical=spy.etcal(tai,100)
+print>>stderr, "TAI cal: ",taical
+
+tdb=spy.unitim(et,"ET","TDB");
+print>>stderr, "TDB: ",tdb
+tdb_m=et_m+(tdb-et)*1000
+
+tdbcal=spy.etcal(tdb,100)
+print>>stderr, "TDB cal: ",tdbcal
+
+tdt=spy.unitim(et,"ET","TDT");
+print>>stderr, "TDT:",tdt
+tdt_m=et_m+(tdt-et)*1000
+
+tdtcal=spy.etcal(tdt,100)
+print>>stderr, "TDT cal: ",tdtcal
+
+print """{"UTC":%d,"DT":%.6f,"ET":%d,"TAI":%d,"TDB":%d,"TDT":%d,"JD":%.9f,"JDB":%.9f,"JDT":%.9f,"UNIX":%d}"""%(ut_m,dt_m,et_m,tai_m,tdb_m,tdt_m,jd,jdb,jdt,ut_m)

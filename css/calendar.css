@@ -29,6 +29,17 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     width:14em;
 }
 
+.coordinput {
+    border:solid #333333 5px;
+    border-radius:5px;    
+    width:5em;
+}
+
+.digconst{
+    font-family:'Orbitron';
+    color:red;
+}
+
 .slink{
     text-decoration:none:
 }

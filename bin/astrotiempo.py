@@ -7,6 +7,7 @@ import numpy as np
 from scipy.optimize import minimize_scalar as minimize
 import datetime as dt
 import time,calendar
+from scipy.interpolate import interp1d
 
 #######################################################################
 #CONSTANTS AND MACROS
@@ -21,6 +22,7 @@ spy.furnsh("bin/kernels/earth_assoc_itrf93.tf")
 spy.furnsh("bin/kernels/earth_fixed.tf")
 spy.furnsh("bin/kernels/earth_070425_370426_predict.bpc")
 spy.furnsh("bin/kernels/earth_720101_070426.bpc")
+spy.furnsh("bin/kernels/pck00010.tpc")
 spy.furnsh("bin/kernels/frame.tk")
 
 #//////////////////////////////
@@ -47,6 +49,12 @@ MUSUN=132712440040.944000 #mu_Sun for DE421
 REARTH=6378.1366
 FEARTH=0.0033528131084554717
 
+#DIFFERENTIAL RATES OF TCG AND TCB, SEE USNO CIRCULAR 179, OCT 2006
+#TDB TIME AT 01/01/01 1977 00:00:00 TAI, 01/01/01 1977 00:00:32.184 TDB, 12/31/1976 23:59:45 UTC
+T0=-725803167.816
+LG=6.969290134e-10
+LB=1.55e-8
+
 #######################################################################
 #FUNCTIONS
 #######################################################################
@@ -72,3 +80,9 @@ def dec2sex(dec):
 
     #return "%02d:%02d:%02.3f"%(H,M,ss)
     return H,M,ss
+
+def sex2dec(sex,sep=':'):
+    if sep==":":
+        sex=[float(s) for s in sex.split(":")]
+    dec=sex[0]+sex[1]/60.0+sex[2]/3600.
+    return dec

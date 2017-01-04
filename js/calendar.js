@@ -58,6 +58,7 @@ function perihelionCounter(target)
     var futureDate=new Date(periTime);
     var currentDate = new Date();
     var diff = futureDate.getTime() / 1000 - currentDate.getTime() / 1000;
+    if(diff<0){diff=0;}
 
     //Create clock
     var clock = $('.'+target).FlipClock(diff, {
@@ -163,7 +164,7 @@ function fillTime(stime,field,type){
 	var M=pad(FECHA.getMinutes(),2);
 	var S=pad(FECHA.getSeconds(),2);
 	var m=pad(FECHA.getMilliseconds(),3);
-	if(field.indexOf("L")>=0) var H=pad(FECHA.getHours(),2);
+	if(field=="LMT" || field=="MST" || field=="LAST" || field=="TST") var H=pad(FECHA.getHours(),2);
 	var text=
 	    H+'<span class="blink_me">:</span>'+
 	    M+'<span class="blink_me">:</span>'+
@@ -183,9 +184,25 @@ function fillTime(stime,field,type){
 	var pint2=pstr.substring(1,4);
 	var pfra=Math.round10((stime/1e6-pint)*1e6,-3);
 	var pfra_int=Math.floor(pfra);
+	var pfrast=pfra_int+"";
+	var pfra1=pfrast.substr(0,3);
+	var pfra2=pfrast.substr(3,6);
 	var pfra_mil=pad(Math.floor((pfra-pfra_int)*1000),3);
 	$("#"+field+"_int").html(pint1+" "+pint2+"'");
-	$("#"+field+"_fra").html(pfra_int+'<span class="blink_me">.</span><span class="w3-small">'+pfra_mil+'</span>');
+	$("#"+field+"_fra").html(pfra1+" "+pfra2+'<span class="blink_me">.</span><span class="w3-small">'+pfra_mil+'</span>');
+    }else if(type=="UTAI"){
+	stime=stime/1e3;
+	var pint=Math.floor10(stime/1e6);
+	var pstr=pint+"";
+	var pint1=pstr.substring(0,3);
+	var pfra=Math.round10((stime/1e6-pint)*1e6,-3);
+	var pfra_int=Math.floor(pfra);
+	var pfrast=pfra_int+"";
+	var pfra1=pfrast.substr(0,3);
+	var pfra2=pfrast.substr(3,6);
+	var pfra_mil=pad(Math.floor((pfra-pfra_int)*1000),3);
+	$("#"+field+"_int").html(pint1+"'");
+	$("#"+field+"_fra").html(pfra1+" "+pfra2+'<span class="blink_me">.</span><span class="w3-small">'+pfra_mil+'</span>');
     }
 }
 
@@ -205,6 +222,8 @@ function fillTimes(){
 	    continue;
 	}else if(key.indexOf("UNIX")>=0){
 	    fillTime(time,key,"UNIX");
+	}else if(key.indexOf("UTAI")>=0){
+	    fillTime(time,key,"UTAI");
 	}else if(key.indexOf("JD")>=0){
 	    fillTime(time,key,"JD");
 	}else{
@@ -227,10 +246,12 @@ function updateTime(qrepeat=1){
 	if(0){
 	}else if(key=="DT"){
 	    continue;
-	}else if(key=="GST" || key=="LST"){
+	}else if(key=="GAST" || key=="LAST"){
 	    fillTime(time+deltat*1.0027379,key,"time");
 	}else if(key.indexOf("UNIX")>=0){
 	    fillTime(time+deltat,key,"UNIX");
+	}else if(key.indexOf("UTAI")>=0){
+	    fillTime(time+deltat,key,"UTAI");
 	}else if(key.indexOf("JD")>=0){
 	    fillTime(time+(deltat/1e3)/86400,key,"JD");
 	}else{
@@ -259,6 +280,8 @@ function updateTime(qrepeat=1){
 function getTimes(qrepeat=1){
 
     var lon=parseFloat($("#lon").val());
+    localStorage.setItem("lon",lon);
+    localStorage.setItem("TZ",TZ);
     $.ajax({
 	url:'actions.php?action=time',
 	success:function(result){
@@ -273,13 +296,11 @@ function getTimes(qrepeat=1){
 	    //SET PLAIN TIMES
 	    for(var i=0;i<TIME_KEYS.length;i++){
 		var key=TIME_KEYS[i];
-
 		//CORRECT LOCAL TIMES
-		if(key=="LMST" || key=="LST"){
+		if(key=="MST" || key=="LMST" || key=="TST"){
 		    var dt=lon-TZ*15;
 		    times[key]=parseFloat(times[key])+1000*dt/15*3600;
 		}
-		
 		$("#"+key+"_plain").html(times[key]);
 	    }
 	    //FILE TIMES

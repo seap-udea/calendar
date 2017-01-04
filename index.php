@@ -8,9 +8,11 @@ require_once("php/calendar.php");
 if(isset($section)){$type="multiple";}
 else if(!isset($type)){$type="single";}
 if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
-    $title="Astrotiempo (dev)";
+   $title="Astrotiempo (dev)";
+   $lcolor="red";
 }else{
-    $title="Astrotiempo";
+   $title="Astrotiempo";
+   $lcolor="black";
 }
 ?>
 
@@ -51,7 +53,7 @@ if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
 <!-- Icon Bar (Sidenav - hidden on small screens) -->
 <nav class="w3-sidenav w3-center w3-small w3-hide-small" style="width:120px">
 
-  <a href="?"><img class="w3-hide-small" src="img/LogoSimbolo.png" width="80%"></a>
+  <a href="?"><img class="w3-hide-small w3-<?php echo $lcolor?>" src="img/LogoSimbolo.png" width="80%"></a>
   
   <a class="w3-padding-large w3-black" href="<?php echo ilink('home',$type)?>">
     <i class="fa fa-home w3-xxlarge"></i>
@@ -384,27 +386,33 @@ echo<<<CONTENT
     Algunas de las horas dependen de la longitud geográfica en la que
     te encuentras.  Si sabes tu longitud precisa indicala a
     continuación (con solo cambiarla se actualizaran las horas abajo),
-    tu longitud geográfica: <input id="lon" type="text" name="lat"
+    tu longitud geográfica: <input data-type="time" id="lon" type="text" name="lat"
     value="-75.3" class="coordinput" onchange="getTimes(0)">
 
     <center>
       <script>
 	  $(document).ready(function() {
-	      var lon=TZ*15.0;
-	      $("#lon").val(lon);
+	      if(!localStorage.lon || TZ!=localStorage.TZ){
+		  var lon=TZ*15.0;
+		  var dlon=1-2*Math.random();
+		  lon+=dlon;
+	      }else{
+		  lon=localStorage.lon;
+	      }
+	      $("#lon").val(Math.round10(lon,-3));
 	      getTimes();
 	  });
       </script>
 
-      <div id="DT_plain" class="w3-hide"></div>
-      <div id="ET_plain" class="w3-hide"></div>
+      <div data-type="time" id="DT_plain" class="w3-hide"></div>
+      <div data-type="time" id="ET_plain" class="w3-hide"></div>
 
       <table class="time-table" width="80%">
 
 	<tr>
 	  <td style="width:10%"></td>
 	  <td style="width:35%"></td>
-	  <td class="w3-hide-small"></td>
+	  <td class="w3-hide-small w3-hide-medium"></td>
 	</tr>
 	
 	$buttons
@@ -414,24 +422,24 @@ echo<<<CONTENT
 	    <a href="#hora:LMT">LMT</a>
 	  </td>
 	  <td class="time-table time-table-clock">
-	    <div id="LMT_plain" class="w3-hide"></div>
-	    <div id="LMT" class="digclock" style="text-align:center">
+	    <div data-type="time" id="LMT_plain" class="w3-hide"></div>
+	    <div data-type="time" id="LMT" class="digclock" style="text-align:center">
 	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
 	    </div>
 	  </td>
 	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	    <a href="#hora:LMT">Tiempo en el meridiano local</a>, tiempo que marcan los
-	    relojes en el huso horario.
+	    <a href="#hora:LMT">Tiempo medio local</a>, tiempo que
+	    marcan los relojes en el huso horario.
 	  </td>
 	</tr>
 
 	<tr>
 	  <td  class="time-table time-table-name">
-	    <a href="#hora:LMST">LMST</a>
+	    <a href="#hora:MST">MST</a>
 	  </td>
 	  <td class="time-table time-table-clock">
-	    <div id="LMST_plain" class="w3-hide"></div>
-	    <div id="LMST" class="digclock" style="text-align:center">
+	    <div data-type="time" id="MST_plain" class="w3-hide"></div>
+	    <div data-type="time" id="MST" class="digclock" style="text-align:center">
 	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
 	    </div>
 	  </td>
@@ -443,17 +451,49 @@ echo<<<CONTENT
 
 	<tr>
 	  <td  class="time-table time-table-name">
-	    <a href="#hora:UTC">UTC</a>
+	    <a href="#hora:TST">TST</a>
 	  </td>
 	  <td class="time-table time-table-clock">
-	    <div id="UTC_plain" class="w3-hide"></div>
-	    <div id="UTC" class="digclock" style="text-align:center">
+	    <div data-type="time" id="TST_plain" class="w3-hide"></div>
+	    <div data-type="time" id="TST" class="digclock" style="text-align:center">
 	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
 	    </div>
 	  </td>
 	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	    <a href="#hora:UTC">Tiempo atómico Universal</a>, tiempo
-	    universal coordinado o tiempo local en Greenwich.
+	    <a href="#hora:TSM">Tiempo solar verdadero</a>, hora solar
+	    verdadera en el lugar exacto en el que se encuentra.
+	  </td>
+	</tr>
+
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:UTC">UTC</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div data-type="time" id="UTC_plain" class="w3-hide"></div>
+	    <div data-type="time" id="UTC" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:UTC">Tiempo Universal Coordinado</a>,
+	    tiempo medio local en Greenwich.
+	  </td>
+	</tr>
+
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:UT1">UT1</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div data-type="time" id="UT1_plain" class="w3-hide"></div>
+	    <div data-type="time" id="UT1" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:UT1">Tiempo Universal</a>, tiempo medio en
+	    Greenwich ajustado a la rotación de la Tierra.
 	  </td>
 	</tr>
 
@@ -462,8 +502,8 @@ echo<<<CONTENT
 	    <a href="#hora:TAI">TAI</a>
 	  </td>
 	  <td class="time-table time-table-clock">
-	    <div id="TAI_plain" class="w3-hide"></div>
-	    <div id="TAI" class="digclock" style="text-align:center">
+	    <div data-type="time" id="TAI_plain" class="w3-hide"></div>
+	    <div data-type="time" id="TAI" class="digclock" style="text-align:center">
 	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
 	    </div>
 	  </td>
@@ -475,11 +515,58 @@ echo<<<CONTENT
 
 	<tr>
 	  <td  class="time-table time-table-name">
+	    <a href="#hora:TCG">TCG</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div data-type="time" id="TCG_plain" class="w3-hide"></div>
+	    <div data-type="time" id="TCG" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:TCG">Tiempo Geocéntrico Coordenado</a>.
+	    Tiempo medido en el centro de la Tierra.
+	  </td>
+	</tr>
+
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:TCB">TCB</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div data-type="time" id="TCB_plain" class="w3-hide"></div>
+	    <div data-type="time" id="TCB" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:TCB">Tiempo Baricéntrico coordenado</a>.
+	    Tiempo medido en el baricentro del Sistema Solar.
+	  </td>
+	</tr>
+
+	<tr>
+	  <td  class="time-table time-table-name">
+	    <a href="#hora:TDT">TDT</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div data-type="time" id="TDT_plain" class="w3-hide"></div>
+	    <div data-type="time" id="TDT" class="digclock" style="text-align:center">
+	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:TDT">Tiempo Dinámico Terrestre</a>.  Tiempo atómico en el centro de la Tierra.
+	  </td>
+	</tr>
+
+	<tr>
+	  <td  class="time-table time-table-name">
 	    <a href="#hora:TDB">TDB</a>
 	  </td>
 	  <td class="time-table time-table-clock">
-	    <div id="TDB_plain" class="w3-hide"></div>
-	    <div id="TDB" class="digclock" style="text-align:center">
+	    <div data-type="time" id="TDB_plain" class="w3-hide"></div>
+	    <div data-type="time" id="TDB" class="digclock" style="text-align:center">
 	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
 	    </div>
 	  </td>
@@ -491,31 +578,16 @@ echo<<<CONTENT
 
 	<tr>
 	  <td  class="time-table time-table-name">
-	    <a href="#hora:TDT">TDT</a>
+	    <a href="#hora:GAST">GAST</a>
 	  </td>
 	  <td class="time-table time-table-clock">
-	    <div id="TDT_plain" class="w3-hide"></div>
-	    <div id="TDT" class="digclock" style="text-align:center">
+	    <div data-type="time" id="GAST_plain" class="w3-hide"></div>
+	    <div data-type="time" id="GAST" class="digclock" style="text-align:center">
 	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
 	    </div>
 	  </td>
 	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	    <a href="#hora:TDT">Tiempo Dinámico Terrestre</a>.  Tiempo atómico en el centro de la Tierra.
-	  </td>
-	</tr>
-
-	<tr>
-	  <td  class="time-table time-table-name">
-	    <a href="#hora:GST">GST</a>
-	  </td>
-	  <td class="time-table time-table-clock">
-	    <div id="GST_plain" class="w3-hide"></div>
-	    <div id="GST" class="digclock" style="text-align:center">
-	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
-	    </div>
-	  </td>
-	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	    <a href="#hora:GST">Tiempo sideral en Greenwich</a>,
+	    <a href="#hora:GAST">Tiempo sideral aparente en Greenwich</a>,
 	    ascensión recta de los cuerpos que están culminando en
 	    Greenwich.
 	  </td>
@@ -523,45 +595,63 @@ echo<<<CONTENT
 
 	<tr>
 	  <td  class="time-table time-table-name">
-	    <a href="#hora:LST">LST</a>
+	    <a href="#hora:LAST">LAST</a>
 	  </td>
 	  <td class="time-table time-table-clock">
-	    <div id="LST_plain" class="w3-hide"></div>
-	    <div id="LST" class="digclock" style="text-align:center">
+	    <div data-type="time" id="LAST_plain" class="w3-hide"></div>
+	    <div data-type="time" id="LAST" class="digclock" style="text-align:center">
 	      --<span class="blink_me">:</span>--<span class="blink_me">:</span>--<span class="w3-small">.---</span>
 	    </div>
 	  </td>
 	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	    <a href="#hora:LST">Tiempo sideral local</a>, ascensión
-	    recta de los cuerpos que están culminando en Greenwich.
+	    <a href="#hora:LAST">Tiempo sideral aparente local</a>,
+	    ascensión recta de los cuerpos que están culminando en
+	    Greenwich.
 	  </td>
 	</tr>
 
 	<tr>
 	  <td  class="time-table time-table-name" valign="top">
-	    <a href="#hora:UNIX">UNIX</a>
+	    <a href="#hora:UTAI">TAI(s)</a>
 	  </td>
 	  <td class="time-table time-table-clock">
-	    <div id="UNIX_plain" class="w3-hide"></div>
-	    <div id="UNIX_int" style="font-family:courier;color:red">- ---'</div>
-	    <div id="UNIX_fra" class="digclock" style="text-align:center">
+	    <div data-type="time" id="UTAI_plain" class="w3-hide"></div>
+	    <div data-type="time" id="UTAI_int" style="font-family:courier;color:red">---'</div>
+	    <div data-type="time" id="UTAI_fra" class="digclock" style="text-align:center">
+	      ------.<span class="w3-small">---</span>
+	    </div>
+	  </td>
+	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
+	    <a href="#hora:UTAI">Tiempo de UTAI</a>. Número de segundos
+	    transcurridos desde Enero 1 de 2000 a las 0:00.
+	  </td>
+	</tr>
+
+	<tr>
+	  <td  class="time-table time-table-name" valign="top">
+	    <a href="#hora:UNIX">UNIX(s)</a>
+	  </td>
+	  <td class="time-table time-table-clock">
+	    <div data-type="time" id="UNIX_plain" class="w3-hide"></div>
+	    <div data-type="time" id="UNIX_int" style="font-family:courier;color:red">- ---'</div>
+	    <div data-type="time" id="UNIX_fra" class="digclock" style="text-align:center">
 	      ------.<span class="w3-small">---</span>
 	    </div>
 	  </td>
 	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
 	    <a href="#hora:UNIX">Tiempo de UNIX</a>. Número de segundos
-	    transcurridos desde Enero 1 de 1970.
+	    transcurridos desde Enero 1 de 1970 a las 0:00.
 	  </td>
 	</tr>
 
 	<tr>
 	  <td  class="time-table time-table-name" valign="top">
-	    <a href="#hora:JD">JD</a>
+	    <a href="#hora:JD">JD(d)</a>
 	  </td>
 	  <td class="time-table time-table-clock">
-	    <div id="JD_plain" class="w3-hide"></div>
-	    <div id="JD_int" style="font-family:courier;color:red">-------.</div>
-	    <div id="JD_fra" class="digclock" style="text-align:center">
+	    <div data-type="time" id="JD_plain" class="w3-hide"></div>
+	    <div data-type="time" id="JD_int" style="font-family:courier;color:red">-------.</div>
+	    <div data-type="time" id="JD_fra" class="digclock" style="text-align:center">
 	      ---------
 	    </div>
 	  </td>
@@ -573,12 +663,12 @@ echo<<<CONTENT
 
 	<tr>
 	  <td  class="time-table time-table-name" valign="top">
-	    <a href="#hora:JDB">JDB</a>
+	    <a href="#hora:JDB">JDB(d)</a>
 	  </td>
 	  <td class="time-table time-table-clock">
-	    <div id="JDB_plain" class="w3-hide"></div>
-	    <div id="JDB_int" style="font-family:courier;color:red">-------.</div>
-	    <div id="JDB_fra" class="digclock" style="text-align:center">
+	    <div data-type="time" id="JDB_plain" class="w3-hide"></div>
+	    <div data-type="time" id="JDB_int" style="font-family:courier;color:red">-------.</div>
+	    <div data-type="time" id="JDB_fra" class="digclock" style="text-align:center">
 	      ---------
 	    </div>
 	  </td>
@@ -586,23 +676,6 @@ echo<<<CONTENT
 	    <a href="#hora:LST">Día juliano referido al baricentro</a>,
 	    días transcurridos desde Enero 1 de 4713 a.e.c referidos al
 	    baricentro del Sistema Solar.
-	  </td>
-	</tr>
-
-	<tr>
-	  <td  class="time-table time-table-name" valign="top">
-	    <a href="#hora:JDT">JDT</a>
-	  </td>
-	  <td class="time-table time-table-clock">
-	    <div id="JDT_plain" class="w3-hide"></div>
-	    <div id="JDT_int" style="font-family:courier;color:red">-------.</div>
-	    <div id="JDT_fra" class="digclock" style="text-align:center">
-	      ---------
-	    </div>
-	  </td>
-	  <td class="time-table time-table-explanation w3-hide-small w3-hide-medium">
-	    <a href="#hora:LST">Día juliano referido al centro de la Tierra</a>, días
-	    transcurridos desde Enero 1 de 4713 a.e.c referidos al centro de la Tierra.
 	  </td>
 	</tr>
 
@@ -618,7 +691,7 @@ echo<<<CONTENT
 CONTENT;
 }if($type=="single" or $section=="estaciones"){ 
 echo<<<CONTENT
-  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="estaciones">
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="estaciones">
     <h2 class="w3-text-light-grey">Estaciones</h2>
     <hr style="width:200px" class="w3-opacity">
     <p>
@@ -632,7 +705,7 @@ echo<<<CONTENT
 CONTENT;
 }if($type=="single" or $section=="tiemposolar"){ 
 echo<<<CONTENT
-  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="tiemposolar">
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="tiemposolar">
     <h2 class="w3-text-light-grey">Tiempo solar</h2>
     <hr style="width:200px" class="w3-opacity">
     <p>
@@ -646,7 +719,7 @@ echo<<<CONTENT
 CONTENT;
 }if($type=="single" or $section=="faseslunares"){ 
 echo<<<CONTENT
-  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="faseslunares">
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="faseslunares">
     <h2 class="w3-text-light-grey">Fases lunares</h2>
     <hr style="width:200px" class="w3-opacity">
     <p>
@@ -664,7 +737,7 @@ echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- SABER MAS -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
-  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="sabermas">
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="sabermas">
     <h2 class="w3-text-light-grey">Saber más</h2>
     <hr style="width:200px" class="w3-opacity">
 
@@ -690,7 +763,7 @@ echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- FOOTER -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
-  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge w3-center" id="footer">
+  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge w3-center" data-type="time" id="footer">
     <center><hr style="width:80%" class="w3-opacity"/></center>
     $fblink
     $tlink

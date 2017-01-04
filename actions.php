@@ -47,7 +47,7 @@ if(isset($action)){
   //PERIHELION DATE
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if($action=="time"){
-    $out=shell_exec("$PYTHON bin/time.py 2> /tmp/a");
+    $out=shell_exec("$PYTHON bin/time.py now 2> /tmp/a");
     echo $out;
   }
     

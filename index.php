@@ -238,7 +238,7 @@ CONTENT;
   $tlink=twitterLink("http://astronomia-udea.co/calendar?section=finano-tag:perihelio","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge");
 
   $fblink_vel=facebookLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer");
-  $tlink_vel=twitterLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer","¿Cuál es la velocidad y la distancia de la Tierra en este momento? El velocimetro de la Tierra","zuluagajorge");
+  $tlink_vel=twitterLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer","¿Cuál es la velocidad y la distancia de la Tierra en este momento? El velocímetro de la Tierra","zuluagajorge");
 
 echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="finano">
@@ -383,7 +383,7 @@ echo<<<CONTENT
     </p>
 
     <a name="speedometer">
-      <span class="w3-text-white w3-large">El velocimetro de la Tierra</span>      
+      <span class="w3-text-white w3-large">El velocímetro de la Tierra</span>      
     </a>
 
     <p>
@@ -410,7 +410,7 @@ echo<<<CONTENT
 	      gauge.axis().orient("in")
 		  .normalize(true)
 		  .ticks(10)
-		  .tickSubdivide(5)
+		  .tickSubdivide(4)
 		  .tickSize(20, 8, 10)
 		  .tickPadding(5)
 		  .scale(d3.scale.linear()

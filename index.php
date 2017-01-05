@@ -361,6 +361,69 @@ echo<<<CONTENT
       la <a href="http://www.investigacionyciencia.es/"
       target="_blank">revista Investigación y Ciencia</a>.
     </p>
+
+    <a name="speedometer">
+      <span class="w3-text-white w3-large">El velocimetro de la Tierra</span>      
+    </a>
+
+    <p>
+	¿Sabes a qué velocidad viaja la Tierra a esta hora? ¿a qué
+	distancia esta del Sol?.  Con este instrumento virtual podrás
+	saberlo.  Los valores de la velocidad están en kilómetros por
+	segundo, mientras que la distancia mostrada en la pantalla
+	esta en kilómetros.
+    </p>
+
+    <center>
+      <script>
+	  $(document).ready(function() {
+	      var svg = d3.select("#speedometer")
+		  .append("svg:svg")
+		  .attr("width",500)
+		  .attr("height",400);
+
+	      var gauge = iopctrl.arcslider()
+		  .radius(200)
+		  .events(false)
+		  .indicator(iopctrl.defaultGaugeIndicator);
+	      gauge.axis().orient("in")
+		  .normalize(true)
+		  .ticks(10)
+		  .tickSubdivide(5)
+		  .tickSize(20, 8, 10)
+		  .tickPadding(5)
+		  .scale(d3.scale.linear()
+			 .domain([28, 31])
+			 .range([-3*Math.PI/4, 3*Math.PI/4]));
+
+	      var segDisplay = iopctrl.segdisplay()
+		  .width(300)
+		  .digitCount(12)
+		  .negative(false)
+		  .decimals(3);
+
+	      svg.append("g")
+		  .attr("class", "segdisplay")
+		  .attr("transform", "translate(100, 300)")
+		  .call(segDisplay);
+
+	      svg.append("g")
+		  .attr("class", "gauge")
+		  .call(gauge);
+
+	      getSpeed(gauge,segDisplay);
+	  });
+      </script>
+      <div>
+	Velocidad (km/s):
+	<span class="speed digclock" style="text-align:center;width:10em;margin-bottom:-1em">
+	  --
+	</span>
+        <span id="speedometer"></span>
+      </div>
+    </center>
+
+
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
@@ -387,15 +450,35 @@ echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="quehoraes">
     <h2 class="w3-text-light-grey">¿Qué hora es?</h2>
     <hr style="width:200px" class="w3-opacity">
+
     <p>
-      ¿Sabe usted a ciencia cierta qué hora es?.  
+      ¿Sabe usted a ciencia cierta qué hora es?.  Esta pregunta
+      aparentemente inocente tiene bastante profundidad en astronomía.
     </p>
 
-    Algunas de las horas dependen de la longitud geográfica en la que
-    te encuentras.  Si sabes tu longitud precisa indicala a
-    continuación (con solo cambiarla se actualizaran las horas abajo),
-    tu longitud geográfica: <input data-type="time" id="lon" type="text" name="lat"
-    value="-75.3" class="coordinput" onchange="getTimes(0)">
+    <p>
+      Para un relato didáctico sobre esta aparentemente sencilla
+      pregunta lea el
+      artículo <a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts/qu-hora-es-14889"
+      target="_blank">"¿Qué hora es?"</a>, entrada
+      del <a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts"
+      target="_blank">Blog Siderofilia</a> de
+      la <a href="http://www.investigacionyciencia.es/"
+      target="_blank">revista Investigación y Ciencia</a>.
+    </p>
+
+    <p>
+      Algunas de las horas dependen de la longitud geográfica en la
+      que te encuentras.  Si sabes tu longitud precisa indicala a
+      continuación (con solo cambiarla se actualizaran las horas
+      abajo).  Si no la conoces puedes buscarla
+      con <a href="http://www.whatsmygps.com"
+      target="_blank">http://www.whatsmygps.com</a>
+    </p>
+    <p>
+      Tu longitud geográfica: <input data-type="time" id="lon" type="text" name="lat"
+				     value="-75.3" class="coordinput" onchange="getTimes(0)">
+    </p>
 
     <center>
       <script>
@@ -763,6 +846,10 @@ echo<<<CONTENT
       <li><a name="bib:Zuluaga2016"></a><a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts/fin-de-ao-14837">¿Año
       Nuevo?</a>, Jorge I. Zuluaga, SciLogs de Investigación y
       Ciencia, Diciembre 29 de 2016.</li>
+
+      <li><a name="bib:Zuluaga2017"></a><a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts/qu-hora-es-14889">¿Qué
+      hora es?</a>, Jorge I. Zuluaga, SciLogs de Investigación y
+      Ciencia, Enero 5 de 2017.</li>
 
     </ol>
 

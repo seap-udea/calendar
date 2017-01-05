@@ -44,10 +44,18 @@ if(isset($action)){
   }
 
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  //PERIHELION DATE
+  //TIME
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if($action=="time"){
     $out=shell_exec("$PYTHON bin/time.py now 2> /tmp/a");
+    echo $out;
+  }
+
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  //TIME
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if($action=="speedometer"){
+    $out=shell_exec("$PYTHON bin/speedometer.py 2> /tmp/a");
     echo $out;
   }
     

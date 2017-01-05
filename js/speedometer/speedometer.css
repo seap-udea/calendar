@@ -15,7 +15,7 @@
 
 .gauge .tick line {
     stroke: #fff;
-    stroke-width: 2px;
+    stroke-width: 3px;
 }
 
 .gauge line {
@@ -36,7 +36,7 @@
 .gauge .indicator {
     stroke: #EE3311;
     fill: #000;
-    stroke-width: 4px;
+    stroke-width: 3px;
 }
 
 /* css formats for the segment display */

@@ -41,12 +41,24 @@ var LDELTAT=0;
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //CONFIGURATION
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//TIMES
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 //Time between updates
 var TIMEUPDATE=30;//Seconds
 //Refresh times
 var DELTAT=100;//Milliseconds
 //Maximum number of updates
 var MAXUPDATE=6;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//SPEED
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+var UPDATE_TIME=0;
+var TIMEOUT_TIME=0;
+var DELTAT_TIME=2000;
+var MAXUPDATE_TIME=10;
 
 ////////////////////////////////////////////////////////////////////////
 //ROUTINES
@@ -308,6 +320,23 @@ function getTimes(qrepeat=1){
 
 	    //UPDATE
 	    if(qrepeat) TIMEOUT=setTimeout(updateTime,DELTAT);
+	}
+    });
+}
+
+function getSpeed(gauge,display,qrepeat=1){
+    $.ajax({
+	url:'actions.php?action=speedometer',
+	success:function(result){
+	    var datos=JSON.parse(result);
+	    gauge.value(datos.speed);
+	    display.value(datos.distance);
+	    $(".speed").html(datos.speed);
+	    if(qrepeat) 
+		TIMEOUT_TIME=setTimeout(function(){getSpeed(gauge,display);},DELTAT_TIME);
+	    if(UPDATE_TIME>MAXUPDATE_TIME)
+		clearTimeout(TIMEOUT_TIME);
+ 	    UPDATE_TIME++;
 	}
     });
 }

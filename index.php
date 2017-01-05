@@ -44,7 +44,12 @@ if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
   <script src="js/flipclock/flipclock.js"></script>	
   <script src="js/calendar.js"></script>	
 
-  
+  <!-- Source: Source: http://bl.ocks.org/metormote/6392996 -->
+  <link rel="stylesheet" href="js/speedometer/speedometer.css" type="text/css">
+  <script type="text/javascript" src="js/speedometer/d3.v3.min.js"></script>
+  <script type="text/javascript" src="js/speedometer/pointerevents.js"></script>
+  <script type="text/javascript" src="js/speedometer/pointergestures.js"></script>
+  <script type="text/javascript" src="js/speedometer/iopctrl.js"></script>
 
 </head>
 

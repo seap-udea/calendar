@@ -10,6 +10,7 @@ else if(!isset($type)){$type="single";}
 if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
    $title="Astrotiempo (dev)";
    $lcolor="w3-red";
+   //$GANALYTICS="";
 }else{
    $title="Astrotiempo";
    $lcolor="";
@@ -59,6 +60,9 @@ if(isset($section)){
   <script type="text/javascript" src="js/speedometer/pointerevents.js"></script>
   <script type="text/javascript" src="js/speedometer/pointergestures.js"></script>
   <script type="text/javascript" src="js/speedometer/iopctrl.js"></script>
+  <script>
+  <?php echo $GANALYTICS ?>
+  </script>
 
 </head>
 

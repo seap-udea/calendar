@@ -34,6 +34,7 @@ if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
   <!-- Font awesome: http://fontawesome.io/icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Play:700,400" type="text/css">
   <link rel="stylesheet" href="css/calendar.css">
 
   <link rel="stylesheet" href="js/flipclock/flipclock.large.css">
@@ -42,6 +43,8 @@ if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
   <script src="js/jquery.js"></script>
   <script src="js/flipclock/flipclock.js"></script>	
   <script src="js/calendar.js"></script>	
+
+  
 
 </head>
 

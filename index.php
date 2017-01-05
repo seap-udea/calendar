@@ -14,6 +14,15 @@ if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
    $title="Astrotiempo";
    $lcolor="";
 }
+if(isset($section)){
+  if(preg_match("/-tag:/",$section)){
+    $parts=preg_split("/-/",$section);
+    $section=$parts[0];
+    $parts=preg_split("/:/",$parts[1]);
+    $tag=$parts[1];
+    header("Refresh:0;url=?section=$section#$tag");
+ }
+}
 ?>
 
 <html>
@@ -222,6 +231,10 @@ CONTENT;
 }if($type=="single" or $section=="finano"){ 
   $fblink=facebookLink("http://astronomia-udea.co/calendar?section=finano");
   $tlink=twitterLink("http://astronomia-udea.co/calendar?section=finano","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge");
+
+  $fblink_vel=facebookLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer");
+  $tlink_vel=twitterLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer","¿Cuál es la velocidad y la distancia de la Tierra en este momento? El velocimetro de la Tierra","zuluagajorge");
+
 echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="finano">
     <h2 class="w3-text-light-grey">¿Fin de año?</h2>
@@ -371,7 +384,8 @@ echo<<<CONTENT
 	distancia esta del Sol?.  Con este instrumento virtual podrás
 	saberlo.  Los valores de la velocidad están en kilómetros por
 	segundo, mientras que la distancia mostrada en la pantalla
-	esta en kilómetros.
+	esta en kilómetros.  Los valores se actualizan solo durante un
+	minuto.  Para seguirlos actualizando actualice la página (CTRL+L).
     </p>
 
     <center>
@@ -420,6 +434,13 @@ echo<<<CONTENT
 	  --
 	</span>
         <span id="speedometer"></span>
+	<br/>
+	<div class="w3-text-grey w3-xlarge w3-center">
+	  <div id="fb-root"></div>
+	  $fblink_vel
+	  $tlink_vel
+	</div>
+	<span class="w3-text-gray w3-large" style="font-family:courier">http://bit.ly/astrotiempo-velocidad</span>
       </div>
     </center>
 

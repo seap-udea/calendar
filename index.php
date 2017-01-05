@@ -10,7 +10,7 @@ else if(!isset($type)){$type="single";}
 if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
    $title="Astrotiempo (dev)";
    $lcolor="w3-red";
-   //$GANALYTICS="";
+   $GANALYTICS="";
 }else{
    $title="Astrotiempo";
    $lcolor="";

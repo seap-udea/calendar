@@ -189,6 +189,7 @@ echo<<<CONTENT
       $fblink
       $tlink
     </div>
+    <span class="w3-text-gray w3-large" style="font-family:courier">http://bit.ly/astrotiempo-perihelio</span>
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
@@ -273,6 +274,7 @@ echo<<<CONTENT
   
     <div id="clock" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;">
       <span id="perihelion-time" class="w3-hide"></span>
+      <a name="perihelio"></a>
       <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelion-date"></span>:</span>
       <br><br/>
       
@@ -288,6 +290,7 @@ echo<<<CONTENT
 	$fblink
 	$tlink
       </div>
+      <span class="w3-text-gray w3-large" style="font-family:courier">http://bit.ly/astrotiempo-perihelio</span>
     </div>
 
     <p>

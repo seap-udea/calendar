@@ -230,8 +230,8 @@ echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
 CONTENT;
 }if($type=="single" or $section=="finano"){ 
-  $fblink=facebookLink("http://astronomia-udea.co/calendar?section=finano");
-  $tlink=twitterLink("http://astronomia-udea.co/calendar?section=finano","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge");
+  $fblink=facebookLink("http://astronomia-udea.co/calendar?section=finano-tag:perihelio");
+  $tlink=twitterLink("http://astronomia-udea.co/calendar?section=finano-tag:perihelio","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge");
 
   $fblink_vel=facebookLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer");
   $tlink_vel=twitterLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer","¿Cuál es la velocidad y la distancia de la Tierra en este momento? El velocimetro de la Tierra","zuluagajorge");

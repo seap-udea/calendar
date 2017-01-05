@@ -225,7 +225,49 @@ echo<<<CONTENT
       tampoco tendría por qué seguir siéndolo.
     </p>
 
-    <center><img src="img/FelizAno.png" width="60%"></img></center>
+    <script>
+      $(document).ready(function() {
+	  //DATE
+	  var fecha=new Date();
+	  var year=fecha.getFullYear();
+	  var pyear=year-1;
+	  var nyear=year+1;
+
+	  $.ajax({
+	    url:'actions.php?action=perihelia&year='+pyear,
+		success:function(result){
+		$('#perihelia-table').html(result);
+	      }
+	    });
+	  
+	  $.ajax({
+	    url:'actions.php?action=perihelion',
+		success:function(result){
+		$('#perihelion-time').html(result);
+		perihelionCounter('clock-ano');
+	      }
+	    });
+	});
+    </script>
+  
+    <div id="clock" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;">
+      <span id="perihelion-time" class="w3-hide"></span>
+      <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelion-date"></span>:</span>
+      <br><br/>
+      
+      <div class="clock-ano" style="border:solid white 0px;"></div>
+      <div class="clock-end w3-xxlarge" style="display:none">
+	<i class="fa fa-star fa-spin"></i>
+	¡Feliz Perihelio 2017!
+	<i class="fa fa-star fa-spin"></i>
+      </div>
+      
+      <div class="w3-text-grey w3-xlarge w3-center">
+	<div id="fb-root"></div>
+	$fblink
+	$tlink
+      </div>
+    </div>
 
     <p>
       La definición del día de año nuevo es bastante arbitraria. Por
@@ -236,6 +278,8 @@ echo<<<CONTENT
       Lamentablemente, en casi ningún caso el día del fin e inicio de
       año se basa en fenómenos astronómicos.
     </p>
+
+    <center><img src="img/FelizAno.png" width="60%"></img></center>
 
     <p>
       En occidente el fin de año corresponde al último día del mes de
@@ -299,50 +343,6 @@ echo<<<CONTENT
       perihelio. 
     </p>
     
-    <script>
-      $(document).ready(function() {
-	  //DATE
-	  var fecha=new Date();
-	  var year=fecha.getFullYear();
-	  var pyear=year-1;
-	  var nyear=year+1;
-
-	  $.ajax({
-	    url:'actions.php?action=perihelia&year='+pyear,
-		success:function(result){
-		$('#perihelia-table').html(result);
-	      }
-	    });
-	  
-	  $.ajax({
-	    url:'actions.php?action=perihelion',
-		success:function(result){
-		$('#perihelion-time').html(result);
-		perihelionCounter('clock-ano');
-	      }
-	    });
-	});
-    </script>
-  
-    <div id="clock" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;">
-      <span id="perihelion-time" class="w3-hide"></span>
-      <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelion-date"></span>:</span>
-      <br><br/>
-      
-      <div class="clock-ano" style="border:solid white 0px;"></div>
-      <div class="clock-end w3-xxlarge" style="display:none">
-	<i class="fa fa-star fa-spin"></i>
-	¡Feliz Perihelio 2017!
-	<i class="fa fa-star fa-spin"></i>
-      </div>
-      
-      <div class="w3-text-grey w3-xlarge w3-center">
-	<div id="fb-root"></div>
-	$fblink
-	$tlink
-      </div>
-    </div>
-
     <p>
       Para una reflexión más completa (y en un tono más informal) lea
       el

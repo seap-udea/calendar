@@ -9,10 +9,10 @@ if(isset($section)){$type="multiple";}
 else if(!isset($type)){$type="single";}
 if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
    $title="Astrotiempo (dev)";
-   $lcolor="red";
+   $lcolor="w3-red";
 }else{
    $title="Astrotiempo";
-   $lcolor="black";
+   $lcolor="";
 }
 ?>
 
@@ -53,7 +53,7 @@ if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
 <!-- Icon Bar (Sidenav - hidden on small screens) -->
 <nav class="w3-sidenav w3-center w3-small w3-hide-small" style="width:120px">
 
-  <a href="?"><img class="w3-hide-small w3-<?php echo $lcolor?>" src="img/LogoSimbolo.png" width="80%"></a>
+  <a href="?"><img class="w3-hide-small <?php echo $lcolor?>" src="img/LogoSimbolo.png" width="80%"></a>
   
   <a class="w3-padding-large w3-black" href="<?php echo ilink('home',$type)?>">
     <i class="fa fa-home w3-xxlarge"></i>

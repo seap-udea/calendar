@@ -496,7 +496,6 @@ iopctrl = function() {
                     .endAngle(_range[1])
                     .innerRadius(arcFactor * radius)
                     .outerRadius(radius);
-
                 arcUpdate.append("path")
                     .attr("class", "cursor")
                     .attr("d", _cursorArc);

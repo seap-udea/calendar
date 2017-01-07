@@ -432,14 +432,15 @@ echo<<<CONTENT
 		  .attr("class", "gauge")
 		  .call(gauge);
 
+	      DV_TIME=0;
 	      getSpeed(gauge,segDisplay);
 	  });
       </script>
       <div>
 	Velocidad (km/s):
-	<span class="speed digclock" style="text-align:center;width:10em;margin-bottom:-1em">
-	  --
-	</span>
+	<span class="speed digclock" style="text-align:center;width:10em;margin-bottom:-1em">--</span>
+	  <!--Distancia al Sol (km):
+	      <span class="distance digclock" style="text-align:center;width:10em;margin-bottom:-1em">--</span>-->
         <span id="speedometer"></span>
 	<br/>
 	<div class="w3-text-grey w3-xlarge w3-center">

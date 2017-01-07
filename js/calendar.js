@@ -58,7 +58,9 @@ var MAXUPDATE=6;
 var UPDATE_TIME=0;
 var TIMEOUT_TIME=0;
 var DELTAT_TIME=2000;
-var MAXUPDATE_TIME=10;
+var MAXUPDATE_TIME=30;
+var DV_TIME=0;
+var OV_TIME=0;
 
 ////////////////////////////////////////////////////////////////////////
 //ROUTINES
@@ -328,12 +330,21 @@ function getSpeed(gauge,display,qrepeat=1){
     $.ajax({
 	url:'actions.php?action=speedometer',
 	success:function(result){
+	    var sign=0;
 	    var datos=JSON.parse(result);
-	    gauge.value(datos.speed);
+	    gauge.value(parseFloat(datos.speed)+DV_TIME);
 	    display.value(datos.distance);
 	    $(".speed").html(datos.speed);
-	    if(qrepeat) 
+	    //$(".distance").html(datos.distance);
+	    if(qrepeat){
+
 		TIMEOUT_TIME=setTimeout(function(){getSpeed(gauge,display);},DELTAT_TIME);
+		if(OV_TIME>0){
+		    sign=Math.sign(parseFloat(datos.speed)-OV_TIME);
+		}
+		DV_TIME+=0.003*sign;
+		OV_TIME=parseFloat(datos.speed);
+	    }
 	    if(UPDATE_TIME>MAXUPDATE_TIME)
 		clearTimeout(TIMEOUT_TIME);
  	    UPDATE_TIME++;

@@ -819,6 +819,15 @@ CONTENT;
 
 echo<<<CONTENT
 
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="faseslunares">
+    <h2 class="w3-text-light-grey">Fases lunares</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>
+      La Luna es la base de la medida del tiempo a mediano y largo
+      plazo en casi todas las culturas del planeta.  Por eso, al
+      hablar del tiempo, es inevitable referirse a ella
+    </p>
+
     <div class="w3-center">
       <h3 class="w3-large">
 	<a name="luna_ahora">
@@ -859,15 +868,6 @@ echo<<<CONTENT
 	});
       </script>
     </div>
-
-  <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="faseslunares">
-    <h2 class="w3-text-light-grey">Fases lunares</h2>
-    <hr style="width:200px" class="w3-opacity">
-    <p>
-      La Luna es la base de la medida del tiempo a mediano y largo
-      plazo en casi todas las culturas del planeta.  Por eso, al
-      hablar del tiempo, es inevitable referirse a ella
-    </p>
 
     <h4>
     <a name="proximos_cuartos">

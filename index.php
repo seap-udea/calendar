@@ -809,8 +809,8 @@ echo<<<CONTENT
 CONTENT;
 }if($type=="single" or $section=="faseslunares"){ 
 
-  $fblink_vel_luna=facebookLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer-luna");
-  $tlink_vel_luna=twitterLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer-luna","¿Cuál es la velocidad y la distancia de la Luna en este momento? El velocímetro de la Luna","zuluagajorge");
+  $fblink_vel_luna=facebookLink("http://astronomia-udea.co/calendar?section=faseslunases-tag:speedometer_luna");
+  $tlink_vel_luna=twitterLink("http://astronomia-udea.co/calendar?section=faseslunares-tag:speedometer_luna","¿Cuál es la velocidad y la distancia de la Luna en este momento? El velocímetro de la Luna","zuluagajorge");
 
 echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="faseslunares">
@@ -845,7 +845,7 @@ echo<<<CONTENT
       </script>
     </div>
 
-  <a name="speedometer-luna">
+  <a name="speedometer_luna">
     <span class="w3-text-white w3-large">El velocímetro de la Luna</span>      
   </a>
     

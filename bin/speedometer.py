@@ -1,12 +1,18 @@
 #-*- coding:utf-8 -*-
 from astrotiempo import *
 
+try:
+    target=argv[1]
+    center=argv[2]
+except:
+    target="EARTH"
+    center="SUN"
+
 today=dt.datetime.utcnow()
 sdate=today.strftime("%m/%d/%y %H:%M:%S UTC")
-#sdate=today.strftime("01/03/2016 19:00:00 UTC")
 et=spy.str2et(sdate)
 
-state=stateBody(et,EARTH,SUN)
+state=eval("stateBody(et,%s,%s)"%(target,center))
 r=state[:3]
 v=state[3:]
 

@@ -55,7 +55,16 @@ if(isset($action)){
   //TIME
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if($action=="speedometer"){
-    $out=shell_exec("$PYTHON bin/speedometer.py 2> /tmp/a");
+    $out=shell_exec("$PYTHON bin/speedometer.py $object $center 2> /tmp/a");
+    echo $out;
+  }
+
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  //LUNA
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if($action=="luna"){
+    $cmd="$PYTHON bin/luna.py $modo '$fecha' 2> /tmp/luna";
+    $out=shell_exec($cmd);
     echo $out;
   }
     

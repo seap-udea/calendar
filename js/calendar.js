@@ -61,6 +61,7 @@ var DELTAT_TIME=2000;
 var MAXUPDATE_TIME=30;
 var DV_TIME=0;
 var OV_TIME=0;
+var FAC_TIME=0.003;
 
 ////////////////////////////////////////////////////////////////////////
 //ROUTINES
@@ -326,23 +327,22 @@ function getTimes(qrepeat=1){
     });
 }
 
-function getSpeed(gauge,display,qrepeat=1){
+function getSpeed(gauge,display,object='EARTH',center='SUN',factorv=1,qrepeat=1){
+
     $.ajax({
-	url:'actions.php?action=speedometer',
+	url:'actions.php?action=speedometer&object='+object+'&center='+center,
 	success:function(result){
 	    var sign=0;
 	    var datos=JSON.parse(result);
-	    gauge.value(parseFloat(datos.speed)+DV_TIME);
+	    gauge.value((parseFloat(datos.speed)+DV_TIME)*factorv);
 	    display.value(datos.distance);
-	    $(".speed").html(datos.speed);
-	    //$(".distance").html(datos.distance);
+	    $('#speed-'+object).html(Math.round10(parseFloat(datos.speed)*factorv,-8));
 	    if(qrepeat){
-
-		TIMEOUT_TIME=setTimeout(function(){getSpeed(gauge,display);},DELTAT_TIME);
+		TIMEOUT_TIME=setTimeout(function(){getSpeed(gauge,display,object,center,factorv);},DELTAT_TIME);
 		if(OV_TIME>0){
 		    sign=Math.sign(parseFloat(datos.speed)-OV_TIME);
 		}
-		DV_TIME+=0.003*sign;
+		DV_TIME+=FAC_TIME*sign;
 		OV_TIME=parseFloat(datos.speed);
 	    }
 	    if(UPDATE_TIME>MAXUPDATE_TIME)
@@ -350,6 +350,49 @@ function getSpeed(gauge,display,qrepeat=1){
  	    UPDATE_TIME++;
 	}
     });
+}
+
+function updateMoon(modo='now',fecha='')
+{
+    if(fecha){
+	var dfecha=new Date(fecha)
+	var mes=dfecha.getUTCMonth()+1;
+	fecha=mes+'/'+dfecha.getUTCDate()+'/'+dfecha.getUTCFullYear()+' '+dfecha.getUTCHours()+':'+dfecha.getUTCMinutes()+':'+dfecha.getUTCSeconds();
+    }
+
+    url=encodeURI('actions.php?action=luna&modo='+modo+'&fecha='+fecha);
+    console.log(url);
+    $.ajax({
+	url:url,
+	success:function(result){
+	    console.log(result);
+	    var luna=JSON.parse(result);
+	    $('.luna-image').attr("src",luna.url);
+	    $('.luna-image').ready(function(){
+		$('.luna-wait').hide();
+		$('.luna-image').show();
+		$('#luna').css("line-height","0px");
+		$('#luna-phase').html(luna.phase);
+		$('#luna-age').html(luna.age);
+	    });
+	}
+    });
+}
+
+function changeDate(fecha)
+{
+    $('.luna-image').hide();
+    $('#luna').css("line-height","400px");
+    $('.luna-wait').show();
+    updateMoon('manual',fecha);
+}
+
+function setDate()
+{
+    var fecha=new Date();
+    var mes=fecha.getMonth()+1;
+    var fechastr=mes+'/'+fecha.getDate()+'/'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()+':'+fecha.getSeconds();
+    $('#luna-fecha').val(fechastr);
 }
 
 ////////////////////////////////////////////////////////////////////////

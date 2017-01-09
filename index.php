@@ -91,19 +91,19 @@ if(isset($section)){
     <p>¿QUÉ HORA ES?</p>
   </a>
 
-  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('estaciones',$type)?>">
+  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('faseslunares',$type)?>">
+    <i class="fa fa-moon-o w3-xxlarge"></i>
+    <p>FASES LUNARES</p>
+  </a>
+
+  <a class="w3-padding-large w3-hover-black w3-text-gray" href="<?php echo ilink('estaciones',$type)?>">
     <i class="fa fa-snowflake-o fa-spin w3-xxlarge"></i>
     <p>ESTACIONES</p>
   </a>
 
-  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('tiemposolar',$type)?>">
+  <a class="w3-padding-large w3-hover-black w3-text-gray" href="<?php echo ilink('tiemposolar',$type)?>">
     <i class="fa fa-sun-o fa-spin w3-xxlarge"></i>
     <p>TIEMPO SOLAR</p>
-  </a>
-
-  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('faseslunares',$type)?>">
-    <i class="fa fa-moon-o w3-xxlarge"></i>
-    <p>FASES LUNARES</p>
   </a>
 
   <a class="w3-padding-large w3-hover-black" href="#sabermas">
@@ -437,10 +437,8 @@ echo<<<CONTENT
 	  });
       </script>
       <div>
-	Velocidad (km/s):
-	<span class="speed digclock" style="text-align:center;width:10em;margin-bottom:-1em">--</span>
-	  <!--Distancia al Sol (km):
-	      <span class="distance digclock" style="text-align:center;width:10em;margin-bottom:-1em">--</span>-->
+	Velocidad de la Tierra (km/s):
+	<span id="speed-EARTH" class="digclock" style="text-align:center;width:10em;margin-bottom:-1em">--</span>
         <span id="speedometer"></span>
 	<br/>
 	<div class="w3-text-grey w3-xlarge w3-center">
@@ -806,6 +804,119 @@ echo<<<CONTENT
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <!-- FASES LUNARES -->
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+CONTENT;
+}if($type=="single" or $section=="faseslunares"){ 
+
+  $fblink_vel_luna=facebookLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer-luna");
+  $tlink_vel_luna=twitterLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer-luna","¿Cuál es la velocidad y la distancia de la Luna en este momento? El velocímetro de la Luna","zuluagajorge");
+
+echo<<<CONTENT
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="faseslunares">
+    <h2 class="w3-text-light-grey">Fases lunares</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>
+      La Luna es la base de la medida del tiempo a mediano y largo
+      plazo en casi todas las culturas del planeta.  Por eso, al
+      hablar del tiempo, es inevitable referirse a ella
+    </p>
+    <div class="w3-center">
+      <h3 class="w3-large">La luna ahora mismo</h3>
+      <div id="luna" style="width:400px;line-height:400px;margin:auto">
+	<i class="fa fa-snowflake-o w3-jumbo fa-spin luna-wait"></i>
+	<img class="luna-image" src="" width="100%" style="display:none"/>
+      </div>
+      <p>
+	Fase: <span id="luna-phase">--</span>, 
+	Edad: <span id="luna-age">--</span>
+      </p>
+      <p>
+	Cambie la fecha (hora en tiempo local):
+	<input id="luna-fecha" type="text" name="fecha" value="01/01/2011 00:00:00" 
+	       onchange="changeDate($(this).val())">
+	(<a href="JavaScript:void(null)" onclick="setDate();updateMoon()">ahora</a>)
+      </p>
+      <script>
+	$(document).ready(function(){
+	    setDate();
+	    updateMoon();
+	});
+      </script>
+    </div>
+
+  <a name="speedometer-luna">
+    <span class="w3-text-white w3-large">El velocímetro de la Luna</span>      
+  </a>
+    
+  <p >
+    ¿Sabes a qué velocidad viaja la Luna a esta hora? ¿a qué distancia
+    esta de la Tierra?.  Con este instrumento virtual podrás saberlo.
+    Los valores de la velocidad están en kilómetros por hora,
+    mientras que la distancia mostrada en la pantalla esta en
+    kilómetros.  Los valores se actualizan solo durante un minuto.
+    Para seguirlos viendo cambiar en tiempo real actualice la página (CTRL+L).
+  </p>
+  
+    <center>
+      <script>
+	  $(document).ready(function() {
+	      var svgLuna = d3.select("#speedometer-luna")
+		  .append("svg:svg")
+		  .attr("width",500)
+		  .attr("height",400);
+
+	      var gaugeLuna = iopctrl.arcslider()
+		  .radius(200)
+		  .events(false)
+		  .indicator(iopctrl.defaultGaugeIndicator);
+
+	      gaugeLuna.axis().orient("in")
+		  .normalize(true)
+		  .ticks(10)
+		  .tickSubdivide(4)
+		  .tickSize(20, 8, 10)
+		  .tickPadding(5)
+		  .scale(d3.scale.linear()
+			 .domain([3500, 4000])
+			 .range([-3*Math.PI/4, 3*Math.PI/4]));
+
+	      var segDisplayLuna = iopctrl.segdisplay()
+		  .width(200)
+		  .digitCount(10)
+		  .negative(false)
+		  .decimals(3);
+
+	      svgLuna.append("g")
+		  .attr("class", "segdisplay")
+		  .attr("transform", "translate(150, 300)")
+		  .call(segDisplayLuna);
+
+	      svgLuna.append("g")
+		  .attr("class", "gauge")
+		  .call(gaugeLuna);
+
+	      DV_TIME=0;
+	      FAC_TIME=1e-4;
+	      getSpeed(gaugeLuna,segDisplayLuna,"MOON","EARTH",3600);
+	  });
+      </script>
+      <div>
+	Velocidad de la Luna (km/h):
+	<span id="speed-MOON" class="digclock" style="text-align:center;width:10em;margin-bottom:-1em">--</span>
+        <span id="speedometer-luna"></span>
+	<br/>
+	<div class="w3-text-grey w3-xlarge w3-center">
+	  <div id="fb-root"></div>
+	  $fblink_vel_luna
+	  $tlink_vel_luna
+	</div>
+	<span class="w3-text-gray w3-large" style="font-family:courier">http://bit.ly/astrotiempo-velocidad-luna</span>
+      </div>
+    </center>
+  </div>
+
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- ESTACIONES -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
 CONTENT;
@@ -834,18 +945,8 @@ echo<<<CONTENT
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
-  <!-- FASES LUNARES -->
+  <!-- END -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
-CONTENT;
-}if($type=="single" or $section=="faseslunares"){ 
-echo<<<CONTENT
-  <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="faseslunares">
-    <h2 class="w3-text-light-grey">Fases lunares</h2>
-    <hr style="width:200px" class="w3-opacity">
-    <p>
-      $MENATWORK
-    </p>
-  </div>
 
 CONTENT;
 }

@@ -446,7 +446,8 @@ echo<<<CONTENT
 	  $fblink_vel
 	  $tlink_vel
 	</div>
-	<span class="w3-text-gray w3-large" style="font-family:courier">http://bit.ly/astrotiempo-velocidad</span>
+	<span class="w3-text-gray w3-large"
+	style="font-family:courier"><a href="http://bit.ly/astrotiempo-velocimetro-tierra">http://bit.ly/astrotiempo-velocimetro-tierra</a></span>
       </div>
     </center>
 
@@ -822,7 +823,18 @@ echo<<<CONTENT
       hablar del tiempo, es inevitable referirse a ella
     </p>
     <div class="w3-center">
-      <h3 class="w3-large">La luna ahora mismo</h3>
+      <h3 class="w3-large">
+	La luna <a href="JavaScript:void(null)"
+	       onclick="setDate();updateMoon()">ahora</a>
+	<br/>
+	<input id="luna-fecha" type="text"
+	       name="fecha" value="01/01/2011 00:00:00"
+	       style="text-align:center;background:black;color:gray;border:none"
+	       onchange="changeDate($(this).val())"
+	       onhover="">
+	<i class="fa fa-hand-o-left"></i>
+      </h3>
+
       <div id="luna" style="width:400px;line-height:400px;margin:auto">
 	<i class="fa fa-snowflake-o w3-jumbo fa-spin luna-wait"></i>
 	<img class="luna-image" src="" width="100%" style="display:none"/>
@@ -830,12 +842,6 @@ echo<<<CONTENT
       <p>
 	Fase: <span id="luna-phase">--</span>, 
 	Edad: <span id="luna-age">--</span>
-      </p>
-      <p>
-	Cambie la fecha (hora en tiempo local):
-	<input id="luna-fecha" type="text" name="fecha" value="01/01/2011 00:00:00" 
-	       onchange="changeDate($(this).val())">
-	(<a href="JavaScript:void(null)" onclick="setDate();updateMoon()">ahora</a>)
       </p>
       <script>
 	$(document).ready(function(){
@@ -911,7 +917,7 @@ echo<<<CONTENT
 	  $fblink_vel_luna
 	  $tlink_vel_luna
 	</div>
-	<span class="w3-text-gray w3-large" style="font-family:courier">http://bit.ly/astrotiempo-velocidad-luna</span>
+	<span class="w3-text-gray w3-large" style="font-family:courier"><a href="http://bit.ly/astrotiempo-velocidad-luna">http://bit.ly/astrotiempo-velocimetro-luna</a></span>
       </div>
     </center>
   </div>

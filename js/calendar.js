@@ -38,6 +38,9 @@ var INIDATE=0;
 var TIMEOUT=0;
 var LDELTAT=0;
 
+var QTYPES=["Luna Nueva","Cuarto Creciente","Luna Llena","Cuarto Menguante"];
+var QIMAGES=["NewMoon.jpg","FirstQuarter.jpg","FullMoon.jpg","ThirdQuarter.jpg"]
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //CONFIGURATION
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -352,14 +355,21 @@ function getSpeed(gauge,display,object='EARTH',center='SUN',factorv=1,qrepeat=1)
     });
 }
 
-function updateMoon(modo='now',fecha='')
+function updateMoon(modo='now',fecha='',tfecha='local')
 {
     if(fecha){
-	var dfecha=new Date(fecha)
-	var mes=dfecha.getUTCMonth()+1;
-	fecha=mes+'/'+dfecha.getUTCDate()+'/'+dfecha.getUTCFullYear()+' '+dfecha.getUTCHours()+':'+dfecha.getUTCMinutes()+':'+dfecha.getUTCSeconds();
+	if(tfecha=='local'){
+	    var dfecha=new Date(fecha);
+	    var mes=dfecha.getUTCMonth()+1;
+	    fecha=mes+'/'+dfecha.getUTCDate()+'/'+dfecha.getUTCFullYear()+' '+dfecha.getUTCHours()+':'+dfecha.getUTCMinutes()+':'+dfecha.getUTCSeconds();
+	}else{
+	    var dfecha=new Date(fecha);
+	    dfecha.setHours(dfecha.getHours()+TZ);
+	    console.log("Fecha:"+dfecha);
+	    var mes=dfecha.getUTCMonth()+1;
+	    fecha=mes+'/'+dfecha.getUTCDate()+'/'+dfecha.getUTCFullYear()+' '+dfecha.getUTCHours()+':'+dfecha.getUTCMinutes()+':'+dfecha.getUTCSeconds();
+	}	
     }
-
     url=encodeURI('actions.php?action=luna&modo='+modo+'&fecha='+fecha);
     console.log(url);
     $.ajax({
@@ -367,24 +377,64 @@ function updateMoon(modo='now',fecha='')
 	success:function(result){
 	    console.log(result);
 	    var luna=JSON.parse(result);
-	    $('.luna-image').attr("src",luna.url);
-	    $('.luna-image').ready(function(){
-		$('.luna-wait').hide();
-		$('.luna-image').show();
+	    $('#luna-image').attr("src",luna.url);
+	    $('#luna-url').attr("href",luna.url);
+	    $('#luna-image').ready(function(){
+		$('#luna-wait').hide();
+		$('#luna-image').show();
 		$('#luna').css("line-height","0px");
 		$('#luna-phase').html(luna.phase);
 		$('#luna-age').html(luna.age);
+		$('#luna-error').html(luna.error);
 	    });
 	}
     });
 }
 
-function changeDate(fecha)
+function updateMoonCrateres(modo='now',fecha='')
 {
-    $('.luna-image').hide();
+    if(fecha){
+	var dfecha=new Date(fecha)
+	var mes=dfecha.getUTCMonth()+1;
+	fecha=mes+'/'+dfecha.getUTCDate()+'/'+dfecha.getUTCFullYear()+' '+dfecha.getUTCHours()+':'+dfecha.getUTCMinutes()+':'+dfecha.getUTCSeconds();
+    }
+
+    url=encodeURI('actions.php?action=crateres&modo='+modo+'&fecha='+fecha);
+    console.log(url);
+    $.ajax({
+	url:url,
+	success:function(result){
+	    var d=new Date()
+	    console.log(result);
+	    var luna=JSON.parse(result);
+	    var image=luna.image+"?"+d.getTime()
+	    console.log(image);
+	    $('#luna-crateres-image').attr("src",image);
+	    $('#luna-crateres-url').attr("href",luna.image);
+	    $('#luna-crateres-image').ready(function(){
+		$('#luna-crateres-wait').hide();
+		$('#luna-crateres-image').show();
+		$('#luna-crateres').css("width","100%");
+		$('#luna-crateres').css("line-height","0px");
+	    });
+	}
+    });
+}
+
+function changeDate(fecha,tfecha='local')
+{
+    $('#luna-image').hide();
     $('#luna').css("line-height","400px");
-    $('.luna-wait').show();
-    updateMoon('manual',fecha);
+    $('#luna-wait').show();
+    updateMoon('manual',fecha,tfecha);
+}
+
+function changeDateCrateres(fecha)
+{
+    $('#luna-crateres-image').hide();
+    $('#luna-crateres').css("line-height","400px");
+    $('#luna-crateres-wait').show();
+    updateMoonCrateres('manual',fecha);
 }
 
 function setDate()
@@ -392,7 +442,37 @@ function setDate()
     var fecha=new Date();
     var mes=fecha.getMonth()+1;
     var fechastr=mes+'/'+fecha.getDate()+'/'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()+':'+fecha.getSeconds();
-    $('#luna-fecha').val(fechastr);
+    $('.luna-fecha').val(fechastr);
+}
+
+function updateQuarters(modo='now',fecha='')
+{
+    if(fecha){
+	var dfecha=new Date(fecha)
+	var mes=dfecha.getUTCMonth()+1;
+	fecha=mes+'/'+dfecha.getUTCDate()+'/'+dfecha.getUTCFullYear()+' '+dfecha.getUTCHours()+':'+dfecha.getUTCMinutes()+':'+dfecha.getUTCSeconds();
+    }
+    url=encodeURI('actions.php?action=phases&modo='+modo+'&fecha='+fecha);
+    console.log(url);
+    $.ajax({
+	url:url,
+	success:function(result){
+	    console.log(result);
+	    var phases=JSON.parse(result);
+	    for(var i=0;i<4;i++){
+		iq=i+1;
+		var fecha=phases.dates[i];
+		$('#quarter'+iq+'-date').html(fecha);
+		$('#quarter'+iq+'-name').html(QTYPES[phases.types[i]]);
+		var $image=$('#quarter'+iq+'-image')
+		$image.attr("src","img/"+QIMAGES[phases.types[i]]);
+		$image.show();
+		$('#quarter'+iq+'-url').attr("onclick","$('.luna-fecha').val('"+fecha+"');changeDate('"+fecha+"','UTC')");
+	    }
+	    $('.quarter-wait').hide();
+	}
+    });
+    
 }
 
 ////////////////////////////////////////////////////////////////////////

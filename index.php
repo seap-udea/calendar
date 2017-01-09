@@ -11,6 +11,7 @@ if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
    $title="Astrotiempo (dev)";
    $lcolor="w3-red";
    $GANALYTICS="";
+    echo "Session: $SESSID";
 }else{
    $title="Astrotiempo";
    $lcolor="";
@@ -810,24 +811,22 @@ echo<<<CONTENT
 CONTENT;
 }if($type=="single" or $section=="faseslunares"){ 
 
+  $fblink_luna=facebookLink("http://astronomia-udea.co/calendar?section=faseslunases-tag:luna_ahora");
+  $tlink_luna=twitterLink("http://astronomia-udea.co/calendar?section=faseslunares-tag:luna_ahora","¿Cómo se esta viendo la luna justo en este momento?","zuluagajorge");
+
   $fblink_vel_luna=facebookLink("http://astronomia-udea.co/calendar?section=faseslunases-tag:speedometer_luna");
   $tlink_vel_luna=twitterLink("http://astronomia-udea.co/calendar?section=faseslunares-tag:speedometer_luna","¿Cuál es la velocidad y la distancia de la Luna en este momento? El velocímetro de la Luna","zuluagajorge");
 
 echo<<<CONTENT
-  <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="faseslunares">
-    <h2 class="w3-text-light-grey">Fases lunares</h2>
-    <hr style="width:200px" class="w3-opacity">
-    <p>
-      La Luna es la base de la medida del tiempo a mediano y largo
-      plazo en casi todas las culturas del planeta.  Por eso, al
-      hablar del tiempo, es inevitable referirse a ella
-    </p>
+
     <div class="w3-center">
       <h3 class="w3-large">
+	<a name="luna_ahora">
 	La luna <a href="JavaScript:void(null)"
 	       onclick="setDate();updateMoon()">ahora</a>
+	</a>
 	<br/>
-	<input id="luna-fecha" type="text"
+	<input class="luna-fecha" type="text"
 	       name="fecha" value="01/01/2011 00:00:00"
 	       style="text-align:center;background:black;color:gray;border:none"
 	       onchange="changeDate($(this).val())"
@@ -835,13 +834,23 @@ echo<<<CONTENT
 	<i class="fa fa-hand-o-left"></i>
       </h3>
 
-      <div id="luna" style="width:400px;line-height:400px;margin:auto">
-	<i class="fa fa-snowflake-o w3-jumbo fa-spin luna-wait"></i>
-	<img class="luna-image" src="" width="100%" style="display:none"/>
+      <div id="luna" style="width:400px;line-height:400px;margin:auto;text-align:center">
+	<i id="luna-wait" class="fa fa-snowflake-o w3-jumbo fa-spin"></i>
+	<a id="luna-url" href="">
+	<img id="luna-image" src="" width="100%" style="display:none"/>
+	</a>
+      </div>
+      <div class="w3-text-grey w3-xlarge w3-center">
+	<div id="fb-root"></div>
+	$fblink_luna
+	$tlink_luna
       </div>
       <p>
 	Fase: <span id="luna-phase">--</span>, 
 	Edad: <span id="luna-age">--</span>
+	<div style="font-size:0.8em">
+	  Error: <span id="luna-error">--</span>
+	</div>
       </p>
       <script>
 	$(document).ready(function(){
@@ -851,18 +860,183 @@ echo<<<CONTENT
       </script>
     </div>
 
-  <a name="speedometer_luna">
-    <span class="w3-text-white w3-large">El velocímetro de la Luna</span>      
-  </a>
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="faseslunares">
+    <h2 class="w3-text-light-grey">Fases lunares</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>
+      La Luna es la base de la medida del tiempo a mediano y largo
+      plazo en casi todas las culturas del planeta.  Por eso, al
+      hablar del tiempo, es inevitable referirse a ella
+    </p>
+
+    <h4>
+    <a name="proximos_cuartos">
+      <span class="w3-text-white w3-large">Próximos cuartos</span>      
+    </a>
+    </h4>
+
+    <p>
+      Los cuartos de fase lunar corresponden a condiciones especiales
+      de iluminación.  El cuarto inicial es la <i>luna nueva</i>
+      cuando la fracción de superficie iluminada que podemos ver es
+      despreciable (aproximadamente 0%).  El primer cuarto o <i>cuarto
+      creciente</i> corresponde a la situación en la cuál vemos el 50%
+      de la cara iluminada de la luna.  El segundo cuarto o <i>luna
+      llena</i> corresponde al instante en el que podemos ver casi
+      toda la cara visible de la Luna iluminada por el Sol.  Y el
+      tercer cuarto o <i>cuarto menguante</i> corresponde a una
+      situación similar a la del primer cuarto pero en la cual la
+      porción que estuvo a oscuras en ese cuarto esta ahora iluminada
+      y la que estuvo iluminada esta ahora oscura.
+    </p>
     
-  <p >
-    ¿Sabes a qué velocidad viaja la Luna a esta hora? ¿a qué distancia
-    esta de la Tierra?.  Con este instrumento virtual podrás saberlo.
-    Los valores de la velocidad están en kilómetros por hora,
-    mientras que la distancia mostrada en la pantalla esta en
-    kilómetros.  Los valores se actualizan solo durante un minuto.
-    Para seguirlos viendo cambiar en tiempo real actualice la página (CTRL+L).
-  </p>
+    <p>
+      A continuación encontrarás las fechas y horas exactas de los
+      próximos 4 cuartos (<i>período sinódico</i>).
+    </p>
+
+    <div class="w3-center">
+      <center>
+      <table width="500px" border="0px">
+
+	<tr>
+	  <td class="quarter-image">
+	    <a id="quarter1-url" href="#luna_ahora" onclick="">
+	      <div id="quarter1-image-container">
+		<img id="quarter1-image" src="" width="300px" style="display:none">
+		<i class="quarter-wait fa fa-snowflake-o w3-jumbo fa-spin"></i>
+	      </div>
+	    </a>
+	  </td>
+	  <td class="quarter-date">
+	    <span id="quarter1-name" style="font-size:1.2em">--</span><br/>
+	    <span id="quarter1-date" style="font-family:courier">--/--/----, --:--:--</span>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td class="quarter-image">
+	    <a id="quarter2-url" href="#luna_ahora" onclick="">
+	      <div id="quarter2-image-container">
+		<img id="quarter2-image" src="" width="300px" style="display:none">
+		<i class="quarter-wait fa fa-snowflake-o w3-jumbo fa-spin"></i>
+	      </div>
+	    </a>
+	  </td>
+	  <td class="quarter-date">
+	    <span id="quarter2-name" style="font-size:1.2em">--</span><br/>
+	    <span id="quarter2-date" style="font-family:courier">--/--/----, --:--:--</span>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td class="quarter-image">
+	    <a id="quarter3-url"  href="#luna_ahora" onclick="">
+	      <div id="quarter3-image-container">
+		<img id="quarter3-image" src="" width="300px" style="display:none">
+		<i class="quarter-wait fa fa-snowflake-o w3-jumbo fa-spin"></i>
+	      </div>
+	    </a>
+	  </td>
+	  <td class="quarter-date">
+	    <span id="quarter3-name" style="font-size:1.2em">--</span><br/>
+	    <span id="quarter3-date" style="font-family:courier">--/--/----, --:--:--</span>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td class="quarter-image">
+	    <a id="quarter4-url" href="#luna_ahora" onclick="">
+	      <div id="quarter4-image-container">
+		<img id="quarter4-image" src="" width="300px" style="display:none">
+		<i class="quarter-wait fa fa-snowflake-o w3-jumbo fa-spin"></i>
+	      </div>
+	    </a>
+	  </td>
+	  <td class="quarter-date">
+	    <span id="quarter4-name" style="font-size:1.2em">--</span><br/>
+	    <span id="quarter4-date" style="font-family:courier">--/--/----, --:--:--</span>
+	  </td>
+	</tr>
+
+      </table>
+      </center>
+
+      <script>
+	$(document).ready(function(){
+	    updateQuarters();
+	});
+      </script>
+
+    </div>
+
+
+
+    <a name="craters_luna">
+      <span class="w3-text-white w3-large">Identificación de cráteres</span>      
+    </a>
+
+    <p>
+      En los lugares que están cerca al denominado <i>terminador</i>
+      de la Luna, las sombras proyectadas por los cráteres, montañas y
+      otros accidentes topográficos lunares son mucho más largas que
+      en otras partes iluminadas de nuestro satélite.  Por esa misma
+      razón es mucho más interesante observar la luna en fases
+      diferentes a la llena, que muchos prefieren.
+    </p>
+
+    <p>
+      En la siguiente imagen encontrarás el nombre de los accidentes
+      lunares que se encuentran justo en el terminador lunar en este
+      instante (o en el instante que tu desees).  La imagen fue
+      preparada por el
+      <a href="https://svs.gsfc.nasa.gov/index.html">estudio de
+      visualización de NASA</a> usando para ello mapas de la misión
+      LRO.
+    </p>
+    
+    <div class="w3-center">
+      <h3 class="w3-large">
+	Crateres en el terminador <a href="JavaScript:void(null)"
+	       onclick="setDate();updateMoonCrateres()">ahora</a>
+	<br/>
+	<input class="luna-fecha" type="text"
+	       name="fecha" value="01/01/2011 00:00:00"
+	       style="text-align:center;background:black;color:gray;border:none"
+	       onchange="changeDateCrateres($(this).val())"
+	       onhover="">
+	<i class="fa fa-hand-o-left"></i>
+      </h3>
+      <div id="luna-crateres" style="width:400px;line-height:400px;margin:auto;border:solid white 0px;text-align:center">
+	<i id="luna-crateres-wait" class="fa fa-snowflake-o w3-jumbo fa-spin"></i>
+	<a id="luna-crateres-url" href="">
+	  <img id="luna-crateres-image" src="" width="100%" style="display:none"/>
+	</a>
+	<br/><br/>
+	<i class="w3-small">Crédito: Estudio de Visualización de NASA, <a href="https://svs.gsfc.nasa.gov/4537">Fases y Libración Lunar</a></i>
+      </div>
+
+      <script>
+	$(document).ready(function(){
+	    updateMoonCrateres();
+	});
+      </script>
+    </div>
+    
+    <p></p>
+
+    <a name="speedometer_luna">
+      <span class="w3-text-white w3-large">El velocímetro de la Luna</span>      
+    </a>
+    
+    <p>
+      ¿Sabes a qué velocidad viaja la Luna a esta hora? ¿a qué distancia
+      esta de la Tierra?.  Con este instrumento virtual podrás saberlo.
+      Los valores de la velocidad están en kilómetros por hora,
+      mientras que la distancia mostrada en la pantalla esta en
+      kilómetros.  Los valores se actualizan solo durante un minuto.
+      Para seguirlos viendo cambiar en tiempo real actualice la página (CTRL+L).
+    </p>
   
     <center>
       <script>
@@ -987,6 +1161,9 @@ echo<<<CONTENT
       hora es?</a>, Jorge I. Zuluaga, SciLogs de Investigación y
       Ciencia, Enero 5 de 2017.</li>
 
+      <li><a name="bib:NASAVIS2017"></a><a href="https://svs.gsfc.nasa.gov/index.html">NASA
+      Scientific Visualization Studio</a>, NASA.</li>
+
     </ol>
 
   </div>
@@ -999,6 +1176,8 @@ echo<<<CONTENT
     $fblink
     $tlink
     <span class="w3-small">/ Desarrollado por Jorge I. Zuluaga <i class="fa fa-copyright"></i> 2016</span>
+    <br/>
+    <span class="w3-small">Su sesión $SESSID</span>
     <!-- <span style="font-family:courier,sans serif;">12:04</span>-->
   </footer>
   <!-- End footer -->

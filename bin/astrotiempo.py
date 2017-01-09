@@ -6,10 +6,10 @@ from sys import argv,exit,stderr,stdout
 import numpy as np
 from scipy.optimize import minimize_scalar as minimize,brentq as zeros
 from scipy.misc import derivative
-
 import datetime as dt
 import time,calendar
 from scipy.interpolate import interp1d
+import os
 
 #######################################################################
 #CONSTANTS AND MACROS
@@ -157,8 +157,8 @@ def moonNextQuarter(t,sign=+1,qtype="quarter"):
 def moonPhases(t):
     ts=np.zeros(4)
     tqs=np.zeros(4)
-    tquar,tq=moonNextQuarter(t)
-    tfull,tf=moonNextFull(t)
+    tquar,tq=moonNextQuarter(t,qtype="quarter")
+    tfull,tf=moonNextQuarter(t,qtype="full")
     if tfull<tquar:
         ts[0]=tfull;tqs[0]=tf
         ts[1]=tquar;tqs[1]=tq
@@ -174,3 +174,9 @@ def moonPhases(t):
         ts[2]=tquar;tqs[2]=tq
         ts[3]=tfull;tqs[3]=tf
     return ts,tqs
+
+def genString(N):
+    import random,string
+    cadena=''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(N))
+    return cadena
+

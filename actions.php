@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////////////////
 //EXTERNAL
 ////////////////////////////////////////////////////////////////////////
-   require_once("php/calendar.php");
+require_once("php/calendar.php");
 
 ////////////////////////////////////////////////////////////////////////
 //ACTIONS
@@ -64,6 +64,26 @@ if(isset($action)){
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if($action=="luna"){
     $cmd="$PYTHON bin/luna.py $modo '$fecha' 2> /tmp/luna";
+    $out=shell_exec($cmd);
+    echo $out;
+  }
+
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  //CRATERES
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if($action=="crateres"){
+    if(preg_match("/\w/",$fecha)){$fecha="'$fecha'";}
+    $cmd="$PYTHON bin/crateres.py $modo $fecha $SESSID 2> /tmp/luna";
+    $out=shell_exec($cmd);
+    echo $out;
+  }
+
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  //PHASES
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if($action=="phases"){
+    if(preg_match("/\w/",$fecha)){$fecha="'$fecha'";}
+    $cmd="$PYTHON bin/phases.py $modo $fecha $SESSID 2> /tmp/luna";
     $out=shell_exec($cmd);
     echo $out;
   }

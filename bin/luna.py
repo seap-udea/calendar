@@ -21,6 +21,7 @@ else:
     except:
         print>>stderr, "You must provide a valid date: MM/DD/CCYY HH:MM:SS"
         exit(2)
+    print>>stderr,"Input date:",fecha
     utc=dt.datetime.strptime(fecha,"%m/%d/%Y %H:%M:%S")
 
 #######################################################################
@@ -32,13 +33,13 @@ def distance(pha,lon,lat,pha0,lon0,lat0):
     return d2**0.5
 
 DATA=[
-    #dict(year=2011,syear=3800,iyear=3810,),
-    #dict(year=2012,syear=3800,iyear=3894,),
-    #dict(year=2013,syear=4000,iyear=4000,),
-    #dict(year=2014,syear=4100,iyear=4118,),
-    #dict(year=2015,syear=4200,iyear=4236,),
-    dict(year=2016,syear=4400,iyear=4404,),
-    dict(year=2017,syear=4500,iyear=4537,),
+    dict(year=2011,syear=3800,iyear=3810,suf=60),
+    dict(year=2012,syear=3800,iyear=3894,suf=60),
+    dict(year=2013,syear=4000,iyear=4000,suf=30),
+    dict(year=2014,syear=4100,iyear=4118,suf=30),
+    dict(year=2015,syear=4200,iyear=4236,suf=30),
+    dict(year=2016,syear=4400,iyear=4404,suf=30),
+    dict(year=2017,syear=4500,iyear=4537,suf=30),
 ] 
 URLMOON="https://svs.gsfc.nasa.gov/vis/a000000/a00[syear]/a00[iyear]/"
 
@@ -54,7 +55,7 @@ def imageToUse(i):
     url=URLMOON.\
          replace("[syear]","%s"%dyear["syear"]).\
          replace("[iyear]","%s"%dyear["iyear"])+\
-         "frames/730x730_1x1_30p/moon.%04d.jpg"%ipos
+         "frames/730x730_1x1_%dp/moon.%04d.jpg"%(dyear["suf"],ipos)
     return url
 
 """
@@ -136,12 +137,18 @@ ds=distance(fi,mlon,mlat,pfis,plons,plats)
 isort=ds.argsort()
 
 # Get the characteristic values
+di=ds[isort[0]]
 ii=pies[isort[0]]
 fii=pfis[isort[0]]
 diami=pdiams[isort[0]]
 loni=plons[isort[0]]
 lati=plats[isort[0]]
 posai=pposas[isort[0]]
+
+dlon=np.abs(mlon-loni)
+dlat=np.abs(mlat-lati)
+dpha=np.abs(fi-fii)
+error="lon.%.1f,lat.%.1f,phase.%.2f"%(dlon,dlat,dpha)
 
 print>>stderr, "Closest image:",ii
 print>>stderr, "Closest point (phase,diam,lon,lat,posang):",fii,diami,loni,lati,posai
@@ -151,4 +158,4 @@ url=imageToUse(ii)
 print>>stderr, "URL:",url
 
 # Output
-print """{"url":"%s","phase":"%.1f%%","age":"%s"}"""%(url,fi,dage)
+print """{"url":"%s","phase":"%.1f%%","age":"%s","error":"%s"}"""%(url,fi,dage,error)

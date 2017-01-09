@@ -3,7 +3,7 @@ import numpy as np
 
 data=[]
 years=[2011,2012,2013,2014,2015,2016,2017]
-years=[2016,2017]
+#years=[2016,2017]
 for year in years:
     print "Reading data from year %d..."%year
     for i in xrange(1,8761):

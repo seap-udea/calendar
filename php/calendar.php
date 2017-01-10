@@ -38,13 +38,13 @@ F;
   return $fstr;
 }
 
-function twitterLink($url,$txt,$via="AstronomiaUdeA"){
+function twitterLink($url,$txt,$via="AstronomiaUdeA",$hashtags=""){
   
   $url_encoded=urlencode($url);
   $txt_encoded=urlencode($txt);
 
 $fstr=<<<F
-<a href="JavaScript:window.open('https://twitter.com/intent/tweet?text=$txt_encoded&via=$via&url=$url_encoded','Tweet','width=500,height=300')"><i class="fa fa-twitter w3-hover-text-light-blue"></i></a>
+<a href="JavaScript:window.open('https://twitter.com/intent/tweet?text=$txt_encoded&via=$via&hashtags=$hashtags&url=$url_encoded','Tweet','width=500,height=300')"><i class="fa fa-twitter w3-hover-text-light-blue"></i></a>
 F;
 
   return $fstr;

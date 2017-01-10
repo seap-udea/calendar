@@ -25,6 +25,67 @@ if(isset($section)){
     header("Refresh:0;url=?section=$section#$tag");
  }
 }
+
+// //////////////////////////////////////////////////////////////////////
+// LISTA DE MÓDULOS
+// //////////////////////////////////////////////////////////////////////
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// GENERAL
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$link_general="http://astronomia-udea.co/calendar";
+$fblink_general=facebookLink($link_general);
+$tlink_general=twitterLink($link_general,"Astrotiempo: significados astronómicos para nuestra medida cotidiana del tiempo.","AstronomiaUdeA","Astrotiempo");
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// PERIHELIO
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$link_perihelio="http://bit.ly/astrotiempo-tierra-perihelio";
+$fblink_perihelio=facebookLink($link_perihelio);
+$tlink_perihelio=twitterLink($link_perihelio,"¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","AstronomiaUdeA","Astrotiempo");
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// VELOCIMETRO DE LA TIERRA
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$link_veltierra="http://bit.ly/astrotiempo-tierra-velocimetro";
+$fblink_veltierra=facebookLink($link_veltierra);
+$tlink_veltierra=twitterLink($link_veltierra,"¿Cuál es la velocidad y distancia Tierra-Sol justo ahora? El velocímetro de la Tierra","AstronomiaUdeA","Astrotiempo");
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// QUE HORA ES
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$link_hora="http://bit.ly/astrotiempo-quehoraes";
+$fblink_hora=facebookLink($link_hora);
+$tlink_hora=twitterLink($link_hora,"¿Qué hora es?, la respuesta de la astronomía","AstronomiaUdeA","Astrotiempo");
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// LUNA AHORA
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$link_luna="http://bit.ly/astrotiempo-luna-ahora";
+$fblink_luna=facebookLink($link_luna);
+$tlink_luna=twitterLink($link_luna,"¿Cómo se esta viendo la luna justo en este momento?","AstronomiaUdeA","Astrotiempo");
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// LUNA VELOCIMETRO
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$link_velluna="http://bit.ly/astrotiempo-luna-velocimetro";
+$fblink_vel_luna=facebookLink($link_velluna);
+$tlink_vel_luna=twitterLink($link_velluna,"¿Cuál es la velocidad y la distancia de la Luna en este momento? El velocímetro de la Luna","AstronomiaUdeA","Astrotiempo");
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// LUNA FASES
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$link_lunafases="http://bit.ly/astrotiempo-luna-fases";
+$fblink_lunafases=facebookLink($link_lunafases);
+$tlink_lunafases=twitterLink($link_lunafases,"¿Cuándo serán las próximas fases de la Luna?","AstronomiaUdeA","Astrotiempo");
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// LUNA TERMINADOR
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$link_terminador="http://bit.ly/astrotiempo-luna-terminador";
+$fblink_terminador=facebookLink($link_terminador);
+$tlink_terminador=twitterLink($link_terminador,"¿Qué se esta viendo en el terminador de la Luna en este momento?","AstronomiaUdeA","Astrotiempo");
+
 ?>
 
 <html>
@@ -156,9 +217,6 @@ echo<<<CONTENT
 
 CONTENT;
 if($type=="single" or (!isset($section) or $section=="home")){ 
-  $fblink=facebookLink("http://astronomia-udea.co/calendar");
-  $tlink=twitterLink("http://astronomia-udea.co/calendar","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge");
-
 echo<<<CONTENT
   <script>
   $(document).ready(function() {
@@ -191,10 +249,10 @@ echo<<<CONTENT
 
     <div class="w3-text-grey w3-xlarge w3-center">
       <div id="fb-root"></div>
-      $fblink
-      $tlink
+      $fblink_perihelio
+      $tlink_perihelio
     </div>
-    <span class="w3-text-gray w3-large" style="font-family:courier">http://bit.ly/astrotiempo-perihelio</span>
+    <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_perihelio">$link_perihelio</a></span>
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
@@ -235,12 +293,6 @@ echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
 CONTENT;
 }if($type=="single" or $section=="finano"){ 
-  $fblink=facebookLink("http://astronomia-udea.co/calendar?section=finano-tag:perihelio");
-  $tlink=twitterLink("http://astronomia-udea.co/calendar?section=finano-tag:perihelio","¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","zuluagajorge");
-
-  $fblink_vel=facebookLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer");
-  $tlink_vel=twitterLink("http://astronomia-udea.co/calendar?section=finano-tag:speedometer","¿Cuál es la velocidad y la distancia de la Tierra en este momento? El velocímetro de la Tierra","zuluagajorge");
-
 echo<<<CONTENT
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="finano">
     <h2 class="w3-text-light-grey">¿Fin de año?</h2>
@@ -292,10 +344,10 @@ echo<<<CONTENT
       
       <div class="w3-text-grey w3-xlarge w3-center">
 	<div id="fb-root"></div>
-	$fblink
-	$tlink
+	$fblink_perihelio
+	$tlink_perihelio
       </div>
-      <span class="w3-text-gray w3-large" style="font-family:courier">http://bit.ly/astrotiempo-perihelio</span>
+      <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_perihelio">$link_perihelio</span>
     </div>
 
     <p>
@@ -383,7 +435,7 @@ echo<<<CONTENT
       target="_blank">revista Investigación y Ciencia</a>.
     </p>
 
-    <a name="speedometer">
+    <a name="speedometer_tierra">
       <span class="w3-text-white w3-large">El velocímetro de la Tierra</span>      
     </a>
 
@@ -444,11 +496,11 @@ echo<<<CONTENT
 	<br/>
 	<div class="w3-text-grey w3-xlarge w3-center">
 	  <div id="fb-root"></div>
-	  $fblink_vel
-	  $tlink_vel
+	  $fblink_veltierra
+	  $tlink_veltierra
 	</div>
 	<span class="w3-text-gray w3-large"
-	style="font-family:courier"><a href="http://bit.ly/astrotiempo-velocimetro-tierra">http://bit.ly/astrotiempo-velocimetro-tierra</a></span>
+	style="font-family:courier"><a href="$link_veltierra">$link_veltierra</a></span>
       </div>
     </center>
 
@@ -460,8 +512,6 @@ echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
 CONTENT;
 }if($type=="single" or $section=="quehoraes"){ 
-  $fblink=facebookLink("http://astronomia-udea.co/calendar?section=quehoraes");
-  $tlink=twitterLink("http://astronomia-udea.co/calendar?section=quehoraes","¿Qué hora es?, la respuesta de la astronomía","zuluagajorge");
 $buttons=<<<B
 	<tr>
 	  <td colspan=3 class="w3-xxlarge w3-center">
@@ -469,8 +519,8 @@ $buttons=<<<B
 	    <a href="JavaScript:void(0)" onclick="$('.play').show();UPDATE=1;clearTimeout(TIMEOUT)"><i class="fa fa-pause w3-hover-text-red"></i></a>
 	    <a href="JavaScript:void(0)" onclick="UPDATE=1;updateTime(0)"><i class="fa fa-step-forward w3-hover-text-red"></i></a>
 	    <a href="JavaScript:void(0)" onclick="UPDATE=1;getTimes(0)"><i class="fa fa-repeat w3-hover-text-red"></i></a>
-	    $fblink
-	    $tlink
+	    $fblink_hora
+	    $tlink_hora
 	  </td>
 	</tr>
 B;
@@ -810,13 +860,6 @@ echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
 CONTENT;
 }if($type=="single" or $section=="faseslunares"){ 
-
-  $fblink_luna=facebookLink("http://astronomia-udea.co/calendar?section=faseslunases-tag:luna_ahora");
-  $tlink_luna=twitterLink("http://astronomia-udea.co/calendar?section=faseslunares-tag:luna_ahora","¿Cómo se esta viendo la luna justo en este momento?","zuluagajorge");
-
-  $fblink_vel_luna=facebookLink("http://astronomia-udea.co/calendar?section=faseslunases-tag:speedometer_luna");
-  $tlink_vel_luna=twitterLink("http://astronomia-udea.co/calendar?section=faseslunares-tag:speedometer_luna","¿Cuál es la velocidad y la distancia de la Luna en este momento? El velocímetro de la Luna","zuluagajorge");
-
 echo<<<CONTENT
 
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="faseslunares">
@@ -861,7 +904,7 @@ echo<<<CONTENT
 	  Error: <span id="luna-error">--</span>
 	</div>
       </p>
-      <span class="w3-text-gray w3-large" style="font-family:courier"><a href="http://bit.ly/astrotiempo-lunaahora">http://bit.ly/astrotiempo-lunaahora</a></span>
+      <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_velluna">$link_velluna</a></span>
       <script>
 	$(document).ready(function(){
 	    setDate();
@@ -961,6 +1004,7 @@ echo<<<CONTENT
 	</tr>
 
       </table>
+      <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_lunafases">$link_lunafases</a></span>
       </center>
 
       <script>
@@ -970,8 +1014,6 @@ echo<<<CONTENT
       </script>
 
     </div>
-
-
 
     <a name="craters_luna">
       <span class="w3-text-white w3-large">Identificación de cráteres</span>      
@@ -997,6 +1039,7 @@ echo<<<CONTENT
     </p>
     
     <div class="w3-center">
+      <a name="luna_terminador">
       <h3 class="w3-large">
 	Crateres en el terminador <a href="JavaScript:void(null)"
 	       onclick="setDate();updateMoonCrateres()">ahora</a>
@@ -1008,13 +1051,16 @@ echo<<<CONTENT
 	       onhover="">
 	<i class="fa fa-hand-o-left"></i>
       </h3>
+      </a>
       <div id="luna-crateres" style="width:400px;line-height:400px;margin:auto;border:solid white 0px;text-align:center">
 	<i id="luna-crateres-wait" class="fa fa-snowflake-o w3-jumbo fa-spin"></i>
 	<a id="luna-crateres-url" href="">
 	  <img id="luna-crateres-image" src="" width="100%" style="display:none"/>
 	</a>
 	<br/><br/>
+	<div style="padding:20px">
 	<i class="w3-small">Crédito: Estudio de Visualización de NASA, <a href="https://svs.gsfc.nasa.gov/4537">Fases y Libración Lunar</a></i>
+	</div>
       </div>
 
       <script>
@@ -1022,6 +1068,12 @@ echo<<<CONTENT
 	    updateMoonCrateres();
 	});
       </script>
+	<div class="w3-text-grey w3-xlarge w3-center">
+	  <div id="fb-root"></div>
+	  $fblink_terminador
+	  $tlink_terminador
+	</div>
+      <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_terminador">$link_terminador</a></span>
     </div>
     
     <p></p>
@@ -1089,10 +1141,10 @@ echo<<<CONTENT
 	<br/>
 	<div class="w3-text-grey w3-xlarge w3-center">
 	  <div id="fb-root"></div>
-	  $fblink_vel_luna
-	  $tlink_vel_luna
+	  $fblink_velluna
+	  $tlink_velluna
 	</div>
-	<span class="w3-text-gray w3-large" style="font-family:courier"><a href="http://bit.ly/astrotiempo-velocidad-luna">http://bit.ly/astrotiempo-velocimetro-luna</a></span>
+	<span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_velluna">$link_velluna</a></span>
       </div>
     </center>
   </div>
@@ -1131,9 +1183,6 @@ echo<<<CONTENT
 
 CONTENT;
 }
-
-  $fblink=facebookLink("http://astronomia-udea.co/calendar");
-  $tlink=twitterLink("http://astronomia-udea.co/calendar","Astrotiempo: significados astronómicos para nuestra medida cotidiana del tiempo.","zuluagajorge");
 
 echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
@@ -1174,8 +1223,8 @@ echo<<<CONTENT
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge w3-center" data-type="time" id="footer">
     <center><hr style="width:80%" class="w3-opacity"/></center>
-    $fblink
-    $tlink
+    $fblink_general
+    $tlink_general
     <span class="w3-small">/ Desarrollado por Jorge I. Zuluaga <i class="fa fa-copyright"></i> 2016</span>
     <br/>
     <span class="w3-small">Su sesión $SESSID</span>

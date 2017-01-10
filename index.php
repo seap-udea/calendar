@@ -861,6 +861,7 @@ echo<<<CONTENT
 	  Error: <span id="luna-error">--</span>
 	</div>
       </p>
+      <span class="w3-text-gray w3-large" style="font-family:courier"><a href="http://bit.ly/astrotiempo-lunaahora">http://bit.ly/astrotiempo-lunaahora</a></span>
       <script>
 	$(document).ready(function(){
 	    setDate();

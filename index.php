@@ -665,7 +665,8 @@ echo<<<CONTENT
       <div class="w3-text-grey w3-xlarge w3-center">
 	<div id="fb-root"></div>
 	$fblink_luna
-	$tlink_luna
+	$tlink_luna 
+	<a href="#luna_creditos" class="w3-small">Créditos</a>
       </div>
       <p>
 	Fase: <span id="luna-phase">--</span>, 
@@ -779,6 +780,7 @@ echo<<<CONTENT
 	<div id="fb-root"></div>
 	$fblink_lunafases
 	$tlink_lunafases
+	<a href="#luna_creditos" class="w3-small">Créditos</a>
       </div>
 	  
       <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_lunafases">$link_lunafases</a></span>
@@ -849,6 +851,7 @@ echo<<<CONTENT
 	  <div id="fb-root"></div>
 	  $fblink_terminador
 	  $tlink_terminador
+	  <a href="#luna_creditos" class="w3-small">Créditos</a>
 	</div>
       <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_terminador">$link_terminador</a></span>
     </div>
@@ -866,7 +869,7 @@ echo<<<CONTENT
       por hora, mientras que la distancia mostrada en la pantalla esta
       en kilómetros.  Los valores se actualizan solo durante un
       minuto.  Para seguirlos viendo cambiar en tiempo real actualice
-      la página (CTRL+R) o <a href="#speedometer_luna">haz click
+      la página (CTRL+R) o <a href="JavaScript:void(null)" onclick="location.reload()">haz click
       aquí</a>.
     </p>
   
@@ -926,6 +929,28 @@ echo<<<CONTENT
 	<span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_velluna">$link_velluna</a></span>
       </div>
     </center>
+
+    <h4>
+      <a name="luna_creditos">
+      <span class="w3-text-white w3-large">Créditos</span>      
+      </a>
+    </h4>
+    
+    Todas las imágenes usadas en esta página han sido elaboradas por
+      el <a href="https://svs.gsfc.nasa.gov/index.html">NASA
+      Scientific Visualization Studio</a> de NASA.  El autor ha
+      elaborado los programas
+      en <b style="font-family:courier">JavaScript</b>, <b style="font-family:courier">Python</b>
+      para calcular laso condiciones actuales de la Luna y extraídos
+      de los archivos del estudio las imágenes correspondientes.  Los
+      cálculos astronómicos han sido realizados usando la biblioteca
+      <a href="http://naif.jpl.nasa.gov/naif/">SPICE de NASA NAIF</a>
+      y el wrapper para
+      python <a href="http://spiceypy.readthedocs.io/en/master/" style="font-family:courier">SpiceyPy</a>.  Los códigos
+      fuentes de la página pueden encontrarse en el repositorio de
+      GitHub <a href="http://github.com/seap-udea/calendar"
+      style="font-family:courier">Calendar</a>.
+
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->

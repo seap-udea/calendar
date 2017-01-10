@@ -5,7 +5,7 @@
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <?php
 require_once("php/calendar.php");
-$type="multiple";
+//$type="multiple";
 if(isset($section)){$type="multiple";}
 else if(!isset($type)){$type="single";}
 if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){
@@ -144,11 +144,6 @@ $tlink_terminador=twitterLink($link_terminador,"¿Qué se esta viendo en el term
     <p>INICIO</p>
   </a>
 
-  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('finano',$type)?>">
-    <i class="fa fa-circle-o-notch fa-spin w3-xxlarge"></i>
-    <p>¿FIN DE AÑO?</p>
-  </a>
-
   <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('quehoraes',$type)?>">
     <i class="fa fa-clock-o w3-xxlarge"></i>
     <p>¿QUÉ HORA ES?</p>
@@ -157,6 +152,11 @@ $tlink_terminador=twitterLink($link_terminador,"¿Qué se esta viendo en el term
   <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('faseslunares',$type)?>">
     <i class="fa fa-moon-o w3-xxlarge"></i>
     <p>FASES LUNARES</p>
+  </a>
+
+  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('finano',$type)?>">
+    <i class="fa fa-circle-o-notch fa-spin w3-xxlarge"></i>
+    <p>¿FIN DE AÑO?</p>
   </a>
 
   <a class="w3-padding-large w3-hover-black w3-text-gray" href="<?php echo ilink('estaciones',$type)?>">
@@ -179,19 +179,6 @@ $tlink_terminador=twitterLink($link_terminador,"¿Qué se esta viendo en el term
     <p>COMPARTE</p>
   </a>
 </nav>
-
-<!-- ----------------------------------------------------------------------------------------------------------------- -->
-<!-- ICON BAR (SMALL SCREENS) -->
-<!-- ----------------------------------------------------------------------------------------------------------------- -->
-<!-- Navbar on small screens (Hidden on medium and large screens) -->
-<!--
-<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
-  <ul class="w3-navbar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
-    <li class="w3-left" style="width:25% !important"><a href="#">INICIO</a></li>
-    <li class="w3-left" style="width:25% !important"><a href="#finano">¿FIN DE AÑO?</a></li>
-  </ul>
-</div>
--->
 
 <?php 
 echo<<<CONTENT
@@ -287,224 +274,6 @@ echo<<<CONTENT
       de: <a href="http://astronomia-udea.co" target="_blank">
 	<img src="img/LogoAstronomiaUdeA-Transparente.png" width="250" align="center"></a>
     </p>
-
-  </div>
-  <!-- ----------------------------------------------------------------------------------------------------------------- -->
-  <!-- ¿FIN DE AÑO? -->
-  <!-- ----------------------------------------------------------------------------------------------------------------- -->
-CONTENT;
-}if($type=="single" or $section=="finano"){ 
-echo<<<CONTENT
-  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="finano">
-    <h2 class="w3-text-light-grey">¿Fin de año?</h2>
-    <hr style="width:200px" class="w3-opacity">
-    <p>
-      ¿Términa realmente el año el 31 de diciembre a la media noche?.
-      Esto es lo que todos asumimos cuando celebramos con alegría el
-      cambio de fecha ese día.  Pero esto no siempre ha sido así y
-      tampoco tendría por qué seguir siéndolo.
-    </p>
-
-    <script>
-      $(document).ready(function() {
-	  //DATE
-	  var fecha=new Date();
-	  var year=fecha.getFullYear();
-	  var pyear=year-1;
-	  var nyear=year+1;
-
-	  $.ajax({
-	    url:'actions.php?action=perihelia&year='+pyear,
-		success:function(result){
-		$('#perihelia-table').html(result);
-	      }
-	    });
-	  
-	  $.ajax({
-	    url:'actions.php?action=perihelion',
-		success:function(result){
-		$('#perihelion-time').html(result);
-		perihelionCounter('clock-ano');
-	      }
-	    });
-	});
-    </script>
-  
-    <div id="clock" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;">
-      <span id="perihelion-time" class="w3-hide"></span>
-      <a name="perihelio"></a>
-      <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelion-date"></span>:</span>
-      <br><br/>
-      
-      <div class="clock-ano" style="border:solid white 0px;"></div>
-      <div class="clock-end w3-xxlarge" style="display:none">
-	<i class="fa fa-star fa-spin"></i>
-	¡Feliz Perihelio 2017!
-	<i class="fa fa-star fa-spin"></i>
-      </div>
-      
-      <div class="w3-text-grey w3-xlarge w3-center">
-	<div id="fb-root"></div>
-	$fblink_perihelio
-	$tlink_perihelio
-      </div>
-      <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_perihelio">$link_perihelio</span>
-    </div>
-
-    <p>
-      La definición del día de año nuevo es bastante arbitraria. Por
-      casi cada cultura del planeta existe un día diferente para
-      marcar el inicio del año <a href="#bib:WikiNewYear">[3]</a>.  En
-      la mayoría de los casos esta fecha viene determinada por fiestas
-      religiosas, asntos culturales e incluso razones políticas.
-      Lamentablemente, en casi ningún caso el día del fin e inicio de
-      año se basa en fenómenos astronómicos.
-    </p>
-
-    <center><img src="img/FelizAno.png" width="60%"></img></center>
-
-    <p>
-      En occidente el fin de año corresponde al último día del mes de
-      diciembre (el último mes del año). Así esta definido desde los
-      calendarios romanos más antiguos (de los que viene nuestro
-      calendario actual) .  En la edad media (para ser exactos después
-      en el año 567 e.c.<a href="bib:WikiNewYear">[3]</a>) se modifico
-      la fecha del inicio del año a una de varias fechas: el 25 de
-      diciembre (fecha mitíca del nacimiento de Jesús), el primero de
-      marzo o el 25 de marzo (fiesta católica de la Anunciación).
-      Muchos países mantuvieron esta directiva hasta bien entrado los
-      1700s.  Sin embargo la instauración en 1582 del calendario
-      Gregoriano (el que usamos hoy en día) reestableció en casi todos
-      los países católicos el primero de enero como el día del inicio
-      del año.
-    </p>
-    
-    <p>
-      Pero no hay ningún evento astronómico de relevancia que ocurra
-      cada año el 31 de diciembre o el primero de enero. No hay un
-      cambio de estación, el Sol no ocupa un lugar especial en el
-      cielo y ni siquiera la Tierra esta en un lugar particular de su
-      órbita (tampoco esta cada 31 de diciembre en el mismo lugar).
-      Por la misma razón definir esta fecha como el final o el inicio
-      de "año" es astronómicamente hablando arbitrario y se basa
-      únicamente en tradiciones religiosas y culturales en franco
-      desuso.
-    </p> 
-
-    <center><img src="img/OrbitaTierra.png"
-    width="80%"></img></center>
-
-    <p>
-      Una elección más conveniente en términos físicos y astronómicos
-      podría ser la de identificar sobre la órbita de la Tierra (cuyo
-      movimiento periódico define justamente el año) un punto de
-      caraceterísticas únicas.  Siendo la órbita de nuestro planeta
-      elíptica hay dos puntos que cumplen esa condición:
-      el <b>afelio</b> y el
-      <b>perihelio</b>.  Ambos se producen separados por un tiempo de
-      aproximadamente 6 meses, con el perihelio ocurriendo por estos
-      años entre el 3 y el 4 de enero.  Si de elegir una fecha para
-      una celebración basada en hechos astronómicos se tratáse, el
-      Perihelio (por su cercanía temporal con el último mes del año)
-      sería el evento más indicado para la fiesta de fin e inicio de
-      año.
-    </p>
-
-    <p>
-      Las fechas exactas de ocurrencia de los próximos 10 perihelios
-      se muestran en la tabla abajo.  Allí se han indicado también la
-      distancia a la que estará la Tierra en la fecha y hora del
-      perihelio, así como también el tiempo transcurrido desde el
-      último perihelio.
-    </p>
-
-    <center id="perihelia-table"></center>
-    <p>
-      Para que no se pierda ninguna celebración en lo sucesivo le
-      ofrecemos aquí un contador regresivo hasta la fecha del próximo
-      perihelio. 
-    </p>
-    
-    <p>
-      Para una reflexión más completa (y en un tono más informal) lea
-      el
-      artículo <a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts/fin-de-ao-14837"
-      target="_blank">"¿Fin de Año?"</a>, entrada
-      del <a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts"
-      target="_blank">Blog Siderofilia</a> de
-      la <a href="http://www.investigacionyciencia.es/"
-      target="_blank">revista Investigación y Ciencia</a>.
-    </p>
-
-    <a name="speedometer_tierra">
-      <span class="w3-text-white w3-large">El velocímetro de la Tierra</span>      
-    </a>
-
-    <p>
-	¿Sabes a qué velocidad viaja la Tierra a esta hora? ¿a qué
-	distancia esta del Sol?.  Con este instrumento virtual podrás
-	saberlo.  Los valores de la velocidad están en kilómetros por
-	segundo, mientras que la distancia mostrada en la pantalla
-	esta en kilómetros.  Los valores se actualizan solo durante un
-	minuto.  Para seguirlos actualizando actualice la página (CTRL+L).
-    </p>
-
-    <center>
-      <script>
-	  $(document).ready(function() {
-	      var svg = d3.select("#speedometer")
-		  .append("svg:svg")
-		  .attr("width",500)
-		  .attr("height",400);
-
-	      var gauge = iopctrl.arcslider()
-		  .radius(200)
-		  .events(false)
-		  .indicator(iopctrl.defaultGaugeIndicator);
-	      gauge.axis().orient("in")
-		  .normalize(true)
-		  .ticks(10)
-		  .tickSubdivide(4)
-		  .tickSize(20, 8, 10)
-		  .tickPadding(5)
-		  .scale(d3.scale.linear()
-			 .domain([28, 31])
-			 .range([-3*Math.PI/4, 3*Math.PI/4]));
-
-	      var segDisplay = iopctrl.segdisplay()
-		  .width(300)
-		  .digitCount(12)
-		  .negative(false)
-		  .decimals(3);
-
-	      svg.append("g")
-		  .attr("class", "segdisplay")
-		  .attr("transform", "translate(100, 300)")
-		  .call(segDisplay);
-
-	      svg.append("g")
-		  .attr("class", "gauge")
-		  .call(gauge);
-
-	      DV_TIME=0;
-	      getSpeed(gauge,segDisplay);
-	  });
-      </script>
-      <div>
-	Velocidad de la Tierra (km/s):
-	<span id="speed-EARTH" class="digclock" style="text-align:center;width:10em;margin-bottom:-1em">--</span>
-        <span id="speedometer"></span>
-	<br/>
-	<div class="w3-text-grey w3-xlarge w3-center">
-	  <div id="fb-root"></div>
-	  $fblink_veltierra
-	  $tlink_veltierra
-	</div>
-	<span class="w3-text-gray w3-large"
-	style="font-family:courier"><a href="$link_veltierra">$link_veltierra</a></span>
-      </div>
-    </center>
-
 
   </div>
 
@@ -1091,12 +860,14 @@ echo<<<CONTENT
     </a>
     
     <p>
-      ¿Sabes a qué velocidad viaja la Luna a esta hora? ¿a qué distancia
-      esta de la Tierra?.  Con este instrumento virtual podrás saberlo.
-      Los valores de la velocidad están en kilómetros por hora,
-      mientras que la distancia mostrada en la pantalla esta en
-      kilómetros.  Los valores se actualizan solo durante un minuto.
-      Para seguirlos viendo cambiar en tiempo real actualice la página (CTRL+L).
+      ¿Sabes a qué velocidad viaja la Luna a esta hora? ¿a qué
+      distancia esta de la Tierra?.  Con este instrumento virtual
+      podrás saberlo.  Los valores de la velocidad están en kilómetros
+      por hora, mientras que la distancia mostrada en la pantalla esta
+      en kilómetros.  Los valores se actualizan solo durante un
+      minuto.  Para seguirlos viendo cambiar en tiempo real actualice
+      la página (CTRL+R) o <a href="#speedometer_luna">haz click
+      aquí</a>.
     </p>
   
     <center>
@@ -1155,6 +926,225 @@ echo<<<CONTENT
 	<span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_velluna">$link_velluna</a></span>
       </div>
     </center>
+  </div>
+
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <!-- ¿FIN DE AÑO? -->
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+CONTENT;
+}if($type=="single" or $section=="finano"){ 
+echo<<<CONTENT
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="finano">
+    <h2 class="w3-text-light-grey">¿Fin de año?</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>
+      ¿Términa realmente el año el 31 de diciembre a la media noche?.
+      Esto es lo que todos asumimos cuando celebramos con alegría el
+      cambio de fecha ese día.  Pero esto no siempre ha sido así y
+      tampoco tendría por qué seguir siéndolo.
+    </p>
+
+    <script>
+      $(document).ready(function() {
+	  //DATE
+	  var fecha=new Date();
+	  var year=fecha.getFullYear();
+	  var pyear=year-1;
+	  var nyear=year+1;
+
+	  $.ajax({
+	    url:'actions.php?action=perihelia&year='+pyear,
+		success:function(result){
+		$('#perihelia-table').html(result);
+	      }
+	    });
+	  
+	  $.ajax({
+	    url:'actions.php?action=perihelion',
+		success:function(result){
+		$('#perihelion-time').html(result);
+		perihelionCounter('clock-ano');
+	      }
+	    });
+	});
+    </script>
+  
+    <div id="clock" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;">
+      <span id="perihelion-time" class="w3-hide"></span>
+      <a name="perihelio"></a>
+      <span class="w3-text-grey">Tiempo para el próximo perihelio, <span class="perihelion-date"></span>:</span>
+      <br><br/>
+      
+      <div class="clock-ano" style="border:solid white 0px;"></div>
+      <div class="clock-end w3-xxlarge" style="display:none">
+	<i class="fa fa-star fa-spin"></i>
+	¡Feliz Perihelio 2017!
+	<i class="fa fa-star fa-spin"></i>
+      </div>
+      
+      <div class="w3-text-grey w3-xlarge w3-center">
+	<div id="fb-root"></div>
+	$fblink_perihelio
+	$tlink_perihelio
+      </div>
+      <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_perihelio">$link_perihelio</span>
+    </div>
+
+    <p>
+      La definición del día de año nuevo es bastante arbitraria. Por
+      casi cada cultura del planeta existe un día diferente para
+      marcar el inicio del año <a href="#bib:WikiNewYear">[3]</a>.  En
+      la mayoría de los casos esta fecha viene determinada por fiestas
+      religiosas, asntos culturales e incluso razones políticas.
+      Lamentablemente, en casi ningún caso el día del fin e inicio de
+      año se basa en fenómenos astronómicos.
+    </p>
+
+    <center><img src="img/FelizAno.png" width="60%"></img></center>
+
+    <p>
+      En occidente el fin de año corresponde al último día del mes de
+      diciembre (el último mes del año). Así esta definido desde los
+      calendarios romanos más antiguos (de los que viene nuestro
+      calendario actual) .  En la edad media (para ser exactos después
+      en el año 567 e.c.<a href="bib:WikiNewYear">[3]</a>) se modifico
+      la fecha del inicio del año a una de varias fechas: el 25 de
+      diciembre (fecha mitíca del nacimiento de Jesús), el primero de
+      marzo o el 25 de marzo (fiesta católica de la Anunciación).
+      Muchos países mantuvieron esta directiva hasta bien entrado los
+      1700s.  Sin embargo la instauración en 1582 del calendario
+      Gregoriano (el que usamos hoy en día) reestableció en casi todos
+      los países católicos el primero de enero como el día del inicio
+      del año.
+    </p>
+    
+    <p>
+      Pero no hay ningún evento astronómico de relevancia que ocurra
+      cada año el 31 de diciembre o el primero de enero. No hay un
+      cambio de estación, el Sol no ocupa un lugar especial en el
+      cielo y ni siquiera la Tierra esta en un lugar particular de su
+      órbita (tampoco esta cada 31 de diciembre en el mismo lugar).
+      Por la misma razón definir esta fecha como el final o el inicio
+      de "año" es astronómicamente hablando arbitrario y se basa
+      únicamente en tradiciones religiosas y culturales en franco
+      desuso.
+    </p> 
+
+    <center><img src="img/OrbitaTierra.png"
+    width="80%"></img></center>
+
+    <p>
+      Una elección más conveniente en términos físicos y astronómicos
+      podría ser la de identificar sobre la órbita de la Tierra (cuyo
+      movimiento periódico define justamente el año) un punto de
+      caraceterísticas únicas.  Siendo la órbita de nuestro planeta
+      elíptica hay dos puntos que cumplen esa condición:
+      el <b>afelio</b> y el
+      <b>perihelio</b>.  Ambos se producen separados por un tiempo de
+      aproximadamente 6 meses, con el perihelio ocurriendo por estos
+      años entre el 3 y el 4 de enero.  Si de elegir una fecha para
+      una celebración basada en hechos astronómicos se tratáse, el
+      Perihelio (por su cercanía temporal con el último mes del año)
+      sería el evento más indicado para la fiesta de fin e inicio de
+      año.
+    </p>
+
+    <p>
+      Las fechas exactas de ocurrencia de los próximos 10 perihelios
+      se muestran en la tabla abajo.  Allí se han indicado también la
+      distancia a la que estará la Tierra en la fecha y hora del
+      perihelio, así como también el tiempo transcurrido desde el
+      último perihelio.
+    </p>
+
+    <center id="perihelia-table"></center>
+    <p>
+      Para que no se pierda ninguna celebración en lo sucesivo le
+      ofrecemos aquí un contador regresivo hasta la fecha del próximo
+      perihelio. 
+    </p>
+    
+    <p>
+      Para una reflexión más completa (y en un tono más informal) lea
+      el
+      artículo <a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts/fin-de-ao-14837"
+      target="_blank">"¿Fin de Año?"</a>, entrada
+      del <a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts"
+      target="_blank">Blog Siderofilia</a> de
+      la <a href="http://www.investigacionyciencia.es/"
+      target="_blank">revista Investigación y Ciencia</a>.
+    </p>
+
+    <a name="speedometer_tierra">
+      <span class="w3-text-white w3-large">El velocímetro de la Tierra</span>      
+    </a>
+
+    <p>
+	¿Sabes a qué velocidad viaja la Tierra a esta hora? ¿a qué
+	distancia esta del Sol?.  Con este instrumento virtual podrás
+	saberlo.  Los valores de la velocidad están en kilómetros por
+	segundo, mientras que la distancia mostrada en la pantalla
+	esta en kilómetros.  Los valores se actualizan solo durante un
+	minuto.  Para seguirlos actualizando actualice la página (CTRL+L).
+    </p>
+
+    <center>
+      <script>
+	  $(document).ready(function() {
+	      var svg = d3.select("#speedometer")
+		  .append("svg:svg")
+		  .attr("width",500)
+		  .attr("height",400);
+
+	      var gauge = iopctrl.arcslider()
+		  .radius(200)
+		  .events(false)
+		  .indicator(iopctrl.defaultGaugeIndicator);
+	      gauge.axis().orient("in")
+		  .normalize(true)
+		  .ticks(10)
+		  .tickSubdivide(4)
+		  .tickSize(20, 8, 10)
+		  .tickPadding(5)
+		  .scale(d3.scale.linear()
+			 .domain([28, 31])
+			 .range([-3*Math.PI/4, 3*Math.PI/4]));
+
+	      var segDisplay = iopctrl.segdisplay()
+		  .width(300)
+		  .digitCount(12)
+		  .negative(false)
+		  .decimals(3);
+
+	      svg.append("g")
+		  .attr("class", "segdisplay")
+		  .attr("transform", "translate(100, 300)")
+		  .call(segDisplay);
+
+	      svg.append("g")
+		  .attr("class", "gauge")
+		  .call(gauge);
+
+	      DV_TIME=0;
+	      getSpeed(gauge,segDisplay);
+	  });
+      </script>
+      <div>
+	Velocidad de la Tierra (km/s):
+	<span id="speed-EARTH" class="digclock" style="text-align:center;width:10em;margin-bottom:-1em">--</span>
+        <span id="speedometer"></span>
+	<br/>
+	<div class="w3-text-grey w3-xlarge w3-center">
+	  <div id="fb-root"></div>
+	  $fblink_veltierra
+	  $tlink_veltierra
+	</div>
+	<span class="w3-text-gray w3-large"
+	style="font-family:courier"><a href="$link_veltierra">$link_veltierra</a></span>
+      </div>
+    </center>
+
+
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->

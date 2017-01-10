@@ -70,7 +70,7 @@ $tlink_luna=twitterLink($link_luna,"¿Cómo se esta viendo la luna justo en este
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 $link_velluna="http://bit.ly/astrotiempo-luna-velocimetro";
 $fblink_vel_luna=facebookLink($link_velluna);
-$tlink_vel_luna=twitterLink($link_velluna,"¿Cuál es la velocidad y la distancia de la Luna en este momento? El velocímetro de la Luna","AstronomiaUdeA","Astrotiempo");
+$tlink_vel_luna=twitterLink($link_velluna,"¿Cuál es la velocidad y la distancia de la Luna ahora? El velocímetro de la Luna","AstronomiaUdeA","Astrotiempo");
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // LUNA FASES
@@ -904,7 +904,7 @@ echo<<<CONTENT
 	  Error: <span id="luna-error">--</span>
 	</div>
       </p>
-      <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_velluna">$link_velluna</a></span>
+      <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_velluna">$link_luna</a></span>
       <script>
 	$(document).ready(function(){
 	    setDate();
@@ -1004,6 +1004,13 @@ echo<<<CONTENT
 	</tr>
 
       </table>
+
+      <div class="w3-text-grey w3-xlarge w3-center">
+	<div id="fb-root"></div>
+	$fblink_lunafases
+	$tlink_lunafases
+      </div>
+	  
       <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_lunafases">$link_lunafases</a></span>
       </center>
 
@@ -1141,8 +1148,8 @@ echo<<<CONTENT
 	<br/>
 	<div class="w3-text-grey w3-xlarge w3-center">
 	  <div id="fb-root"></div>
-	  $fblink_velluna
-	  $tlink_velluna
+	  $fblink_vel_luna
+	  $tlink_vel_luna
 	</div>
 	<span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_velluna">$link_velluna</a></span>
       </div>

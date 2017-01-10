@@ -5,6 +5,7 @@
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <?php
 require_once("php/calendar.php");
+$type="multiple";
 if(isset($section)){$type="multiple";}
 else if(!isset($type)){$type="single";}
 if(preg_match("/\/dev\//",$_SERVER["SCRIPT_FILENAME"])){

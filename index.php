@@ -49,7 +49,7 @@ $tlink_perihelio=twitterLink($link_perihelio,"¿Cuántos días faltan para el pr
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 $link_veltierra="http://bit.ly/astrotiempo-tierra-velocimetro";
 $fblink_veltierra=facebookLink($link_veltierra);
-$tlink_veltierra=twitterLink($link_veltierra,"¿Cuál es la velocidad y distancia Tierra-Sol justo ahora? El velocímetro de la Tierra","AstronomiaUdeA","Astrotiempo");
+$tlink_veltierra=twitterLink($link_veltierra,"¿Cuál es la velocidad y distancia Tierra-Sol ahora? El velocímetro de la Tierra","AstronomiaUdeA","Astrotiempo");
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // QUE HORA ES

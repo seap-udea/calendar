@@ -645,15 +645,15 @@ echo<<<CONTENT
       <h3 class="w3-large">
 	<a name="luna_ahora">
 	La luna <a href="JavaScript:void(null)"
-	       onclick="setDate();updateMoon()">ahora</a>
-	</a>
-	<br/>
+	       onclick="setDate();updateMoon()">ahora</a> 
+	</a><br/>
+	<i class="fa fa-hand-o-right"></i>
 	<input class="luna-fecha" type="text"
 	       name="fecha" value="01/01/2011 00:00:00"
 	       style="text-align:center;background:black;color:gray;border:none"
 	       onchange="changeDate($(this).val())"
-	       onhover="">
-	<i class="fa fa-hand-o-left"></i>
+	       size="20em"
+	       onhover=""> LTM
       </h3>
 
       <div id="luna" style="width:400px;line-height:400px;margin:auto;text-align:center">
@@ -823,12 +823,13 @@ echo<<<CONTENT
 	Crateres en el terminador <a href="JavaScript:void(null)"
 	       onclick="setDate();updateMoonCrateres()">ahora</a>
 	<br/>
+	<i class="fa fa-hand-o-right"></i>
 	<input class="luna-fecha" type="text"
 	       name="fecha" value="01/01/2011 00:00:00"
+	       size="20em"
 	       style="text-align:center;background:black;color:gray;border:none"
 	       onchange="changeDateCrateres($(this).val())"
-	       onhover="">
-	<i class="fa fa-hand-o-left"></i>
+	       onhover=""> LTM
       </h3>
       </a>
       <div id="luna-crateres" style="width:400px;line-height:400px;margin:auto;border:solid white 0px;text-align:center">

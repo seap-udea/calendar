@@ -4,20 +4,6 @@
 <!-- PHP CODE -->
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <?php
-/*
-echo "HTTPS?:".$_SERVER['HTTPS']."<br/>";
-echo "HTTPS?:".$_SERVER['HTTP_X_FORWARDED_PROTO']."<br/>";
-phpinfo();
-return;
-$use_sts = true;
-if ($use_sts && isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-    header('Strict-Transport-Security: max-age=31536000');
-} elseif ($use_sts) {
-    header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], true, 301);
-    die();
-}
-//*/
-
 require_once("php/calendar.php");
 //$type="multiple";
 if(isset($section)){$type="multiple";}
@@ -122,7 +108,7 @@ $tlink_terminador=twitterLink($link_terminador,"¿Qué se esta viendo en el term
   <!-- Font awesome: http://fontawesome.io/icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Play:700,400" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Play:700,400" type="text/css">
   <link rel="stylesheet" href="css/calendar.css">
 
   <link rel="stylesheet" href="js/flipclock/flipclock.large.css">
@@ -173,6 +159,12 @@ $tlink_terminador=twitterLink($link_terminador,"¿Qué se esta viendo en el term
     <i class="fa fa-circle-o-notch fa-spin w3-xxlarge"></i>
     <p>¿FIN DE AÑO?</p>
   </a>
+
+  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('ubicacion',$type)?>">
+    <i class="fa fa-map-o w3-xxlarge"></i>
+    <p>UBICACIÓN</p>
+  </a>
+
 
   <a class="w3-padding-large w3-hover-black w3-text-gray" href="<?php echo ilink('estaciones',$type)?>">
     <i class="fa fa-snowflake-o fa-spin w3-xxlarge"></i>
@@ -1186,6 +1178,79 @@ echo<<<CONTENT
     </center>
 
 
+  </div>
+
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <!-- UBICACION -->
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+CONTENT;
+}if($type=="single" or $section=="ubicacion"){ 
+echo<<<CONTENT
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" data-type="time" id="ubicacion">
+    <h2 class="w3-text-light-grey">Ubicación</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>
+      ¿Dónde estas en el planeta? ¿qué sentido tiene esta pregunta
+      cuando estamos hablando es del tiempo?. Una de las
+      características más interesantes del tiempo es que esta ligado
+      íntimamente al espacio.  El tiempo que hace depende a veces de
+      forma muy complicada del lugar en el que te encuentras en la
+      Tierra
+    </p>
+    
+    <div class="w3-center">
+      <h3 class="w3-large">Tu ubicación</h3>
+      Latitud: <input id="latitud" type="text" size="10em" value="25" style="border:none;border-bottom:solid white 1px;background:black;color:white"/> 
+      Longitud: <input id="longitud" type="text" size="10em" value="-90" style="border:none;border-bottom:solid white 1px;background:black;color:white"/> 
+      <div id="status" style="padding:10px">
+	<div id="loading">Cargando...</div>
+	<div id="successful" style="display:none;">Localizado</div>
+      </div>
+      <div style="width:60vw;height:60vh;margin:auto;border:solid white 1px;text-align:center;">
+	<div id="map" style="width:60vw;height:60vh;z-index:-1"></div>
+      </div>
+    </div>
+    <script>
+	function initMap() {
+	    var map = new google.maps.Map(document.getElementById("map"), {
+		center: {lat: 25, lng: -90},
+		zoom: 4
+	    });
+	    var infoWindow = new google.maps.InfoWindow({map: map});
+	    if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position) {
+		    var pos = {
+			lat: position.coords.latitude,
+			lng: position.coords.longitude
+		    };
+		    infoWindow.setPosition(pos);
+		    infoWindow.setContent('Usted esta aquí.');
+		    $("#longitud").val(Math.round10(position.coords.longitude,-5));
+		    $("#latitud").val(Math.round10(position.coords.latitude,-5));
+		    map.setCenter(pos);
+		    map.setZoom(6);
+		    $("#loading").hide();
+		    $("#successful").show();
+		    $("#map").css("z-index","10");
+		}, function() {
+		    handleLocationError(true, infoWindow, map.getCenter());
+		    $("#overlay").hide();
+		});
+	    } else {
+		handleLocationError(false, infoWindow, map.getCenter());
+		$("#overlay").hide();
+	    }
+	    
+	    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+		infoWindow.setPosition(pos);
+		infoWindow.setContent(browserHasGeolocation ?
+				      'Error: The Geolocation service failed.' :
+				      'Error: Your browser doesn\'t support geolocation.');
+	    }
+	}
+    
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOpzHobhu8v34xNylZahKvK__a9V4KFf4&callback=initMap" async defer></script>
   </div>
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->

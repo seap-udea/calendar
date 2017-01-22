@@ -901,7 +901,7 @@ echo<<<CONTENT
 		  .tickSize(20, 8, 10)
 		  .tickPadding(5)
 		  .scale(d3.scale.linear()
-			 .domain([3500, 4000])
+			 .domain([3000, 4000])
 			 .range([-3*Math.PI/4, 3*Math.PI/4]));
 
 	      var segDisplayLuna = iopctrl.segdisplay()

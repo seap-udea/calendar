@@ -4,6 +4,20 @@
 <!-- PHP CODE -->
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <?php
+/*
+echo "HTTPS?:".$_SERVER['HTTPS']."<br/>";
+echo "HTTPS?:".$_SERVER['HTTP_X_FORWARDED_PROTO']."<br/>";
+phpinfo();
+return;
+$use_sts = true;
+if ($use_sts && isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+    header('Strict-Transport-Security: max-age=31536000');
+} elseif ($use_sts) {
+    header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], true, 301);
+    die();
+}
+//*/
+
 require_once("php/calendar.php");
 //$type="multiple";
 if(isset($section)){$type="multiple";}

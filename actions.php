@@ -8,7 +8,41 @@ require_once("php/calendar.php");
 //ACTIONS
 ////////////////////////////////////////////////////////////////////////
 if(isset($action)){
-  
+
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  //ECLIPSE CONDITIONS
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if($action=="eclipse"){
+    //RUN SCRIPT
+    $cmd="$PYTHON bin/eclipse.py $lat $lon $date";
+    $out=shell_exec($cmd);
+    $json=preg_replace("/}/","",$out).",";
+    $props=json_decode($out,true);
+
+    //GET PROPERTIES
+
+    //First contact
+    $utc1=$props["tc1"];
+    $utc1=date("U",strtotime($utc1));
+    $json.='"utc1":"'.$utc1.'",';
+
+    //Maximum
+    $utcmax=$props["tcmax"];
+    $utcmax=date("U",strtotime($utcmax));
+    $json.='"utcmax":"'.$utcmax.'",';
+
+    //Last contact
+    $utc4=$props["tc4"];
+    $utc4=date("U",strtotime($utc4));
+    $json.='"utc4":"'.$utc4.'",';
+    
+    //RETURN
+    $json=rtrim($json,",");
+    $json.="}";
+
+    echo $json;
+  }		
+
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   //PERIHELIA TABLE
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

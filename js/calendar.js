@@ -69,6 +69,29 @@ var FAC_TIME=0.003;
 ////////////////////////////////////////////////////////////////////////
 //ROUTINES
 ////////////////////////////////////////////////////////////////////////
+function Counter(name)
+{
+    //Perihelion date
+    var periTime=$('#clock_'+name+'-time').html()*1000;
+    var futureDate=new Date(periTime);
+    var currentDate = new Date();
+    var diff = futureDate.getTime() / 1000 - currentDate.getTime() / 1000;
+    if(diff<0){diff=0;}
+
+    //Create clock
+    var clock = $('.clock_'+name).FlipClock(diff,{
+	clockFace: 'DailyCounter',
+	language: 'spanish',
+	countdown: true
+    });
+
+    //If we have arrived show 'Happy Eclipse'
+    if(diff==0)	$('.clock_'+name+'-end').show();
+
+    //Change eclipse date
+    $('.clock_'+name+'-date').html(futureDate.toLocaleString()+' (hora local)');
+}
+
 function perihelionCounter(target)
 {
     //Perihelion date
@@ -473,6 +496,43 @@ function updateQuarters(modo='now',fecha='')
 	}
     });
     
+}
+
+function geoCoords(success,error){
+    if (navigator.geolocation) {
+	navigator.geolocation.getCurrentPosition(function(position) {
+	    $("#LOCAL_LON").val(Math.round10(position.coords.longitude,-5));
+	    $("#LOCAL_LAT").val(Math.round10(position.coords.latitude,-5));
+	    success(position);
+	},error());
+    } else {
+	error();
+    }
+}
+
+function getTimeZone(lat,lon,success,error){
+    $.ajax({
+	url:'https://maps.googleapis.com/maps/api/timezone/json?location='+lat+','+lon+'&timestamp=1478880000&key=AIzaSyBOpzHobhu8v34xNylZahKvK__a9V4KFf4',
+	success:function(result){
+	    $('#UTC_OFF').val(result["rawOffset"]);
+	    $('#TIMEZONE').val(result["timeZoneId"]);
+	    success(result);
+	},
+	error:error
+    });
+}
+
+function timeZone(fechaUTC,timezone)
+{
+    /*
+      fechaUTC: Ejemplo, 08/21/2017 20:41:19.0 UTC
+      timezone: Timezone en segundos -18000 para UTC-5
+     */
+    console.log(fechaUTC);
+    var fecha=new Date(parseFloat(fechaUTC)*1000);
+    console.log(fecha);
+    fecha.setTime(fecha.getTime()+fecha.getTimezoneOffset()*60*1000+timezone*1000);
+    return fecha.toLocaleTimeString();
 }
 
 ////////////////////////////////////////////////////////////////////////

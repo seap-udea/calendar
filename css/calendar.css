@@ -30,6 +30,20 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     width:14em;
 }
 
+.digprop {
+    display:table-cell;
+    /*font-family:'Orbitron';*/
+    font-family:courier;
+    padding:2px;
+    color:red;
+    font-size:1.2em;
+    background-image:url('../img/FondoClock.png');
+    border:solid #333333 5px;
+    border-radius:5px
+    text-align:center;
+    width:14em;
+}
+
 .coordinput {
     border:solid #333333 5px;
     border-radius:5px;    

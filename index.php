@@ -41,6 +41,13 @@ $tlink_general=twitterLink($link_general,"Astrotiempo: significados astronómico
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // PERIHELIO
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$link_eclipse="http://bit.ly/astrotiempo-eclipse";
+$fblink_eclipse=facebookLink($link_eclipse);
+$tlink_eclipse=twitterLink($link_eclipse,"¿A qué hora será el eclipse de Agosto 21 de 2017en mi ciudad?","AstronomiaUdeA","Astrotiempo");
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// PERIHELIO
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 $link_perihelio="http://bit.ly/astrotiempo-tierra-perihelio";
 $fblink_perihelio=facebookLink($link_perihelio);
 $tlink_perihelio=twitterLink($link_perihelio,"¿Cuántos días faltan para el próximo perihelio (el fin de año astronómico)?","AstronomiaUdeA","Astrotiempo");
@@ -131,6 +138,10 @@ $tlink_terminador=twitterLink($link_terminador,"¿Qué se esta viendo en el term
 </head>
 
 <body class="w3-black">
+<input type="hidden" id="LOCAL_LON" value="-75.34">
+<input type="hidden" id="LOCAL_LAT" value="6.2">
+<input type="hidden" id="UTC_OFF" value="-18000">
+<input type="hidden" id="TIMEZONE" value="America/Bogota">
 
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <!-- ICON BAR (LARGE AND MEDIUM SCREENS) -->
@@ -143,6 +154,11 @@ $tlink_terminador=twitterLink($link_terminador,"¿Qué se esta viendo en el term
   <a class="w3-padding-large w3-black" href="<?php echo ilink('home',$type)?>">
     <i class="fa fa-home w3-xxlarge"></i>
     <p>INICIO</p>
+  </a>
+
+  <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('eclipses',$type)?>">
+    <i class="fa fa-sun-o fa-spin w3-xxlarge"></i>
+    <p>ECLIPSES</p>
   </a>
 
   <a class="w3-padding-large w3-hover-black" href="<?php echo ilink('quehoraes',$type)?>">
@@ -288,6 +304,359 @@ echo<<<CONTENT
   <!-- ¿QUÉ HORA ES? -->
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
 CONTENT;
+}if($type=="single" or $section=="eclipses"){ 
+
+echo<<<CONTENT
+
+  <!-- ------------------------------------------------------------------------ -->
+  <!-- RELOJ DEL ECLIPSE -->
+	<!-- ------------------------------------------------------------------------ -->
+  <script>
+	function updateSimulation(){
+
+	    //RESCALE CANVAS
+	    var canvas=document.getElementById("eclipse_conditions");
+	    var ctx=canvas.getContext("2d");
+	    var conditions=$("#eclipse_conditions");
+	    var w=conditions.width(),h=conditions.height();
+	    ctx.canvas.width=w;
+	    ctx.canvas.height=h;
+	    ctx.clearRect(0,0,w,h);
+
+	    var corona=0;
+	    var rsun=0.2*h;
+
+	    //GET PROPERTIES
+	    var imag=$("#mag").html().replace("%","")/100;
+	    var dmoon=$("#dmoon").html();
+	    var dsun=$("#dsun").html();
+	    var fmoon=dmoon/dsun;
+	    var qtipo=$("#qtipo").html();
+	    var mag=Math.abs(1-imag);
+
+	    console.log("Magnitud:"+mag+", dsun="+dsun+",dmoon="+dmoon+",fmoon="+fmoon+",qtipo="+qtipo);
+	    if(qtipo==2)
+		corona=1;
+
+	    //PROPERTIES
+	    var fillsky="#0080FF";
+	    if(corona)
+		fillsky="darkblue";
+	    var fillsun="#F2F5A9";
+	    var darksun="#B18904";
+	    var darksun="#FACC2E";
+
+	    //DRAW SKY
+	    ctx.beginPath();
+	    ctx.fillStyle=fillsky;
+	    ctx.rect(0,0,w,h);
+	    ctx.fill();
+
+	    //DRAW CORONA
+	    if(corona){
+		grd=ctx.createRadialGradient(w/2,h/2,1.0*rsun,w/2,h/2,2.0*rsun);
+		grd.addColorStop(0,fillsun);
+		grd.addColorStop(1,fillsky);
+		ctx.beginPath();
+		ctx.strokeStyle=fillsky;
+		ctx.fillStyle=grd;
+		ctx.arc(w/2,h/2,2.0*rsun,0,2*Math.PI);
+		ctx.stroke();
+		ctx.fill()
+	    }
+
+	    //DRAW SUN
+	    var grd=ctx.createRadialGradient(w/2,h/2,0.8*rsun,w/2,h/2,rsun);
+	    grd.addColorStop(0,fillsun);
+	    grd.addColorStop(1,darksun);
+	    ctx.beginPath();
+	    ctx.strokeStyle=darksun;
+	    ctx.fillStyle=grd;
+	    ctx.arc(w/2,h/2,rsun,0,2*Math.PI);
+	    ctx.stroke();
+	    ctx.fill()
+
+	    //DRAW MOON
+	    var rmoon=fmoon*rsun;
+	    ctx.beginPath();
+	    ctx.strokeStyle=fillsky;
+	    ctx.fillStyle=fillsky;
+	    ctx.arc(w/2-mag*rmoon,h/2,rmoon,0,2*Math.PI);
+	    ctx.stroke();
+	    ctx.fill()
+
+	    //DRAW SOLAR DISK CONTOUR
+	    ctx.beginPath();
+	    ctx.setLineDash([5,5]);
+	    ctx.strokeStyle="white";
+	    ctx.arc(w/2,h/2,rsun,0,2*Math.PI);
+	    ctx.stroke();
+
+	}
+
+	function initMap() {
+	    var lat=parseFloat($('#LOCAL_LAT').val());
+	    var lon=parseFloat($('#LOCAL_LON').val());
+	    var pos={lat:lat,lng:lon};
+	    var map=new google.maps.Map(document.getElementById("map_eclipse"),
+					{center:pos,zoom: 4});
+	    map.setZoom(6);
+
+	    var marker = new google.maps.Marker({map:map,});
+	    geoCoords(function(){
+		var lat=parseFloat($('#LOCAL_LAT').val());
+		var lon=parseFloat($('#LOCAL_LON').val());
+		var pos={lat:lat,lng:lon};
+		marker.setPosition(pos);
+		map.setCenter(pos);
+	    },function(){});
+
+	    google.maps.event.addListener(map,'click',function(event) {
+		var pos=event.latLng;
+		var lon=pos.lng();
+		var lat=pos.lat();
+		$('#LOCAL_LAT').val(Math.round10(lat,-5));
+		$('#LOCAL_LON').val(Math.round10(lon,-5));
+
+		marker.setPosition(pos);
+		map.setCenter(pos);
+		$('.lat_ecl').html($('#LOCAL_LAT').val());
+		$('.lon_ecl').html($('#LOCAL_LON').val());
+		$('.eclipse_val').html("--");
+		eclipseConditions();
+	    });
+	}	
+
+	function eclipseConditions(){
+
+	    var lat=parseFloat($('#LOCAL_LAT').val());
+	    var lon=parseFloat($('#LOCAL_LON').val());
+
+	    getTimeZone(lat,lon,function(r){
+
+		tzone=$('#TIMEZONE').val();
+		toff=$('#UTC_OFF').val();
+
+		$.ajax({
+		    url:'actions.php?action=eclipse&lat='+lat+'&lon='+lon+'&date=08/21/2017',
+		    success:function(result){
+			
+			var props=JSON.parse(result);
+			
+			//SET POSITIONS
+			$('.lat_ecl').html(lat);
+			$('.lon_ecl').html(lon);
+			$('.tzone').html(tzone);
+			
+			//SET COUNTER
+			$('#clock_eclipse-wait').hide();
+			$('#clock_eclipse').show();
+			$('#clock_eclipse-time').html(props["utc1"]);
+			Counter('eclipse');
+			
+			//SET ECLIPSE CONDITIONS
+			$('#type').html(props["type"]);
+			$('#tc1').html(timeZone(props["utc1"],toff));
+			$('#hc1').html(Math.round10(props["el_c1"],-1));
+			$('#tcmax').html(timeZone(props["utcmax"],toff));
+			$('#hmax').html(Math.round10(props["el_max"],-1));
+			$('#tc4').html(timeZone(props["utc4"],toff));
+			$('#hc4').html(Math.round10(props["el_c4"],-1));
+
+			$('#mag').html(Math.round10(props["mag"],-1)+"%");
+			$('#obs').html(Math.round10(props["obs"],-1)+"%");
+
+			$('#duracion').html(Math.round10(props["duracion"],-1)+" h");
+
+			$('#dmoon').html(Math.round10(props["size_moon"],-3));
+			$('#dsun').html(Math.round10(props["size_sun"],-3));
+			$('#qtipo').html(props["qtipo"]);
+
+			//UPDATE SIMULATION
+			updateSimulation();
+
+		    }
+		});
+	    });
+
+	}
+    
+    $(document).ready(function() {
+	geoCoords(function(){
+	    eclipseConditions();
+	},function(){
+	    eclipseConditions();
+	});
+    });
+  </script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOpzHobhu8v34xNylZahKvK__a9V4KFf4&callback=initMap" async defer></script>
+
+  <center>
+  <div id="clock_eclipse-wait" style="display:table;width:60vw;height:30vh;border:solid white 0px">
+    <div style="display:table-cell;vertical-align:middle;font-size:2em;color:gray">
+      Obteniendo posición...
+    </div>
+  </div>	
+  </center>
+
+  <div id="clock_eclipse" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;display:none">
+    <span id="clock_eclipse-time" class="w3-hide"></span>
+    <span class="w3-text-grey">Tiempo para el próximo eclipse de Sol en lat. <span class="lat_ecl"></span>, lon. <span class="lon_ecl"></span>, <span class="clock_eclipse-date"></span>:</span>
+    <br><br/>
+    <div class="clock_eclipse" style="border:solid white 0px;"></div>
+    <div class="clock_eclipse-end w3-xxlarge" style="display:none">
+      <i class="fa fa-star fa-spin"></i>
+      El eclipse ha comenzado
+      <i class="fa fa-star fa-spin"></i>
+    </div>
+
+    <div class="w3-text-grey w3-xlarge w3-center">
+      <div id="fb-root"></div>
+      $fblink_eclipse
+      $tlink_eclipse
+    </div>
+    <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_eclipse">$link_eclipse</a></span>
+  </div>
+  <!-- ------------------------------------------------------------------------ -->
+  <!-- ------------------------------------------------------------------------ -->
+
+  <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="eclipse">
+    <h2 class="w3-text-light-grey">Eclipses</h2>
+    <hr style="width:200px" class="w3-opacity">
+
+    <p>
+      Los eclipses de Sol y de Luna están entre los eventos
+      astronómicos que despiertan más interés y fascinación entre la
+      gente.
+    </p>
+    
+    <p>
+      Desde tiempos inmemoriales los eclipses han sido registrados y
+      predichos por las culturas con formas avanzadas de
+      conocimiento astronómico.
+    </p>
+    
+    <p>
+      La determinación precisa del momento en el que ocurren y su
+      periodicidad han jugado un papel importante en la evolución del
+      calendario y en la medida del tiempo.
+    </p>
+
+    <p>
+      En esta sección encontrará información sobre los próximos
+      eclipses de interés, su tiempo y la ubicación en la que pueden
+      observarse.
+    </p>
+
+    <h3 class="w3-text-light-grey">Eclipse de Agosto de 2017</h3>
+    <hr style="width:100%" class="w3-opacity">
+
+    <p>
+      Haga click en cualquier lugar en el mapa para conocer las
+      condiciones del eclipse total de Sol en el sitio en cuestión.
+    </p>
+
+    <style>
+      .eclipse_prop{
+      text-decoration:underline;
+      }
+      .eclipse_val{
+      /*background:darkgray;*/
+      }
+    </style>
+
+    <center>
+      <div id="map_eclipse" style="display:table-cell;width:50vw;height:70vh;z-index:100">
+      </div>
+    </center>
+
+    <center>
+    <table id="eclipse_table" style="padding:10px">
+      <tr>
+	<td colspan=2>
+	  <center>Zona horaria:<span class="tzone digprop">--</span></center>
+	  <div id="dsun" style="display:none">0</div>
+	  <div id="dmoon" style="display:none">0</div>
+	  <div id="qtipo" style="display:none">0</div>
+	</td>
+      </tr>
+
+      <tr>
+	<td><center>Latitud:<span class="lat_ecl digprop">--</span></center></td>
+	<td><center>Longitud:<span class="lon_ecl digprop">--</span></center></td>
+      </tr>
+      
+      <tr>
+	<td><center>
+	  <span class="eclipse_prop">Tipo:</span>
+	  <div class="eclipse_val digprop" id="type">--</div>
+	</center></td>
+	<td><center>
+	  <span class="eclipse_prop">Duración:</span>
+	  <div class="eclipse_val digprop" id="duracion">--</div>
+	</center></td>
+      </tr>
+
+      <tr>
+	<td><center>
+	<span class="eclipse_prop">Hora de inicio:</span><br/>
+	<div class="eclipse_val digprop" id="tc1">--</div>
+	</center></td>
+	<td><center>
+	<span class="eclipse_prop">Altura inicio:</span><br/>
+	<div class="eclipse_val digprop" id="hc1">--</div>
+	</center></td>
+      </tr>
+
+      <tr>
+	<td><center>
+ 	<span class="eclipse_prop">Hora de máximo:</span><br/>
+	<div class="eclipse_val digprop" id="tcmax">--</div>
+	</center></td>
+	<td><center>
+	<span class="eclipse_prop">Altura máximo:</span><br/>
+	<div class="eclipse_val digprop" id="hmax">--</div>
+	</center></td>
+      </tr>
+
+      <tr>
+	<td><center>
+	<span class="eclipse_prop">Hora de fin:</span><br/>
+	<div class="eclipse_val digprop" id="tc4">--</div>
+	</center></td>
+	<td><center>
+	<span class="eclipse_prop">Altura fin:</span><br/>
+	<div class="eclipse_val digprop" id="hc4">--</div>
+	</center></td>
+      </tr>
+
+      <tr>
+	<td><center>
+	<span class="eclipse_prop">Magnitud:</span><br/>
+	<div class="eclipse_val digprop" id="mag">--</div>
+	</center></td>
+	<td><center>
+	<span class="eclipse_prop">Area Oscurecida:</span><br/>
+	<div class="eclipse_val digprop" id="obs">--</div>
+	</center></td>
+      </tr>
+
+      <tr>
+	<td colspan=2>
+	  <center>
+	      <canvas id="eclipse_conditions" style="border:solid white 1px;margin-top:10px;width:30vw;height:50vh">
+	  </center>
+	</center></td>
+      </tr>
+
+    </table>
+    </center>
+
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+  <!-- ¿QUÉ HORA ES? -->
+  <!-- ----------------------------------------------------------------------------------------------------------------- -->
+CONTENT;
 }if($type=="single" or $section=="quehoraes"){ 
 $buttons=<<<B
 	<tr>
@@ -332,24 +701,44 @@ echo<<<CONTENT
       target="_blank">http://www.whatsmygps.com</a>
     </p>
     <p>
-      Tu longitud geográfica: <input data-type="time" id="lon" type="text" name="lat"
-				     value="-75.3" class="coordinput" onchange="getTimes(0)">
+      Tu longitud geográfica: <input data-type="time" id="lon" type="text" 
+				     name="lat"
+				     value="-75.3" 
+				     class="coordinput" 
+				     onchange="getTimes(0)" size="100">
+      <span id="lon_rec">
+	<i id="lon_rec" class="fa fa-snowflake-o fa-spin w3-xlarge"></i>
+	Buscando longitud...
+      </span>
+      
     </p>
 
     <center>
       <script>
-	  $(document).ready(function() {
-	      if(!localStorage.lon || TZ!=localStorage.TZ){
-		  var lon=TZ*15.0;
-		  var dlon=1-2*Math.random();
-		  lon+=dlon;
-	      }else{
-		  lon=localStorage.lon;
-	      }
-	      $("#lon").val(Math.round10(lon,-3));
-	      getTimes();
-	  });
+         $(document).ready(function() {
+	     if(!localStorage.lon || TZ!=localStorage.TZ){
+	       var lon=TZ*15.0;
+	       var dlon=1-2*Math.random();
+	       lon+=dlon;
+	     }else{
+	       lon=localStorage.lon;
+	     }
+	     $("#lon").val(Math.round10(lon,-3));
+	     getTimes();
+	   });
+         if (navigator.geolocation) {
+	   navigator.geolocation.getCurrentPosition(function(position) {
+	       $("#lon").val(Math.round10(position.coords.longitude,-3));
+	       $("#lon_rec").hide();
+	       getTimes();
+	     }, function(){
+	       $("#lon_rec").html("<i style='color:red'>No encontrada</i>");
+	     });
+	 } else {
+	   $("#lon_rec").html("<i style='color:red'>No encontrada</i>");
+	 }
       </script>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOpzHobhu8v34xNylZahKvK__a9V4KFf4&callback=initMap" async defer></script>
 
       <div data-type="time" id="DT_plain" class="w3-hide"></div>
       <div data-type="time" id="ET_plain" class="w3-hide"></div>

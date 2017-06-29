@@ -41,6 +41,8 @@ var LDELTAT=0;
 var QTYPES=["Luna Nueva","Cuarto Creciente","Luna Llena","Cuarto Menguante"];
 var QIMAGES=["NewMoon.jpg","FirstQuarter.jpg","FullMoon.jpg","ThirdQuarter.jpg"]
 
+var LOCAL_VARS=["LOCAL_LON","LOCAL_LAT","UTC_OFF","DST_OFF","TIMEZONE"];
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //CONFIGURATION
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,11 +73,22 @@ var FAC_TIME=0.003;
 ////////////////////////////////////////////////////////////////////////
 function Counter(name)
 {
-    //Perihelion date
-    var periTime=$('#clock_'+name+'-time').html()*1000;
-    var futureDate=new Date(periTime);
-    var currentDate = new Date();
-    var diff = futureDate.getTime() / 1000 - currentDate.getTime() / 1000;
+    //Time Zone
+    var timezone=parseFloat($('#UTC_OFF').val())+parseFloat($('#DST_OFF').val());
+
+    //Get time (assuming in UTC)
+    var time=$('#clock_'+name+'-time').html()*1000;
+    var futureDate=new Date(time);
+    console.log("Future:"+futureDate.toLocaleString());
+    /*
+    var ftime=time-futureDate.getTimezoneOffset()*60*1000;
+    futureDate.setTime(ftime);
+    */
+
+    //Get current date
+    var currentDate=new Date();
+
+    var diff=futureDate.getTime()/1000-currentDate.getTime()/1000;
     if(diff<0){diff=0;}
 
     //Create clock
@@ -89,6 +102,7 @@ function Counter(name)
     if(diff==0)	$('.clock_'+name+'-end').show();
 
     //Change eclipse date
+    futureDate.setTime(futureDate.getTime()+futureDate.getTimezoneOffset()*60*1000+timezone*1000);
     $('.clock_'+name+'-date').html(futureDate.toLocaleString()+' (hora local)');
 }
 
@@ -510,12 +524,16 @@ function geoCoords(success,error){
     }
 }
 
-function getTimeZone(lat,lon,success,error){
+function getTimeZone(lat,lon,time,success,error){
+    var url='https://maps.googleapis.com/maps/api/timezone/json?location='+lat+','+lon+'&timestamp='+time+'&key=AIzaSyBOpzHobhu8v34xNylZahKvK__a9V4KFf4';
+    console.log("TimeZone URL:"+url);
     $.ajax({
-	url:'https://maps.googleapis.com/maps/api/timezone/json?location='+lat+','+lon+'&timestamp=1478880000&key=AIzaSyBOpzHobhu8v34xNylZahKvK__a9V4KFf4',
+	url:url,
 	success:function(result){
+	    $('#DST_OFF').val(result["dstOffset"]);
 	    $('#UTC_OFF').val(result["rawOffset"]);
 	    $('#TIMEZONE').val(result["timeZoneId"]);
+	    console.log("DST+UTC:"+result["dstOffset"]+","+result["rawOffset"]);
 	    success(result);
 	},
 	error:error
@@ -533,6 +551,26 @@ function timeZone(fechaUTC,timezone)
     console.log(fecha);
     fecha.setTime(fecha.getTime()+fecha.getTimezoneOffset()*60*1000+timezone*1000);
     return fecha.toLocaleTimeString();
+}
+
+function saveLocalVariables(variables)
+{
+    console.log("Saving variables");
+    for(var i in variables){
+	var variable=variables[i];
+	var value=$("#"+variable).val();
+	console.log("Setting "+variable+" = "+value);
+	localStorage.setItem(variable,value);
+    }
+}
+
+function loadLocalVariables(variables)
+{
+    for(var i in variables){
+	var variable=variables[i];
+	value=localStorage.getItem(variable);
+	$("#"+variable).val(value);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////

@@ -141,7 +141,9 @@ $tlink_terminador=twitterLink($link_terminador,"¿Qué se esta viendo en el term
 <input type="hidden" id="LOCAL_LON" value="-75.34">
 <input type="hidden" id="LOCAL_LAT" value="6.2">
 <input type="hidden" id="UTC_OFF" value="-18000">
+<input type="hidden" id="DST_OFF" value="0">
 <input type="hidden" id="TIMEZONE" value="America/Bogota">
+<input type="hidden" id="NEXTECLIPSE" value="8/21/2017">
 
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <!-- ICON BAR (LARGE AND MEDIUM SCREENS) -->
@@ -334,7 +336,9 @@ echo<<<CONTENT
 	    var qtipo=$("#qtipo").html();
 	    var mag=Math.abs(1-imag);
 
-	    console.log("Magnitud:"+mag+", dsun="+dsun+",dmoon="+dmoon+",fmoon="+fmoon+",qtipo="+qtipo);
+	    if(mag==1){
+		mag=10;
+	    }
 	    if(qtipo==2)
 		corona=1;
 
@@ -381,16 +385,57 @@ echo<<<CONTENT
 	    ctx.beginPath();
 	    ctx.strokeStyle=fillsky;
 	    ctx.fillStyle=fillsky;
-	    ctx.arc(w/2-mag*rmoon,h/2,rmoon,0,2*Math.PI);
+	    ctx.arc(w/2-mag*rsun,h/2,rmoon,0,2*Math.PI);
 	    ctx.stroke();
 	    ctx.fill()
 
 	    //DRAW SOLAR DISK CONTOUR
-	    ctx.beginPath();
-	    ctx.setLineDash([5,5]);
-	    ctx.strokeStyle="white";
-	    ctx.arc(w/2,h/2,rsun,0,2*Math.PI);
-	    ctx.stroke();
+	    if(corona){
+		ctx.beginPath();
+		ctx.setLineDash([5,5]);
+		ctx.strokeStyle="white";
+		ctx.arc(w/2,h/2,rsun,0,2*Math.PI);
+		ctx.stroke();
+	    }
+
+	    //TEXT
+	    var fsize=h/25.0
+	    var dmarg=20.0
+
+	    var qtipo=$("#qtipo").html();
+	    var tipo=$("#type").html();
+	    var lat=$(".lat_ecl").html();
+	    var lon=$(".lon_ecl").html();
+	    var mag=$("#mag").html();
+	    var obs=$("#obs").html();
+	    var tc1=$("#tc1").html();
+	    var tcmax=$("#tcmax").html();
+	    var tc4=$("#tc4").html();
+	    var duracion=$("#duracion").html();
+
+	    ctx.font=fsize+"px Helvetica";
+	    ctx.fillStyle="white";
+
+	    //POSITION
+	    ctx.textAlign="left";
+	    ctx.fillText("lat."+lat+", lon."+lon,w/dmarg,h/dmarg);
+
+	    if(qtipo>0){
+		//MAGNITUDE
+		ctx.textAlign="right";
+		ctx.fillText("Mag."+mag+", obs."+obs,w-w/dmarg,h-h/dmarg);
+		
+		//TIMES
+		ctx.textAlign="center";
+		ctx.fillText("Inicio "+tc1,w/2,3*h/dmarg);
+		ctx.fillText("Máximo "+tcmax,w/2,4*h/dmarg);
+		ctx.fillText("Fin "+tc4,w/2,5*h/dmarg);
+		ctx.fillText("Duración "+duracion,w/2,h-4*h/dmarg);
+	    }else{
+		ctx.textAlign="center";
+		ctx.fillText(tipo,w/2,3*h/dmarg);
+	    }
+	    
 
 	}
 
@@ -403,13 +448,22 @@ echo<<<CONTENT
 	    map.setZoom(6);
 
 	    var marker = new google.maps.Marker({map:map,});
-	    geoCoords(function(){
+	    if(!localStorage.LOCAL_LON){
+		geoCoords(function(){
+		    var lat=parseFloat($('#LOCAL_LAT').val());
+		    var lon=parseFloat($('#LOCAL_LON').val());
+		    var pos={lat:lat,lng:lon};
+		    marker.setPosition(pos);
+		    map.setCenter(pos);
+		},function(){});
+	    }else{
+		loadLocalVariables(LOCAL_VARS);
 		var lat=parseFloat($('#LOCAL_LAT').val());
 		var lon=parseFloat($('#LOCAL_LON').val());
 		var pos={lat:lat,lng:lon};
 		marker.setPosition(pos);
 		map.setCenter(pos);
-	    },function(){});
+	    }
 
 	    google.maps.event.addListener(map,'click',function(event) {
 		var pos=event.latLng;
@@ -423,6 +477,8 @@ echo<<<CONTENT
 		$('.lat_ecl').html($('#LOCAL_LAT').val());
 		$('.lon_ecl').html($('#LOCAL_LON').val());
 		$('.eclipse_val').html("--");
+
+		saveLocalVariables(LOCAL_VARS);
 		eclipseConditions();
 	    });
 	}	
@@ -431,14 +487,15 @@ echo<<<CONTENT
 
 	    var lat=parseFloat($('#LOCAL_LAT').val());
 	    var lon=parseFloat($('#LOCAL_LON').val());
+	    var time=new Date($('#NEXTECLIPSE').val()+" 12:00:00 +000").getTime()/1000.0;
+	    
+	    getTimeZone(lat,lon,time,function(r){
 
-	    getTimeZone(lat,lon,function(r){
-
-		tzone=$('#TIMEZONE').val();
-		toff=$('#UTC_OFF').val();
+		var tzone=$('#TIMEZONE').val();
+		var toff=parseFloat($('#UTC_OFF').val())+parseFloat($('#DST_OFF').val());
 
 		$.ajax({
-		    url:'actions.php?action=eclipse&lat='+lat+'&lon='+lon+'&date=08/21/2017',
+		    url:'actions.php?action=eclipse&lat='+lat+'&lon='+lon+'&date='+$('#NEXTECLIPSE').val(),
 		    success:function(result){
 			
 			var props=JSON.parse(result);
@@ -466,7 +523,7 @@ echo<<<CONTENT
 			$('#mag').html(Math.round10(props["mag"],-1)+"%");
 			$('#obs').html(Math.round10(props["obs"],-1)+"%");
 
-			$('#duracion').html(Math.round10(props["duracion"],-1)+" h");
+			$('#duracion').html(props["duracion"]);
 
 			$('#dmoon').html(Math.round10(props["size_moon"],-3));
 			$('#dsun').html(Math.round10(props["size_sun"],-3));
@@ -482,46 +539,38 @@ echo<<<CONTENT
 	}
     
     $(document).ready(function() {
-	geoCoords(function(){
+	
+	var qcoord=true;
+	if(!localStorage.LOCAL_LON){
+	    $("#LOCAL_LON").val("-75");
+	    $("#LOCAL_LAT").val("6");
+	    $("#UTC_OFF").val("-18000");
+	    $("#TIMEZONE").val("America/Bogota");
+	}else{
+	    qcoord=false;
+	}
+
+	if(qcoord){
+	    console.log("New variables");
+	    geoCoords(function(){
+		saveLocalVariables(LOCAL_VARS);
+		eclipseConditions();
+	    },function(){
+		saveLocalVariables(LOCAL_VARS);
+		eclipseConditions();
+	    });
+	}else{
+	    console.log("Old variables");
+	    loadLocalVariables(LOCAL_VARS);
 	    eclipseConditions();
-	},function(){
-	    eclipseConditions();
-	});
+	}
     });
   </script>
 
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOpzHobhu8v34xNylZahKvK__a9V4KFf4&callback=initMap" async defer></script>
 
-  <center>
-  <div id="clock_eclipse-wait" style="display:table;width:60vw;height:30vh;border:solid white 0px">
-    <div style="display:table-cell;vertical-align:middle;font-size:2em;color:gray">
-      Obteniendo posición...
-    </div>
-  </div>	
-  </center>
-
-  <div id="clock_eclipse" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;display:none">
-    <span id="clock_eclipse-time" class="w3-hide"></span>
-    <span class="w3-text-grey">Tiempo para el próximo eclipse de Sol en lat. <span class="lat_ecl"></span>, lon. <span class="lon_ecl"></span>, <span class="clock_eclipse-date"></span>:</span>
-    <br><br/>
-    <div class="clock_eclipse" style="border:solid white 0px;"></div>
-    <div class="clock_eclipse-end w3-xxlarge" style="display:none">
-      <i class="fa fa-star fa-spin"></i>
-      El eclipse ha comenzado
-      <i class="fa fa-star fa-spin"></i>
-    </div>
-
-    <div class="w3-text-grey w3-xlarge w3-center">
-      <div id="fb-root"></div>
-      $fblink_eclipse
-      $tlink_eclipse
-    </div>
-    <span class="w3-text-gray w3-large" style="font-family:courier"><a href="$link_eclipse">$link_eclipse</a></span>
-  </div>
-  <!-- ------------------------------------------------------------------------ -->
-  <!-- ------------------------------------------------------------------------ -->
-
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="eclipse">
+    <!--
     <h2 class="w3-text-light-grey">Eclipses</h2>
     <hr style="width:200px" class="w3-opacity">
 
@@ -548,7 +597,30 @@ echo<<<CONTENT
       eclipses de interés, su tiempo y la ubicación en la que pueden
       observarse.
     </p>
+    -->
 
+    <center>
+      <div id="clock_eclipse-wait" style="display:table;width:60vw;height:30vh;border:solid white 0px">
+	<div style="display:table-cell;vertical-align:middle;font-size:2em;color:gray">
+	  Obteniendo posición...
+	</div>
+      </div>	
+    </center>
+    
+    <div id="clock_eclipse" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;display:none">
+      <span id="clock_eclipse-time" class="w3-hide"></span>
+      <span class="w3-text-grey" style="font-size:0.8em">Tiempo para el próximo eclipse de Sol en lat. <span class="lat_ecl"></span>, lon. <span class="lon_ecl"></span>, <span class="clock_eclipse-date"></span>:</span>
+      <br><br/>
+      <div class="clock_eclipse" style="border:solid white 0px;"></div>
+      <div class="clock_eclipse-end w3-xxlarge" style="display:none">
+	<i class="fa fa-star fa-spin"></i>
+	El eclipse ha comenzado
+	<i class="fa fa-star fa-spin"></i>
+      </div>
+    </div>
+
+    <p></p>
+    <a name="eclipse_condiciones"></a>
     <h3 class="w3-text-light-grey">Eclipse de Agosto de 2017</h3>
     <hr style="width:100%" class="w3-opacity">
 
@@ -559,23 +631,38 @@ echo<<<CONTENT
 
     <style>
       .eclipse_prop{
-      text-decoration:underline;
+	  /*text-decoration:underline;*/
       }
       .eclipse_val{
       /*background:darkgray;*/
       }
+      .eclipse_nota{
+      text-decoration:underline;
+      }
+      li.notes{
+      padding:10px;
+      }
     </style>
 
     <center>
-      <div id="map_eclipse" style="display:table-cell;width:50vw;height:70vh;z-index:100">
-      </div>
-    </center>
-
-    <center>
     <table id="eclipse_table" style="padding:10px">
+
+      <tr><td colspan=2>
+      <center>
+	<i style="font-size:0.8em">En dispositivos móviles vea en posición horizontal y vuelva a cargar</i>
+      </center>
+      </td></tr>
+
+      <tr><td colspan=2>
+      <center>
+	<div id="map_eclipse" style="width:50vw;height:70vh;z-index:100;float:left"></div>
+	<canvas id="eclipse_conditions" style="border:solid white 0px;width:20vw;height:70vh">
+      </center>
+      </td></tr>
+
       <tr>
 	<td colspan=2>
-	  <center>Zona horaria:<span class="tzone digprop">--</span></center>
+	  <center><a href="#notas">Zona horaria</a>:<span class="tzone digprop">--</span></center>
 	  <div id="dsun" style="display:none">0</div>
 	  <div id="dmoon" style="display:none">0</div>
 	  <div id="qtipo" style="display:none">0</div>
@@ -583,75 +670,170 @@ echo<<<CONTENT
       </tr>
 
       <tr>
-	<td><center>Latitud:<span class="lat_ecl digprop">--</span></center></td>
-	<td><center>Longitud:<span class="lon_ecl digprop">--</span></center></td>
+	<td><center><a href="#notas">Latitud</a>:<span class="lat_ecl digprop">--</span></center></td>
+	<td><center><a href="#notas">Longitud</a>:<span class="lon_ecl digprop">--</span></center></td>
       </tr>
       
       <tr>
 	<td><center>
-	  <span class="eclipse_prop">Tipo:</span>
+	  <span class="eclipse_prop"><a href="#notas">Tipo</a>:</span>
 	  <div class="eclipse_val digprop" id="type">--</div>
 	</center></td>
 	<td><center>
-	  <span class="eclipse_prop">Duración:</span>
+	  <span class="eclipse_prop"><a href="#notas">Duración</a>:</span>
 	  <div class="eclipse_val digprop" id="duracion">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
-	<span class="eclipse_prop">Hora de inicio:</span><br/>
+	<span class="eclipse_prop"><a href="#notas">Hora de inicio</a>:</span><br/>
 	<div class="eclipse_val digprop" id="tc1">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop">Altura inicio:</span><br/>
+	<span class="eclipse_prop"><a href="#notas">Altura inicio</a>:</span><br/>
 	<div class="eclipse_val digprop" id="hc1">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
- 	<span class="eclipse_prop">Hora de máximo:</span><br/>
+ 	<span class="eclipse_prop"><a href="#notas">Hora de máximo</a>:</span><br/>
 	<div class="eclipse_val digprop" id="tcmax">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop">Altura máximo:</span><br/>
+	<span class="eclipse_prop"><a href="#notas">Altura máximo</a>:</span><br/>
 	<div class="eclipse_val digprop" id="hmax">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
-	<span class="eclipse_prop">Hora de fin:</span><br/>
+	<span class="eclipse_prop"><a href="#notas">Hora de fin</a>:</span><br/>
 	<div class="eclipse_val digprop" id="tc4">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop">Altura fin:</span><br/>
+	<span class="eclipse_prop"><a href="#notas">Altura fin</a>:</span><br/>
 	<div class="eclipse_val digprop" id="hc4">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
-	<span class="eclipse_prop">Magnitud:</span><br/>
+	<span class="eclipse_prop"><a href="#notas">Magnitud</a>:</span><br/>
 	<div class="eclipse_val digprop" id="mag">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop">Area Oscurecida:</span><br/>
+	<span class="eclipse_prop"><a href="#notas">Oscurecimiento</a>:</span><br/>
 	<div class="eclipse_val digprop" id="obs">--</div>
 	</center></td>
       </tr>
 
-      <tr>
-	<td colspan=2>
-	  <center>
-	      <canvas id="eclipse_conditions" style="border:solid white 1px;margin-top:10px;width:30vw;height:50vh">
-	  </center>
-	</center></td>
-      </tr>
-
     </table>
+    <span class="w3-xxlarge">
+      $fblink_eclipse
+      $tlink_eclipse
+      <span class="w3-text-gray w3-large" style="font-family:courier">
+	<a href="$link_eclipse">$link_eclipse</a>
+      </span>
+    </span>
     </center>
+
+    <a name="notas"></a>
+    <h4>Notas:</h4>
+    <ul>
+
+      <li class="notes"><span class="eclipse_nota">Zona horaria</span>: Todos los
+      tiempos están dados en la hora que marcan los relojes del sitio
+      señalado. La "Zona Horaria" es la denominación oficial de la
+      zona de tiempo en la que se encuentra el lugar.  Normalmente
+      esta formado por dos partes "Continente"/"Zona".</li>
+
+      <li class="notes"><span class="eclipse_nota">Latitud y Longitud</span>: estas
+      son la latitud y longitud geográfica del sitio de observación
+      medida en grados.  La latitud es positiva al norte del ecuador y
+      negativa al Sur.  La longitud es positiva al este del meridiano
+      de Greenwich y negativa al oeste.  La latitud y longitud se dan
+      con precisión de segundos de arco.</li>
+
+      <li class="notes"><span class="eclipse_nota">Tipo</span>: Tipo de eclipse que
+      se observará en el lugar señalado.  Los tipos posibles son:
+      parcial (la luna no obstruye totalmente al Sol), total (la luna
+      tapa al Sol al menos por un breve período de tiempo), no eclipse
+      (desde la prosición la luna nunca tapa al Sol, ni siquiera
+      parcialmente, no visible (el eclipse no se puede ver porque el
+      Sol y la Luna están debajo del horizonte, es de noche).</li>
+      
+      <li class="notes"><span class="eclipse_nota">Duración</span>: Duración en
+      horas, minutos y segundos (hh:mm:ss.sss) de la fase más
+      interesante observable eclipse desde el lugar en cuestión.  En
+      lugares en los que el eclipse es parcial esta es la duración
+      desde que comienza el eclipse (primer contacto) hasta que
+      termina (último contacto).  En lugares donde el eclipse es total
+      la duración se refiere exclusivamente a la totalidad, es decir
+      el tiempo en el que el Sol permanece completamente eclipsado y
+      es visible la corona solar.</li>
+
+      <li class="notes"><span class="eclipse_nota">Hora de inicio</span>: Hora (en
+      tiempo local) del inicio del eclipse.  Este es el tiempo en el
+      que desde el sitio señalado se produce el primer contacto, es
+      decir en el que el disco de la luna tocal el disco solar por
+      primera vez.</li>
+
+      <li class="notes"><span class="eclipse_nota">Hora de máximo</span>: Hora (en
+      tiempo local) del máximo eclipse.  Este es el tiempo en el que
+      desde el sitio indicado el disco lunar esta más próximo al disco
+      solar.  Cuando el eclipse es total este tiempo corresponde a la
+      hora central de la totalidad.</li>
+
+      <li class="notes"><span class="eclipse_nota">Hora de fin</span>: Hora (en
+      tiempo local) en la que termina el eclipse.  Este es el tiempo
+      en el que desde el sitio indicado se produce el último contacto,
+      es decir el último momento en el que se ve el disco lunar
+      "mordiendo" el disco solar.</li>
+      
+      <li class="notes">Todos los tiempos tienen un error de aproximadamente 2
+      segundos debido a que no es posible predecir el desfase natural
+      entre la rotación de la Tierra y nuestras medidas de tiempo.  En
+      términos técnicos los tiempos son calculados en UT (Tiempo
+      Universal) pero las observaciones se hacen respecto al UTC
+      (Tiempo Universal Coordinado).  Para una explicación detallada
+      de estas escalas lea el
+      artículo <a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts/qu-hora-es-14889">"¿Qué
+      hora es?" del scilog "Siderofilia"</a>.</li>
+
+      <li class="notes"><span class="eclipse_nota">Altura (inicio, máximo y
+      fin)</span>: Altura en grados sobre el horizonte a la que se
+      encuentra el Sol en cada etapa del eclipse.  Una altura cercana
+      a 0 grados corresponde a un Sol muy cercano al horizonte.  Una
+      altura cercana a 90 grados corresponde a un Sol muy alto en el
+      cielo.</li>
+
+      <li class="notes"><span class="eclipse_nota">Magnitud</span>: Fracción del
+      disco solar que es tapada por la Luna en el momento de máxima
+      obstrucción.  Si la magnitud es mayor o igual a uno el eclipse
+      es total.  Para el eclipse parcial la magnitud esta entre 0 (no
+      hay eclipse) y más de 1 (eclipse total).  Una magnitud del 50%
+      significa por ejemplo que la Luna esta tapando la mitad del
+      disco solar.</li>
+
+      <li class="notes"><span class="eclipse_nota">Oscurecimiento</span>: Fracción
+      del area del disco solar que es tapada por la Luna en el momento
+      de máximo eclipse. Cuando el eclipse es total el oscurecimiento
+      es 100%. Si el eclipse es parcial el oscurecimiento esta entre
+      0% (no hay eclipse) y 100%.  Si el oscurecimiento es 90%
+      significa que el 90% de la superficie solar es tapada por la
+      Luna.  El oscurecimiento esta directamente relacionado (pero no
+      es exactamente igual) a la disminución en el brillo del Sol.
+      Debe tenerse en cuenta que la magnitud y el oscurecimiento no
+      son lo mismo. Así por ejemplo una magnitud de 25% corresponde a
+      un oscurecimiento de apenas 14.4%.  Para una explicación
+      detallada vaya
+      a <a href="http://www.cosmicriver.net/blog/solar-eclipses-magnitude-and-obscuration">este
+      sitio interactivo</a>.</li>
+
+    </ul>
+
 
   <!-- ----------------------------------------------------------------------------------------------------------------- -->
   <!-- ¿QUÉ HORA ES? -->
@@ -1706,6 +1888,14 @@ echo<<<CONTENT
 
       <li><a name="bib:NASAVIS2017"></a><a href="https://svs.gsfc.nasa.gov/index.html">NASA
       Scientific Visualization Studio</a>, NASA.</li>
+
+      <li><a name="bib:Janetta2013"></a><a href="http://www.cosmicriver.net/blog/solar-eclipses-magnitude-and-obscuration">Solar
+      eclipses: magnitude and obscuration</a>, Adrian Janetta, Agosto
+      de 2013.</li>
+
+      <li><a name="bib:Jubier2017"></a><a href="http://xjubier.free.fr/en/site_pages/solar_eclipses/TSE_2017_GoogleMapFull.html">Solar
+      Eclipse Map and Conditions</a>, Xavier M. Jubier, Última visita:
+      Junio 29 de 2017.</li>
 
     </ol>
 

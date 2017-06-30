@@ -43,7 +43,7 @@ $tlink_general=twitterLink($link_general,"Astrotiempo: significados astronómico
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 $link_eclipse="http://bit.ly/astrotiempo-eclipse";
 $fblink_eclipse=facebookLink($link_eclipse);
-$tlink_eclipse=twitterLink($link_eclipse,"¿A qué hora será el eclipse de Agosto 21 de 2017en mi ciudad?","AstronomiaUdeA","Astrotiempo");
+$tlink_eclipse=twitterLink($link_eclipse,"¿A qué hora será visible y cómo lucirá el eclipse de Agosto 21, 2017 en mi ciudad?","AstronomiaUdeA","Astrotiempo");
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // PERIHELIO
@@ -627,6 +627,14 @@ echo<<<CONTENT
     <p>
       Haga click en cualquier lugar en el mapa para conocer las
       condiciones del eclipse total de Sol en el sitio en cuestión.
+    </p>
+
+    <p>
+      <i style="color:yellow">
+	Este es un sito en construcción.  Estaremos actualizando y
+	enriqueciendo el contenido a medida que se acerque la fecha del
+	eclipse. ¡No dejen de visitarnos!
+      </i>
     </p>
 
     <style>

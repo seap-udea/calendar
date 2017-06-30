@@ -483,8 +483,11 @@ def scatterMap(ax,qlat,qlon,
     Create a scatter 
     """
     from mpl_toolkits.basemap import Basemap as map
+    import matplotlib.patches as patches
+    from matplotlib.collections import PatchCollection
     import numpy
     PI=numpy.pi
+    Polygon=patches.Polygon
 
     if m is None:
         if limits is None:
@@ -521,10 +524,26 @@ def scatterMap(ax,qlat,qlon,
         m=map(projection="aea",resolution=resolution,width=dlon,height=dlat,
               lat_0=qlatmean,lon_0=qlonmean,ax=ax)
 
-        m.drawlsmask(alpha=0.5)
-        m.etopo(zorder=-10)
-        m.drawparallels(numpy.arange(-45,45,5),**fpardict)
-        m.drawmeridians(numpy.arange(-90,90,5),**fmerdict)
+        #m.drawlsmask(alpha=0.5)
+        #m.etopo(zorder=-10)
+        #m.drawcoastlines()
+        m.drawmapboundary(fill_color='aqua')
+        m.fillcontinents(color='green',lake_color='aqua')
+
+        m.drawparallels(numpy.arange(-45,45,3),**fpardict)
+        m.drawmeridians(numpy.arange(-90,90,3),**fmerdict)
+
+        #Source of countries division:
+        #https://github.com/nvkelso/natural-earth-vector/tree/master/10m_cultural
+        m.readshapefile('bin/kernels/ne_10m_admin_0_countries_lakes',
+                        'units',color='white',linewidth=.4)
+        for info, shape in zip(m.units_info, m.units):
+            iso3 = info['ADM0_A3']
+            color='none'
+            patches = [Polygon(np.array(shape), True)]
+            pc = PatchCollection(patches)
+            pc.set_facecolor(color)
+            ax.add_collection(pc)
 
     # ############################################################
     # PLOT

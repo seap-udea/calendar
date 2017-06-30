@@ -41,7 +41,7 @@ var LDELTAT=0;
 var QTYPES=["Luna Nueva","Cuarto Creciente","Luna Llena","Cuarto Menguante"];
 var QIMAGES=["NewMoon.jpg","FirstQuarter.jpg","FullMoon.jpg","ThirdQuarter.jpg"]
 
-var LOCAL_VARS=["LOCAL_LON","LOCAL_LAT","UTC_OFF","DST_OFF","TIMEZONE"];
+var LOCAL_VARS=["LOCAL_LON","LOCAL_LAT","UTC_OFF","DST_OFF","TIMEZONE","LUZVEL"];
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //CONFIGURATION
@@ -569,7 +569,26 @@ function loadLocalVariables(variables)
     for(var i in variables){
 	var variable=variables[i];
 	value=localStorage.getItem(variable);
+	if(variable=="LUZVEL" && value<1) value="299792.458";
 	$("#"+variable).val(value);
+    }
+}
+
+function resetSite()
+{
+    $("#LUZVEL").val(299792.458)
+    initMap(1);
+}
+
+function recalcSpeed()
+{
+    var cspeed=$("#LUZVEL").val()
+    if(cspeed<=100000){
+	alert("La velocidad no puede ser menor que 100,000 km/s");
+	$("#LUZVEL").val(299792.458)
+    }else{
+	saveLocalVariables(LOCAL_VARS);
+	alert("Listo la cambiaste a "+cspeed);
     }
 }
 

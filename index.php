@@ -435,11 +435,9 @@ echo<<<CONTENT
 		ctx.textAlign="center";
 		ctx.fillText(tipo,w/2,3*h/dmarg);
 	    }
-	    
-
 	}
 
-	function initMap() {
+	function initMap(reset) {
 	    var lat=parseFloat($('#LOCAL_LAT').val());
 	    var lon=parseFloat($('#LOCAL_LON').val());
 	    var pos={lat:lat,lng:lon};
@@ -448,13 +446,17 @@ echo<<<CONTENT
 	    map.setZoom(6);
 
 	    var marker = new google.maps.Marker({map:map,});
-	    if(!localStorage.LOCAL_LON){
+	    if(!localStorage.LOCAL_LON || reset){
 		geoCoords(function(){
 		    var lat=parseFloat($('#LOCAL_LAT').val());
 		    var lon=parseFloat($('#LOCAL_LON').val());
 		    var pos={lat:lat,lng:lon};
 		    marker.setPosition(pos);
 		    map.setCenter(pos);
+		    if(reset){
+			eclipseConditions();
+			saveLocalVariables(LOCAL_VARS);
+		    }
 		},function(){});
 	    }else{
 		loadLocalVariables(LOCAL_VARS);
@@ -609,7 +611,8 @@ echo<<<CONTENT
     
     <div id="clock_eclipse" class="w3-center flip-container" style="border:solid white 0px;text-align:center;margin:0 auto;margin-top:2em;display:none">
       <span id="clock_eclipse-time" class="w3-hide"></span>
-      <span class="w3-text-grey" style="font-size:0.8em">Tiempo para el próximo eclipse de Sol en lat. <span class="lat_ecl"></span>, lon. <span class="lon_ecl"></span>, <span class="clock_eclipse-date"></span>:</span>
+      <span class="w3-text-grey" style="font-size:1.2em">Tiempo para el próximo eclipse total de Sol</a><br/>
+      <span class="w3-text-grey" style="font-size:0.8em">para la ubicación lat. <span class="lat_ecl"></span>, lon. <span class="lon_ecl"></span>, <span class="clock_eclipse-date"></span>:</span>
       <br><br/>
       <div class="clock_eclipse" style="border:solid white 0px;"></div>
       <div class="clock_eclipse-end w3-xxlarge" style="display:none">
@@ -665,6 +668,24 @@ echo<<<CONTENT
       <center>
 	<div id="map_eclipse" style="width:50vw;height:70vh;z-index:100;float:left"></div>
 	<canvas id="eclipse_conditions" style="border:solid white 0px;width:20vw;height:70vh">
+      </center>
+      </td></tr>
+
+      <tr><td colspan=2>
+      <center style="padding:0px">
+	<a href="JavaScript:void" onclick="resetSite()"><i>Regresar a mi posición actual</i> <i class="fa fa-bathtub w3-xxlarge"></i></a>
+      </center>
+      </td></tr>
+
+      <tr><td colspan=2>
+      <center style="padding:50px">
+	Suponemos que la <a href="#notas">velocidad de la luz</a>
+	es <input class="usuario" id="LUZVEL" type="text"
+	value="299792.458" size="10"> km/s (<a href="JavaScript:void"
+	onclick="recalcSpeed()">Recalcular</a>)<br/>
+	<i style="font-size:0.8em">si pones "infinitos" los tiempos
+	serán calculados asumiendo que la luz llegará
+	instantaneamente</i>
       </center>
       </td></tr>
 
@@ -750,6 +771,19 @@ echo<<<CONTENT
     <a name="notas"></a>
     <h4>Notas:</h4>
     <ul>
+
+      <li class="notes"><span class="eclipse_nota">Velocidad de la
+      luz</span>: La luz del Sol y la Luna se demora un tiempo en
+      llegar a la Tierra (poco más de 8 minutos en el caso del Sol y
+      poco más de 1 segundo para la Luna).  Por esta razón la posición
+      que vemos del Sol y la Luna en el cielo no son sus posiciones
+      reales (son sus posiciones en el pasado).  Los tiempos del
+      eclipse calculados aquí tienen en cuenta este efecto. ¿A qué
+      horas ocurriría el eclipse si la luz llegará instantáneamente
+      desde el Sol y la Luna?. Usando esta página usted puede
+      modificar la velocidad de la luz y ver cuál es el efecto que
+      cambiar el tiempo de viaje de la luz tiene en la hora del
+      eclipse.</li>
 
       <li class="notes"><span class="eclipse_nota">Zona horaria</span>: Todos los
       tiempos están dados en la hora que marcan los relojes del sitio

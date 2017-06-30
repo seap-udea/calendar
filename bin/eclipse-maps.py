@@ -1,5 +1,24 @@
 #-*- coding:utf-8 -*-
 from astrotiempo import *
+import matplotlib.pyplot as plt
+
+import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
+from mpl_toolkits.basemap import Basemap as map,shiftgrid
+import matplotlib.patches as patches
+
+fig,axs=subPlots(plt,[1])
+
+m=scatterMap(axs[0],[0],[0],
+             resolution='c',
+             merdict=dict(labels=[False,False,False,True]),
+             limits=[6.2,-75.3,30.0,30.0],
+             color='k',marker='o',linestyle='none',
+             markeredgecolor='none',markersize=1,zorder=10)
+
+fig.savefig("mapa.png")
+
+exit(0)
 
 # ############################################################
 # INPUT

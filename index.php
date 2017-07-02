@@ -497,7 +497,7 @@ echo<<<CONTENT
 		var toff=parseFloat($('#UTC_OFF').val())+parseFloat($('#DST_OFF').val());
 
 		$.ajax({
-		    url:'actions.php?action=eclipse&lat='+lat+'&lon='+lon+'&date='+$('#NEXTECLIPSE').val(),
+		    url:'actions.php?action=eclipse&lat='+lat+'&lon='+lon+'&date='+$('#NEXTECLIPSE').val()+'&luzvel='+$('#LUZVEL').val(),
 		    success:function(result){
 			
 			var props=JSON.parse(result);
@@ -571,6 +571,7 @@ echo<<<CONTENT
 
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOpzHobhu8v34xNylZahKvK__a9V4KFf4&callback=initMap" async defer></script>
 
+  <a name="eclipses"></a>
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="eclipse">
     <!--
     <h2 class="w3-text-light-grey">Eclipses</h2>
@@ -601,6 +602,10 @@ echo<<<CONTENT
     </p>
     -->
 
+    <p></p>
+    <h3 class="w3-text-light-grey">Eclipse de Sol del <span id="eclipse_fecha"></span></h3>
+    <hr style="width:100%" class="w3-opacity">
+
     <center>
       <div id="clock_eclipse-wait" style="display:table;width:60vw;height:30vh;border:solid white 0px">
 	<div style="display:table-cell;vertical-align:middle;font-size:2em;color:gray">
@@ -621,11 +626,6 @@ echo<<<CONTENT
 	<i class="fa fa-star fa-spin"></i>
       </div>
     </div>
-
-    <p></p>
-    <a name="eclipse_condiciones"></a>
-    <h3 class="w3-text-light-grey">Eclipse de Agosto de 2017</h3>
-    <hr style="width:100%" class="w3-opacity">
 
     <p>
       Haga click en cualquier lugar en el mapa para conocer las
@@ -679,13 +679,17 @@ echo<<<CONTENT
 
       <tr><td colspan=2>
       <center style="padding:50px">
-	Suponemos que la <a href="#notas">velocidad de la luz</a>
+
+	Suponemos que la <a href="#notas" onclick="$('#notas').toggle()">velocidad de la luz</a>
 	es <input class="usuario" id="LUZVEL" type="text"
 	value="299792.458" size="10"> km/s (<a href="JavaScript:void"
 	onclick="recalcSpeed()">Recalcular</a>)<br/>
-	<i style="font-size:0.8em">si pones "infinitos" los tiempos
-	serán calculados asumiendo que la luz llegará
-	instantaneamente</i>
+	<i style="font-size:0.8em">si pones "infinitos"
+	(<a href="JavaScript:void" onclick="recalcSpeed(2)">click
+	aquí</a>) los tiempos serán calculados asumiendo que la luz
+	llegará instantaneamente (<a href="JavaScript:void"
+	onclick="recalcSpeed(1)">click aquí</a> para valor real)</i>
+
       </center>
       </td></tr>
 
@@ -705,55 +709,55 @@ echo<<<CONTENT
       
       <tr>
 	<td><center>
-	  <span class="eclipse_prop"><a href="#notas">Tipo</a>:</span>
+	  <span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Tipo</a>:</span>
 	  <div class="eclipse_val digprop" id="type">--</div>
 	</center></td>
 	<td><center>
-	  <span class="eclipse_prop"><a href="#notas">Duración</a>:</span>
+	  <span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Duración</a>:</span>
 	  <div class="eclipse_val digprop" id="duracion">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas">Hora de inicio</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Hora de inicio</a>:</span><br/>
 	<div class="eclipse_val digprop" id="tc1">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas">Altura inicio</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Altura inicio</a>:</span><br/>
 	<div class="eclipse_val digprop" id="hc1">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
- 	<span class="eclipse_prop"><a href="#notas">Hora de máximo</a>:</span><br/>
+ 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Hora de máximo</a>:</span><br/>
 	<div class="eclipse_val digprop" id="tcmax">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas">Altura máximo</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Altura máximo</a>:</span><br/>
 	<div class="eclipse_val digprop" id="hmax">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas">Hora de fin</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Hora de fin</a>:</span><br/>
 	<div class="eclipse_val digprop" id="tc4">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas">Altura fin</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Altura fin</a>:</span><br/>
 	<div class="eclipse_val digprop" id="hc4">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas">Magnitud</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Magnitud</a>:</span><br/>
 	<div class="eclipse_val digprop" id="mag">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas">Oscurecimiento</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Oscurecimiento</a>:</span><br/>
 	<div class="eclipse_val digprop" id="obs">--</div>
 	</center></td>
       </tr>
@@ -769,8 +773,8 @@ echo<<<CONTENT
     </center>
 
     <a name="notas"></a>
-    <h4>Notas:</h4>
-    <ul>
+    <h4 class="w3-text-light-grey">Notas</h4> (<a href="JavaScript:void" onclick="$('#notas').toggle()">Ocultar/Mostrar</a>)
+    <ul id="notas" style="display:none">
 
       <li class="notes"><span class="eclipse_nota">Velocidad de la
       luz</span>: La luz del Sol y la Luna se demora un tiempo en

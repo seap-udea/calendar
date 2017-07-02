@@ -14,7 +14,7 @@ if(isset($action)){
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if($action=="eclipse"){
     //RUN SCRIPT
-    $cmd="$PYTHON bin/eclipse.py $lat $lon $date";
+    $cmd="$PYTHON bin/eclipse.py $lat $lon $date $luzvel";
     $out=shell_exec($cmd);
     $json=preg_replace("/}/","",$out).",";
     $props=json_decode($out,true);

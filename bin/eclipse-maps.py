@@ -13,31 +13,22 @@ import matplotlib.patches as patches
 from matplotlib.collections import PatchCollection
 import matplotlib.cm as cm
 
-print spy.clight()
-exit(0)
 #############################################################
 #CONSTANTS
 #############################################################
+#LOAD CONFIGURATION
+confile=argv[1]
+CONF=loadconf(confile)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #BEHAVIOR
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-PLOT="magfin"
-PLOT="magini"
-PLOT="magmax"
-PLOT="oscmax"
-
-EXT="png"
-COUNTRIES=0
+COUNTRIES=1
+EXT="pdf"
 PARMER=0
 QLOAD=1
 NLAT=120
 NLON=120
-
-COLORWATER="darkblue"
-COLORLAND="darkgreen"
-COLORGRID="white"
 
 """
 NLAT=5
@@ -251,8 +242,8 @@ m=map(projection="aea",resolution='l',width=dlon,height=dlat,
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #DRAW DECORATION
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-m.drawmapboundary(fill_color=COLORWATER)
-m.fillcontinents(color=COLORLAND,lake_color=COLORWATER)
+m.drawmapboundary(fill_color=CONF.COLORWATER)
+m.fillcontinents(color=CONF.COLORLAND,lake_color=CONF.COLORWATER)
 
 if PARMER:
     m.drawparallels(np.arange(-90,90,5),**fpardict)
@@ -275,7 +266,7 @@ if COUNTRIES:
     #Source of countries division:
     #https://github.com/nvkelso/natural-earth-vector/tree/master/10m_cultural
     m.readshapefile('bin/kernels/ne_10m_admin_0_countries_lakes',
-                    'units',color=COLORWATER,linewidth=.4)
+                    'units',color=CONF.COLORBOUND,linewidth=.4)
     i=0
     for info, shape in zip(m.units_info, m.units):
         i+=1
@@ -332,7 +323,7 @@ if not QLOAD:
             DURACION[i,j]=duracion
             j+=1
 
-            #PLOT PUNTO
+            #CONF.PLOT PUNTO
             x,y=m(lon,lat)
             if qtipo==0:color="yellow"
             if qtipo==1:color="blue"
@@ -374,7 +365,7 @@ X,Y=m(LONS,LATS)
 #############################################################
 #MAPA DATOS
 #############################################################
-if PLOT=="magmax":
+if CONF.PLOT=="magmax":
     TPROXY=TECL
     TINI=17
     TEND=24
@@ -387,7 +378,7 @@ if PLOT=="magmax":
                  position=(0.5,1.02),fontsize=12)
     IMGNAME="mapa-magnitud-maximo"
 
-if PLOT=="oscmax":
+if CONF.PLOT=="oscmax":
     TPROXY=TECL
     TINI=17
     TEND=24
@@ -400,12 +391,12 @@ if PLOT=="oscmax":
                  position=(0.5,1.02),fontsize=12)
     IMGNAME="mapa-oscurecimiento-maximo"
 
-if PLOT=="magini":
+if CONF.PLOT=="magini":
     TPROXY=TC1
-    TINI=18
+    TINI=16
     TEND=24
-    HS=[16,17,18,19]
-    HLS=[17]
+    HS=[17,18,19]
+    HLS=[17,18,19]
 
     QUANT=MAG
     ZLEVEL=0.5
@@ -413,12 +404,12 @@ if PLOT=="magini":
                  position=(0.5,1.02),fontsize=12)
     IMGNAME="mapa-magnitud-inicio"
 
-if PLOT=="magfin":
+if CONF.PLOT=="magfin":
     TPROXY=TC4
     TINI=18
-    TEND=24
-    HS=[19,20,21,22]
-    HLS=[21]
+    TEND=22
+    HS=[19,20,21]
+    HLS=[19,20,21]
 
     QUANT=MAG
     ZLEVEL=0.5
@@ -426,43 +417,76 @@ if PLOT=="magfin":
                  position=(0.5,1.02),fontsize=12)
     IMGNAME="mapa-magnitud-fin"
 
+print "Plotting ",CONF.PLOT,"(image %s)"%IMGNAME
+
+ax.text(0.01,-0.01,"Astrotiempo @AstronomiaUdeA",color='k',
+        fontsize=8,transform=ax.transAxes,va='top')
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #TIME GRID
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 levels=np.arange(TINI,TEND,10/60.0) # Cada 10 minutos
+for H in HLS:levels=np.extract(np.abs(levels-H)>1e-5,levels)
+for H in HS:
+    He=H+0.5
+    levels=np.extract(np.abs(levels-He)>1e-5,levels)
+
 cs=m.contour(X,Y,TPROXY,levels,zorder=10,
-             colors=[COLORGRID],linestyles='solid',linewidths=0.2)
+             colors=[CONF.COLORGRID],linestyles='solid',linewidths=0.2)
 
 #LINEAS DE HORA
+lw=1
+dss=[(0,(2, 1)),
+     (0,(6, 1)),
+     (0,(12, 1))]
+il=0
 for H in HS:
-    cs=m.contour(X,Y,TPROXY,[H],zorder=10,colors=[COLORGRID],linestyles='solid')
+    print "Contorno de la hora ",H
+    cs=m.contour(X,Y,TPROXY,[H],zorder=10,colors=[CONF.COLORGRID],
+                 linestyles='--',linewidths=lw)
+    for c in cs.collections:c.set_dashes([dss[il%3]])
     if H in HLS:
-        print "Label for %d..."%H
-        ax.clabel(cs,inline=1,fontsize=8,fmt=r"%d$^{\rm h}$ UTC"%H,zorder=100,color=COLORGRID)
-    cs=m.contour(X,Y,TPROXY,[H+0.5],zorder=10,colors=[COLORGRID],
-                 linestyles='dashed',linewidths=0.5)
+        ax.plot([],[],color=CONF.COLORGRID,ls='--',dashes=dss[il%3][1],
+                label=r"%d$^{\rm h}$ UTC"%H,lw=lw)
+        cs=m.contour(X,Y,TPROXY,[H+0.5],zorder=10,colors=[CONF.COLORGRID],
+                     linestyles='dotted',linewidths=0.2)
+        for c in cs.collections:c.set_dashes([(0,(20,5))])
+        il+=1
+
+# LEGEND
+legend=ax.legend(loc="lower left",prop=dict(size=8),handlelength=3)
+frame=legend.get_frame()
+frame.set_facecolor('none')
+frame.set_edgecolor('none')
+for t in legend.get_texts():t.set_color(CONF.COLORGRID)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #MAGNITUDE GRID
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-levels=[25,75,50]
-cs=m.contour(X,Y,QUANT,levels,
-             zorder=100,colors=[COLORGRID],
+tlevels=[25,75,50]
+cs=m.contour(X,Y,QUANT,tlevels,
+             zorder=100,colors=[CONF.COLORGRID],
              linestyles='solid',linewidths=1)
 ax.clabel(cs,inline=1,
-          fontsize=10,fmt="%.1f%%",zorder=100,color=COLORGRID)
+          fontsize=10,fmt="%.1f%%",zorder=100,color=CONF.COLORGRID)
 
 levels=np.arange(5,95+10,5) # Cada 10%
+for l in tlevels:levels=np.extract(np.abs(levels-l)>1e-5,levels)
 cs=m.contour(X,Y,QUANT,levels,
-             zorder=100,colors=[COLORGRID],
+             zorder=100,colors=[CONF.COLORGRID],
              linestyles='solid',linewidths=0.2)
 
 levels=[ZLEVEL]
-cs=m.contour(X,Y,QUANT,levels,zorder=10,colors=COLORGRID,linewidths=4)
+cs=m.contour(X,Y,QUANT,levels,zorder=10,colors=CONF.COLORGRID,linewidths=4)
 
 levels=[100.0]
-cs=m.contour(X,Y,MAG,levels,zorder=10,colors=COLORGRID,linewidths=3)
+cs=m.contour(X,Y,MAG,levels,zorder=10,colors=CONF.COLORGRID,linewidths=3)
 ax.clabel(cs,inline=1,
-          fontsize=8,fmt="Totalidad",zorder=100,color=COLORGRID)
+          fontsize=8,fmt="Totalidad",zorder=100,color=CONF.COLORGRID)
 
-fig.savefig(IMGNAME+"."+EXT,bbox_inches='tight')
+fname="data/"+IMGNAME+"-"+CONF.SUF+"."+EXT
+print "\tSaving %s."%fname
+fig.savefig(fname,bbox_inches='tight')
+fname="data/"+IMGNAME+"-"+CONF.SUF+".png"
+print "\tSaving %s."%fname
+fig.savefig(fname,bbox_inches='tight')

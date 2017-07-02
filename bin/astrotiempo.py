@@ -23,7 +23,7 @@ np.set_printoptions(threshold='nan')
 #SPICE KERNELS
 #//////////////////////////////
 spy.furnsh("bin/kernels/naif0012.tls")
-spy.furnsh("bin/kernels/de421.bsp")
+spy.furnsh("bin/kernels/delatest.bsp")
 spy.furnsh("bin/kernels/earth_assoc_itrf93.tf")
 spy.furnsh("bin/kernels/earth_fixed.tf")
 spy.furnsh("bin/kernels/earth_070425_370426_predict.bpc")
@@ -84,7 +84,7 @@ def positionBody(et,body=EARTH,wrt=SUN,rf="ECLIPJ2000"):
     x,l=spy.spkgps(body,et,"ECLIPJ2000",wrt)
     return x
 
-def dec2sex(dec,sep=None,day=False):
+def dec2sex(dec,sep=None,day=False,secfmt="%02.3f"):
     if day:fac=24
     else:fac=60
     H=np.floor(dec)
@@ -92,9 +92,13 @@ def dec2sex(dec,sep=None,day=False):
     M=np.floor(mm)
     ss=(mm-M)*60;
     S=np.floor(ss);
+    if np.abs(ss-60)<1e-4:
+       M+=1
+       ss=0
 
     if not sep is None:
-        return "%02d%s%02d%s%02.3f"%(int(H),sep[0],int(M),sep[1],ss)
+        fmt="%%02d%%s%%02d%%s%s"%secfmt
+        return fmt%(int(H),sep[0],int(M),sep[1],ss)
     return H,M,ss
 
 def sex2dec(sex,sep=':'):
@@ -304,7 +308,7 @@ def _rotmat(t):
     return mat
 spy.jrotmat=_rotmat
 
-def _ephem(target,t,obs,mat,depth='epoch'):
+def _ephem(target,t,obs,mat,depth='epoch',cspeed=spy.clight()):
     """
     Parameters:
     body: string for target body
@@ -365,7 +369,7 @@ def _ephem(target,t,obs,mat,depth='epoch'):
                                                  "SOLAR SYSTEM BARYCENTER")
         ephem["targetOBSEJ2000"]=spy.vsub(ephem["targetSSBEJ2000"][:3],
                                           ephem["obsSSBEJ2000"])
-        lt=spy.vnorm(ephem["targetOBSEJ2000"])/spy.clight()
+        lt=spy.vnorm(ephem["targetOBSEJ2000"])/cspeed
 
     # Ecliptic coordinates at J2000
     ephem["distance"],ephem["eclon"],ephem["eclat"]=spy.recrad(ephem["targetOBSEJ2000"])
@@ -407,7 +411,7 @@ def _gcdist(lam1,lam2,phi1,phi2):
   return d
 spy.jgcdist=_gcdist
 
-def _angdis(body1,body2,t,obs,k=0):
+def _angdis(body1,body2,t,obs,k=0,cspeed=spy.clight()):
     """Calculate the angular distance of the contact-function (fk) of two
     objects as observed from observatory obs
 
@@ -424,8 +428,8 @@ def _angdis(body1,body2,t,obs,k=0):
     if k!=0: angdist-rad1-k*rad2
     """
     mat=spy.jrotmat(t)
-    ephem1=spy.jephem(body1,t,obs,mat)
-    ephem2=spy.jephem(body2,t,obs,mat)
+    ephem1=spy.jephem(body1,t,obs,mat,cspeed=cspeed)
+    ephem2=spy.jephem(body2,t,obs,mat,cspeed=cspeed)
     angdist=spy.jgcdist(ephem1["RA"],ephem2["RA"],ephem1["DEC"],ephem2["DEC"])
     if k==0:
         return angdist
@@ -552,3 +556,37 @@ def scatterMap(ax,qlat,qlon,
     ax.plot(x,y,**formats)
 
     return m
+
+class dictobj(object):
+    """
+    Class that allows the conversion from dictionary to class-like
+    objects
+    """
+    def __init__(self,dic={}):self.__dict__.update(dic)
+    def __add__(self,other):
+        self.__dict__.update(other.__dict__)
+        return self
+
+def loadconf(filename):
+    """Load configuration file
+    Parameters:
+    ----------
+    filename: string
+       Filename with configuration values.
+    Returns:
+    -------
+    conf: dictobj
+       Object with attributes as variables in configuration file
+    Examples:
+    --------
+    >> loadconf('input.conf')
+    """
+    d=dict()
+    conf=dictobj()
+    if os.path.lexists(filename):
+        execfile(filename,{},d)
+        conf+=dictobj(d)
+        qfile=True
+    else:
+        error("Configuration file '%s' does not found."%filename)
+    return conf

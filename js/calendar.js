@@ -580,21 +580,25 @@ function resetSite()
     initMap(1);
 }
 
-function recalcSpeed()
+function recalcSpeed(reset)
 {
     var cspeed=$("#LUZVEL").val()
     if(cspeed<=100000){
 	alert("La velocidad no puede ser menor que 100,000 km/s");
 	$("#LUZVEL").val(299792.458)
     }else{
+	if(reset==1)
+	    $("#LUZVEL").val(299792.458)
+	if(reset==2)
+	    $("#LUZVEL").val("infinitos")
 	saveLocalVariables(LOCAL_VARS);
-	alert("Listo la cambiaste a "+cspeed);
-    }
+	eclipseConditions();
+   }
 }
 
 ////////////////////////////////////////////////////////////////////////
 //ON DOCUMENT READY
 ////////////////////////////////////////////////////////////////////////
 $(document).ready(function() {
-    
+    $("#eclipse_fecha").html($("#NEXTECLIPSE").val());
 });

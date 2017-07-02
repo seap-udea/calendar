@@ -7,6 +7,11 @@ from astrotiempo import *
 lat=float(argv[1])
 lon=float(argv[2])
 date=argv[3]
+try:
+    if argv[4]=="infinitos":luzvel=1e10
+    else:luzvel=float(argv[4])
+except:
+    luzvel=spy.clight()
 
 # ############################################################
 # OBSERVER POSITION
@@ -18,10 +23,10 @@ obs=spy.jobsini('EARTH',lon,lat,0.0)
 # ############################################################
 # Computes angular distance between the Sun and the Moon
 def angDist(t,obs):
-    return spy.jangdis('MOON','SUN',t,obs)
+    return spy.jangdis('MOON','SUN',t,obs,cspeed=luzvel)
 # Compute the contact function
 def contactFunction(t,obs,k):
-    return spy.jangdis('MOON','SUN',t,obs,k=k)
+    return spy.jangdis('MOON','SUN',t,obs,k=k,cspeed=luzvel)
 
 # ############################################################
 # CALCULATION
@@ -32,15 +37,16 @@ def contactFunction(t,obs,k):
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t1=spy.str2et(date+' 00:00:00 UTC')
 t2=spy.str2et(date+' 23:59:59 UTC')
-tecl=spy.jminim(angDist,(t1,t2),method='brent',args=(obs,),tol=1e-13).x
+sol=spy.jminim(angDist,(t1,t2),method='brent',args=(obs,),tol=1e-13)
+tecl=sol.x
 cal_max=spy.timout(tecl,'MM/DD/YYYY HR:MN:SC.# +000',100)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # EPHEMERIS SUN-MOON
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 mat=spy.jrotmat(tecl)
-ephem_sun=spy.jephem('SUN',tecl,obs,mat)
-ephem_moon=spy.jephem('MOON',tecl,obs,mat)
+ephem_sun=spy.jephem('SUN',tecl,obs,mat,cspeed=luzvel)
+ephem_moon=spy.jephem('MOON',tecl,obs,mat,cspeed=luzvel)
 size_sun=ephem_sun["angsize"]/60.0
 size_moon=ephem_moon["angsize"]/60.0
 el_max=ephem_sun["el"]*RAD
@@ -72,7 +78,7 @@ if dist<(size_sun+size_moon)/2:
     tc1=spy.jzero(contactFunction,t1,tecl,args=(obs,+1))
     cal_c1=spy.timout(tc1,'MM/DD/YYYY HR:MN:SC.# +000',100)
     mat=spy.jrotmat(tc1)
-    ephem_sun=spy.jephem('SUN',tc1,obs,mat)
+    ephem_sun=spy.jephem('SUN',tc1,obs,mat,cspeed=luzvel)
     el_c1=ephem_sun["el"]*RAD
 
     # Determine if the eclipse is total or partial
@@ -88,7 +94,7 @@ if dist<(size_sun+size_moon)/2:
     tc4=spy.jzero(contactFunction,tecl,t2,args=(obs,+1))
     cal_c4=spy.timout(tc4,'MM/DD/YYYY HR:MN:SC.# +000',100)
     mat=spy.jrotmat(tc4)
-    ephem_sun=spy.jephem('SUN',tc4,obs,mat)
+    ephem_sun=spy.jephem('SUN',tc4,obs,mat,cspeed=luzvel)
     el_c4=ephem_sun["el"]*RAD
 
     if el_c1<0:

@@ -586,11 +586,16 @@ function recalcSpeed(reset)
     if(cspeed<=100000){
 	alert("La velocidad no puede ser menor que 100,000 km/s");
 	$("#LUZVEL").val(299792.458)
+	$("#INFINITEC").val("");
     }else{
-	if(reset==1)
+	$("#INFINITEC").val("");
+	if(reset==1){
 	    $("#LUZVEL").val(299792.458)
-	if(reset==2)
-	    $("#LUZVEL").val("infinitos")
+	}
+	if(reset==2){
+	    $("#LUZVEL").val("infinitos");
+	    $("#INFINITEC").val("&infin;");
+	}
 	saveLocalVariables(LOCAL_VARS);
 	eclipseConditions();
    }

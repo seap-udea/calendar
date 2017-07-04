@@ -143,6 +143,7 @@ $tlink_terminador=twitterLink($link_terminador,"¿Qué se esta viendo en el term
 <input type="hidden" id="UTC_OFF" value="-18000">
 <input type="hidden" id="DST_OFF" value="0">
 <input type="hidden" id="TIMEZONE" value="America/Bogota">
+<input type="hidden" id="INFINITEC" value="">
 <input type="hidden" id="NEXTECLIPSE" value="8/21/2017">
 
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
@@ -385,7 +386,7 @@ echo<<<CONTENT
 	    ctx.beginPath();
 	    ctx.strokeStyle=fillsky;
 	    ctx.fillStyle=fillsky;
-	    ctx.arc(w/2-mag*rsun,h/2,rmoon,0,2*Math.PI);
+	    ctx.arc(w/2-2*mag*rsun,h/2,rmoon,0,2*Math.PI);
 	    ctx.stroke();
 	    ctx.fill()
 
@@ -412,6 +413,8 @@ echo<<<CONTENT
 	    var tcmax=$("#tcmax").html();
 	    var tc4=$("#tc4").html();
 	    var duracion=$("#duracion").html();
+	    var cspeed=$("#INFINITEC").val();
+	    cspeed=cspeed.replace( /&infin;/, '\u221E' );
 
 	    ctx.font=fsize+"px Helvetica";
 	    ctx.fillStyle="white";
@@ -427,10 +430,10 @@ echo<<<CONTENT
 		
 		//TIMES
 		ctx.textAlign="center";
-		ctx.fillText("Inicio "+tc1,w/2,3*h/dmarg);
-		ctx.fillText("Máximo "+tcmax,w/2,4*h/dmarg);
-		ctx.fillText("Fin "+tc4,w/2,5*h/dmarg);
-		ctx.fillText("Duración "+duracion,w/2,h-4*h/dmarg);
+		ctx.fillText("Inicio "+cspeed+" "+tc1,w/2,3*h/dmarg);
+		ctx.fillText("Máximo "+cspeed+" "+tcmax,w/2,4*h/dmarg);
+		ctx.fillText("Fin "+cspeed+" "+tc4,w/2,5*h/dmarg);
+		ctx.fillText("Duración "+cspeed+" "+duracion,w/2,h-4*h/dmarg);
 	    }else{
 		ctx.textAlign="center";
 		ctx.fillText(tipo,w/2,3*h/dmarg);
@@ -487,6 +490,8 @@ echo<<<CONTENT
 
 	function eclipseConditions(){
 
+	    $(".infinity").html($("#INFINITEC").val());
+
 	    var lat=parseFloat($('#LOCAL_LAT').val());
 	    var lon=parseFloat($('#LOCAL_LON').val());
 	    var time=new Date($('#NEXTECLIPSE').val()+" 12:00:00 +000").getTime()/1000.0;
@@ -530,6 +535,12 @@ echo<<<CONTENT
 			$('#dmoon').html(Math.round10(props["size_moon"],-3));
 			$('#dsun').html(Math.round10(props["size_sun"],-3));
 			$('#qtipo').html(props["qtipo"]);
+
+			$('#d_sun').html(Math.round10(props["d_sun"],-1));
+			$('#d_moon').html(Math.round10(props["d_moon"],-1));
+
+			$('#mu_sun').html(Math.round10(props["mu_sun"],-2));
+			$('#mu_moon').html(Math.round10(props["mu_moon"],-2));
 
 			//UPDATE SIMULATION
 			updateSimulation();
@@ -713,52 +724,74 @@ echo<<<CONTENT
 	  <div class="eclipse_val digprop" id="type">--</div>
 	</center></td>
 	<td><center>
-	  <span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Duración</a>:</span>
+	  <span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Duración</a> <span class="infinity"></span>:</span>
 	  <div class="eclipse_val digprop" id="duracion">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Hora de inicio</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Hora de inicio</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="tc1">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Altura inicio</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Altura inicio</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="hc1">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
- 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Hora de máximo</a>:</span><br/>
+ 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Hora de máximo</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="tcmax">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Altura máximo</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Altura máximo</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="hmax">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Hora de fin</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Hora de fin</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="tc4">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Altura fin</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Altura fin</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="hc4">--</div>
 	</center></td>
       </tr>
 
       <tr>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Magnitud</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Magnitud</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="mag">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Oscurecimiento</a>:</span><br/>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Oscurecimiento</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="obs">--</div>
+	</center></td>
+      </tr>
+
+      <tr>
+	<td><center>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Distancia Sol</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="d_sun">--</div>
+	</center></td>
+	<td><center>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Distancia Luna</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="d_moon">--</div>
+	</center></td>
+      </tr>
+
+      <tr>
+	<td><center>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Velocidad Sol</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="mu_sun">--</div>
+	</center></td>
+	<td><center>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Velocidad Luna</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="mu_moon">--</div>
 	</center></td>
       </tr>
 
@@ -877,6 +910,284 @@ echo<<<CONTENT
       detallada vaya
       a <a href="http://www.cosmicriver.net/blog/solar-eclipses-magnitude-and-obscuration">este
       sitio interactivo</a>.</li>
+
+      <li class="notes"><span class="eclipse_nota">Distancia Sol,
+      Luna</span>: Distancias al Sol y a la Luna medida en kilómetros
+      en el momento del eclipse máxima. La distancia es calculada
+      hasta el observador, no hasta el centro de la Tierra como es
+      habitual.</li>
+
+      <li class="notes"><span class="eclipse_nota">Velocidad Sol,
+      Luna</span>: Velocidad angular del sol y de la Luna en el cielo
+      momento del eclipse máximo en segundos de arco (arcoseg) por
+      minuto.  Este número indica cuánto se están moviendo ambos
+      cuerpos en el cielo.  El movimiento del Sol y en especial el de
+      la Luna en el cielo son los responsables de que el eclipse
+      ocurra.  Si la Luna se mantuviera en la misma posición nunca
+      pasaría delante del Sol.</li>
+
+    </ul>
+
+    <h3 class="w3-text-light-grey">El eclipse en Latinoamérica</h3>
+    
+    <p>
+      Aunque el eclipse será total en una extensa franja en los
+      Estados Unidos en buena parte de Latinoamérica (el norte de
+      Suramérica, Centroamérica y el Caribe) podrán disfrutar de un
+      eclipse parcial que en algunos lugares alcanzará una magnitud
+      superior al 80%.
+    </p>
+
+    <p>
+      En los mapas abajo se resumen las propiedades básicas (magnitud
+      y tiempos) que tendrá el eclipse parcial tal y como será visto
+      desde esta región.
+    </p>
+
+    <center>
+      <a href="data/mapa-magnitud-maximo-nat.png" target="_blank">
+	<img src="data/mapa-magnitud-maximo-nat.png"/>
+      </a><br/>
+      <i class="footnote">
+	Líneas de igual magnitud y tiempo de máximo eclipse para
+	Centroamérica, el Norte de Suramérica y el
+	Caribe.<br/><a href="data/mapa-magnitud-maximo-bla.pdf"
+	target="_blank">Versión de alta resolución imprimible</a></i>
+    </center>
+
+    <p></p>
+
+    <center>
+      <a href="data/mapa-oscurecimiento-maximo-nat.png" target="_blank">
+	<img src="data/mapa-oscurecimiento-maximo-nat.png"/>
+      </a><br/>
+      <i class="footnote">
+	Oscurescimiento y tiempo del máximo.<br/><a href="data/mapa-oscurecimiento-maximo-bla.pdf"
+	target="_blank">Versión de alta resolución imprimible</a></i>
+    </center>
+
+    <p></p>
+
+    <center>
+      <a href="data/mapa-magnitud-inicio-nat.png" target="_blank">
+	<img src="data/mapa-magnitud-inicio-nat.png"/>
+      </a><br/>
+      <i class="footnote">
+	Tiempo de inicio del
+	eclipse.<br/><a href="data/mapa-magnitud-inicio-bla.pdf"
+	target="_blank">Versión de alta resolución imprimible</a>
+      </i>
+    </center>
+
+    <p></p>
+
+    <center>
+      <a href="data/mapa-magnitud-fin-nat.png" target="_blank">
+	<img src="data/mapa-magnitud-fin-nat.png"/>
+      </a><br/>
+      <i class="footnote">
+	Tiempo de fin del
+	eclipse.<br/><a href="data/mapa-magnitud-fin-bla.pdf"
+	target="_blank">Versión de alta resolución imprimible</a>
+      </i>
+    </center>
+
+    <h3 class="w3-text-light-grey">El eclipse por zonas de Latinoamérica</h3>
+
+    <p>
+      En los mapas a continuación se muestran las condiciones del
+      eclipse en distintas subregiones de latinoamérica donde será
+      visible de forma parcial.
+    </p>
+
+    <center>
+      <a href="data/mapa-magnitud-inicio-nat-MEX.png" target="_blank">
+	<img src="data/mapa-magnitud-inicio-nat-MEX.png" width="40%"/>
+      </a>
+      <a href="data/mapa-magnitud-fin-nat-MEX.png" target="_blank">
+	<img src="data/mapa-magnitud-fin-nat-MEX.png" width="40%"/>
+      </a>
+      <br/>
+      <i class="footnote">
+	El eclipse en México.<br/>Versión de alta resolución
+	imprimible:<a href="data/mapa-magnitud-inicio-bla-MEX.pdf"
+	target="_blank">Inicio</a>, <a href="data/mapa-magnitud-fin-bla-MEX.pdf"
+	target="_blank">Fin</a>
+      </i>
+    </center>
+
+    <p></p>
+
+    <center>
+      <a href="data/mapa-magnitud-inicio-nat-CEN.png" target="_blank">
+	<img src="data/mapa-magnitud-inicio-nat-CEN.png" width="40%"/>
+      </a>
+      <a href="data/mapa-magnitud-fin-nat-CEN.png" target="_blank">
+	<img src="data/mapa-magnitud-fin-nat-CEN.png" width="40%"/>
+      </a>
+      <br/>
+      <i class="footnote">
+	El eclipse en Centro América.<br/>Versión de alta resolución
+	imprimible:<a href="data/mapa-magnitud-inicio-bla-CEN.pdf"
+	target="_blank">Inicio</a>, <a href="data/mapa-magnitud-fin-bla-CEN.pdf"
+	target="_blank">Fin</a>
+      </i>
+    </center>
+
+    <p></p>
+
+    <center>
+      <a href="data/mapa-magnitud-inicio-nat-RD.png" target="_blank">
+	<img src="data/mapa-magnitud-inicio-nat-RD.png" width="40%"/>
+      </a>
+      <a href="data/mapa-magnitud-fin-nat-RD.png" target="_blank">
+	<img src="data/mapa-magnitud-fin-nat-RD.png" width="40%"/>
+      </a>
+      <br/>
+      <i class="footnote">
+	El eclipse en Haití, República Dominicana y Puerto
+	Rico.<br/>Versión de alta resolución
+	imprimible:<a href="data/mapa-magnitud-inicio-bla-RD.pdf"
+	target="_blank">Inicio</a>, <a href="data/mapa-magnitud-fin-bla-RD.pdf"
+	target="_blank">Fin</a>
+      </i>
+    </center>
+
+    <p></p>
+
+    <center>
+      <a href="data/mapa-magnitud-inicio-nat-COL.png" target="_blank">
+	<img src="data/mapa-magnitud-inicio-nat-COL.png" width="40%"/>
+      </a>
+      <a href="data/mapa-magnitud-fin-nat-COL.png" target="_blank">
+	<img src="data/mapa-magnitud-fin-nat-COL.png" width="40%"/>
+      </a>
+      <br/>
+      <i class="footnote">
+	El eclipse en Colombia y Venezuela.<br/>Versión de alta
+	resolución
+	imprimible:<a href="data/mapa-magnitud-inicio-bla-COL.pdf"
+	target="_blank">Inicio</a>, <a href="data/mapa-magnitud-fin-bla-COL.pdf"
+	target="_blank">Fin</a>
+      </i>
+    </center>
+
+    <p></p>
+
+    <a name="actividades"></a>
+    <h3 class="w3-text-light-grey">Actividades durante el eclipse parcial</h4>
+    <hr style="width:50%" class="w3-opacity">
+
+    <p>
+      Si bien los eclipses totales de sol son considerados como los
+      únicos que ofrecen oportunidades interesantes para la
+      astrofotografía o los estudios científicos del sol y de la luna,
+      también existen observaciones y actividades interesantes que
+      pueden realizarse durante un eclipse parcial.
+    </p>
+
+    <p>
+      A continuación se describen algunas observaciones o medidas que
+      muchos de nosotros podemos hacer con equipos modestos y con la
+      ayuda de otros entusiastas y que nos permitiran obtener datos
+      asombrosos sobre el Sol y la Luna.:
+    </p>
+
+    <ul>
+
+      <li>
+
+	<p>
+	  <b class="w3-text-light-grey">Tamaños del Sol y la
+	  Luna</b>. Cuando se observa el disco lunar en un eclipse hay
+	  una oportunidad única para medir, con la ayuda de un amigo
+	  en otra ciudad o en otro país, nada más y nada menos que la
+	  distancia a la Luna. Para ello nos valemos de un fenómeno
+	  conocido como "paralaje" (ver figura).
+	</p>
+
+	<p>
+	  <b class="w3-text-light-grey">Paralaje lunar</b>. Cuando se
+	  observa el disco lunar en un eclipse hay una oportunidad
+	  única para medir, con la ayuda de un amigo en otra ciudad o
+	  en otro país, nada más y nada menos que la distancia a la
+	  Luna. Para ello nos valemos de un fenómeno conocido como
+	  "paralaje" (ver figura)
+	</p>
+
+	<center>
+	</center>
+	
+	<p>
+	  Si medimos la diferencia entre la posición de cualquier
+	  objeto visto desde dos lugares cuya distancia mutua es
+	  conocida (los dos sitios de observación) es posible estimar
+	  la distancia a la Luna.
+	</p>
+
+      </li>
+
+      <li>
+	<p>
+	  <b class="w3-text-light-grey">La velocidad de la
+	  luz</b>. Cuando vemos a la Luna eclipsar el Sol, algo
+	  extraordinario esta ocurriendo.  Por estar el Sol tan lejos,
+	  su luz nos llega mucho tiempo después de que nos ha llegado
+	  la luz de la Luna.  Para ser exactos a la luz del Sol le
+	  toma 500 segundos llegar a la Tierra (8.31 minutos).  Como
+	  resultado lo que vemos en el cielo durante un eclipse es
+	  como la Luna eclipsa una imagen pasada del Sol.
+	</p>
+	
+	<p>
+	  Hagamos cuentas.  El Sol se mueve (aparentemente) alrededor
+	  de la Tierra completando una vuelta en 365.25 días.  Esto
+	  corresponde a un avance de 0.986 grados/dia o 0.986*3600
+	  segundos de arco (arcoseg) por día (1 arcoseg = 1/3600
+	  grado).  Él día tiene 1440 minutos, por lo que la velocidad
+	  de avance del Sol en el cielo es de 2.46 arcoseg por minuto.
+	  Como la luz del Sol se demora 8.31 minutos en llegar a la
+	  Tierra, la imagen que vemos en el cielo esta realmente
+	  desplazada un total de 2.46*8.31 = 20.5 arcoseg.  Parece muy
+	  poco, pero para la Luna, que esta "persiguiendo" al Sol en
+	  el cielo, este efecto hace que la Luna empiece a tapar el
+	  Sol antes de tiempo.
+	</p>
+
+	<p>
+	  La Luna se mueve alrededor de la Tierra con un período de
+	  29.2 días.  Si es así, en el cielo la Luna tiene una
+	  velocidad angular de 360/29.2 = 12.3 grados/día o
+	  equivalentemente a 30.8 arcoseg/min.  Si el Sol esta
+	  desplazado de su posición real por 20.5 arcoseg, la Luna
+	  llega a su cita con él 20.5/30.8=0.67 minutos (40 segundos)
+	  antes de lo esperado.
+	</p>
+
+	<p>
+	  Durante el eclipse podemos revertir este razonamiento.  Si
+	  observamos con atención y registramos el momento en el que
+	  la Luna toca al Sol por primera vez (primer contacto) o en
+	  el que termina el eclipse (cuarto contacto) y comparamos
+	  este tiempo con el que esperaríamos si la luz hubiera
+	  llegado instantáneamente desde el Sol, podemos obtener el
+	  tiempo que le tomo a la luz llegar desde el Sol. De allí
+	  podríamos calcular la velocidad de la luz.
+	</p>
+
+      </li>
+
+      <li>
+	<p>
+	  <b class="w3-text-light-grey">El Sol es gaseoso</b>. El Sol
+	  es unobjeto gaseoso.  Aunque no nos parece así, en realidad
+	  la que vemos como la superficie del Sol no corresponde a un
+	  piso bien definido, como el que tienen los planetas.  Pero
+	  ¿cómo lo sabemos?.  Una manera de reconocer la naturaleza
+	  gaseosa del Sol es observar con cuidado el denominado
+	  "oscurescimiento del limbo" solar.
+	</p>
+      </li>
 
     </ul>
 

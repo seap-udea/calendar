@@ -108,19 +108,16 @@ if dist<(size_sun+size_moon)/2:
     ephem_moon=spy.jephem('MOON',tc1,obs,mat,cspeed=luzvel)
     RAs=ephem_sun["RA"];DECs=ephem_sun["DEC"];
     RAm=ephem_moon["RA"];DECm=ephem_moon["DEC"];
-    dRA=RAs-RAm;dDEC=DECs-DECm
-
-    # Napier identity
-    tanP=np.tan(dDEC)/np.sin(dRA)
-    P=np.arctan(tanP)
-    #print dRA*RAD,dDEC*RAD,360-(90+P*RAD)
+    P=positionAngle(RAs,RAm,DECs,DECm)
+    print P*RAD
+    exit(0)
 
     AZs=ephem_sun["az"];ELs=ephem_sun["el"];
     AZm=ephem_moon["az"];ELm=ephem_moon["el"];
-    dAZ=AZs-AZm;dEL=ELs-ELm
-    tanV=np.tan(dEL)/np.sin(dAZ)
-    V=np.arctan(tanV)
-    #print V*RAD
+    print AZs*RAD,AZm*RAD
+    print ELs*RAD,ELm*RAD
+    V=positionAngle(AZs,AZm,ELs,ELm)
+    print (V*RAD/180.0)*6
 
     # Determine if the eclipse is total or partial
     try:
@@ -144,11 +141,9 @@ if dist<(size_sun+size_moon)/2:
     ephem_moon=spy.jephem('MOON',tc4,obs,mat,cspeed=luzvel)
     RAs=ephem_sun["RA"];DECs=ephem_sun["DEC"];
     RAm=ephem_moon["RA"];DECm=ephem_moon["DEC"];
-    dRA=RAs-RAm;dDEC=DECs-DECm
-    # Napier identity
-    tanPA=np.tan(dDEC)/np.sin(dRA)
-    PA=np.arctan(tanPA)
-    #print dRA*RAD,dDEC*RAD,90-PA*RAD
+    P=positionAngle(RAs,RAm,DECs,DECm)
+    print P*RAD
+    exit(0)
 
 
     if el_c1<0:

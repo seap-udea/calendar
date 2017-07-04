@@ -590,3 +590,17 @@ def loadconf(filename):
     else:
         error("Configuration file '%s' does not found."%filename)
     return conf
+
+def positionAngle2(lamb1,lamb2,phi1,phi2):
+    dlamb=lamb2-lamb1
+    dphi=phi2-phi1
+    tanP=np.tan(dphi)/np.sin(dlamb)
+    tanP=np.tan(dlamb)/np.sin(dphi)
+    P=np.mod(np.arctan(tanP),2*np.pi)
+    return P
+
+def positionAngle(lamb1,lamb2,phi1,phi2):
+    dphi=phi2-phi1
+    dist=spy.jgcdist(lamb1,lamb2,phi1,phi2)
+    print np.tan(dphi)/np.tan(dist)
+    return 0

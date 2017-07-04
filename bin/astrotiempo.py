@@ -601,6 +601,9 @@ def positionAngle2(lamb1,lamb2,phi1,phi2):
 
 def positionAngle(lamb1,lamb2,phi1,phi2):
     dphi=phi2-phi1
+    dlamb=lamb2-lamb1
     dist=spy.jgcdist(lamb1,lamb2,phi1,phi2)
-    print np.tan(dphi)/np.tan(dist)
-    return 0
+    cosP=np.tan(dphi)/np.tan(dist)
+    P=np.arccos(cosP)
+    if dlamb<0:P=2*np.pi-P
+    return P

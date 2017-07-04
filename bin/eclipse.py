@@ -108,19 +108,13 @@ if dist<(size_sun+size_moon)/2:
     ephem_moon=spy.jephem('MOON',tc1,obs,mat,cspeed=luzvel)
     RAs=ephem_sun["RA"];DECs=ephem_sun["DEC"];
     RAm=ephem_moon["RA"];DECm=ephem_moon["DEC"];
-    dRA=RAs-RAm;dDEC=DECs-DECm
-
-    # Napier identity
-    tanP=np.tan(dDEC)/np.sin(dRA)
-    P=np.arctan(tanP)
-    #print dRA*RAD,dDEC*RAD,360-(90+P*RAD)
+    P1=positionAngle(RAs,RAm,DECs,DECm)*RAD
 
     AZs=ephem_sun["az"];ELs=ephem_sun["el"];
     AZm=ephem_moon["az"];ELm=ephem_moon["el"];
-    dAZ=AZs-AZm;dEL=ELs-ELm
-    tanV=np.tan(dEL)/np.sin(dAZ)
-    V=np.arctan(tanV)
-    #print V*RAD
+    V=positionAngle(AZs,AZm,ELs,ELm)
+    V1=(V*RAD/360.)*12
+    if V1<1:V1+=12
 
     # Determine if the eclipse is total or partial
     try:
@@ -144,12 +138,13 @@ if dist<(size_sun+size_moon)/2:
     ephem_moon=spy.jephem('MOON',tc4,obs,mat,cspeed=luzvel)
     RAs=ephem_sun["RA"];DECs=ephem_sun["DEC"];
     RAm=ephem_moon["RA"];DECm=ephem_moon["DEC"];
-    dRA=RAs-RAm;dDEC=DECs-DECm
-    # Napier identity
-    tanPA=np.tan(dDEC)/np.sin(dRA)
-    PA=np.arctan(tanPA)
-    #print dRA*RAD,dDEC*RAD,90-PA*RAD
+    P4=positionAngle(RAs,RAm,DECs,DECm)*RAD
 
+    AZs=ephem_sun["az"];ELs=ephem_sun["el"];
+    AZm=ephem_moon["az"];ELm=ephem_moon["el"];
+    V=positionAngle(AZs,AZm,ELs,ELm)
+    V4=(V*RAD/360.)*12
+    if V4<1:V4+=12
 
     if el_c1<0:
         # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -205,7 +200,7 @@ else:
 # ############################################################
 # RESULTS
 # ############################################################
-print """{"qtipo":%d,"type":"%s","size_sun":%.3f,"size_moon":%.3f,"dist":%.3f,"tc1":"%s","el_c1":%.5f,"tcmax":"%s","el_max":%.5f,"tc4":"%s","el_c4":%.5f,"mag":%.2f,"obs":%.2f,"ratio":%.7f,"duracion":"%s","d_sun":%.1f,"d_moon":%.1f,"mu_sun":%.3f,"mu_moon":%.3f}"""%\
+print """{"qtipo":%d,"type":"%s","size_sun":%.3f,"size_moon":%.3f,"dist":%.3f,"tc1":"%s","el_c1":%.5f,"tcmax":"%s","el_max":%.5f,"tc4":"%s","el_c4":%.5f,"mag":%.2f,"obs":%.2f,"ratio":%.7f,"duracion":"%s","d_sun":%.1f,"d_moon":%.1f,"mu_sun":%.3f,"mu_moon":%.3f,"P1":%.3f,"V1":%.3f,"P4":%.3f,"V4":%.3f}"""%\
     (qtipo,
      tipo,
      size_sun,
@@ -224,5 +219,7 @@ print """{"qtipo":%d,"type":"%s","size_sun":%.3f,"size_moon":%.3f,"dist":%.3f,"t
      d_sun,
      d_moon,
      mu_sun,
-     mu_moon)
+     mu_moon,
+     P1,V1,
+     P4,V4)
 

@@ -542,6 +542,11 @@ echo<<<CONTENT
 			$('#mu_sun').html(Math.round10(props["mu_sun"],-2));
 			$('#mu_moon').html(Math.round10(props["mu_moon"],-2));
 
+			$('#P1').html(Math.round10(props["P1"],-1)+"<sup>o</sup>");
+			$('#V1').html(Math.round10(props["V1"],-1)+" horas");
+			$('#P4').html(Math.round10(props["P4"],-1)+"<sup>o</sup>");
+			$('#V4').html(Math.round10(props["V4"],-1)+" horas");
+
 			//UPDATE SIMULATION
 			updateSimulation();
 
@@ -742,6 +747,17 @@ echo<<<CONTENT
 
       <tr>
 	<td><center>
+ 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Angulo inicio</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="P1">--</div>
+	</center></td>
+	<td><center>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Dirección inicio</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="V1">--</div>
+	</center></td>
+      </tr>
+
+      <tr>
+	<td><center>
  	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Hora de máximo</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="tcmax">--</div>
 	</center></td>
@@ -759,6 +775,17 @@ echo<<<CONTENT
 	<td><center>
 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Altura fin</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="hc4">--</div>
+	</center></td>
+      </tr>
+
+      <tr>
+	<td><center>
+ 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Angulo fin</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="P4">--</div>
+	</center></td>
+	<td><center>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Dirección fin</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="V4">--</div>
 	</center></td>
       </tr>
 

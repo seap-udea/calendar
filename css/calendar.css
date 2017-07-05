@@ -89,3 +89,15 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .footnote{
     font-size:0.8em;
 }
+
+.formula{
+    border:solid gray 1px;
+    padding:20px;
+    font-family:Courier;
+    font-size:0.9em;
+    display:inline-block;
+}
+
+.eclipse_detalles{
+    display:none;
+}

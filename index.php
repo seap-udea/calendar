@@ -145,6 +145,7 @@ $tlink_terminador=twitterLink($link_terminador,"¿Qué se esta viendo en el term
 <input type="hidden" id="TIMEZONE" value="America/Bogota">
 <input type="hidden" id="INFINITEC" value="">
 <input type="hidden" id="NEXTECLIPSE" value="8/21/2017">
+<input type="hidden" id="SESSID" value="<?php echo $SESSID?>">
 
 <!-- ----------------------------------------------------------------------------------------------------------------- -->
 <!-- ICON BAR (LARGE AND MEDIUM SCREENS) -->
@@ -447,7 +448,8 @@ echo<<<CONTENT
 	    var map=new google.maps.Map(document.getElementById("map_eclipse"),
 					{center:pos,zoom: 4});
 	    map.setZoom(6);
-
+	    initMapDistancia();
+	    
 	    var marker = new google.maps.Marker({map:map,});
 	    if(!localStorage.LOCAL_LON || reset){
 		geoCoords(function(){
@@ -488,21 +490,89 @@ echo<<<CONTENT
 	    });
 	}	
 
+	function initMapDistancia(reset) {
+
+	    loadLocalVariables(LOCAL_VARS);
+	    var lat=parseFloat($('#LOCAL_LAT').val());
+	    var lon=parseFloat($('#LOCAL_LON').val());
+
+	    $('#ds_lat1').html(lat);
+	    $('#ds_lon1').html(lon);
+	
+	    var pos={lat:lat,lng:lon};
+	    var map=new google.maps.Map(document.getElementById("map_eclipse_distancia"),
+					{center:pos,zoom: 4});
+	    map.setZoom(4);
+
+	    var marker = [new google.maps.Marker({map:map,}),
+			  new google.maps.Marker({map:map,})];
+	    var imarker=0;
+	    var lats=[$('#ds_lat1'),$('#ds_lat2')];
+	    var lons=[$('#ds_lon1'),$('#ds_lon2')];
+	    var pins=['green-dot','blue-dot'];
+	    
+	    var lat=parseFloat($('#LOCAL_LAT').val());
+	    var lon=parseFloat($('#LOCAL_LON').val());
+
+	    lats[0].html(lat);
+	    lons[0].html(lon);
+	    lats[1].html(lat);
+	    lons[1].html(lon);
+
+	    var pos={lat:lat,lng:lon};
+	    marker[imarker].setPosition(pos);
+	    marker[imarker].setIcon('https://maps.google.com/mapfiles/ms/icons/'+pins[imarker]+'.png');
+	    //map.setCenter(pos);
+	    distanciaSitios();
+
+	    google.maps.event.addListener(map,'click',function(event) {
+		var pos=event.latLng;
+		var lon=pos.lng();
+		var lat=pos.lat();
+
+		imarker=(imarker+1)%2;
+		lats[imarker].html(Math.round10(lat,-5));
+		lons[imarker].html(Math.round10(lon,-5));
+		marker[imarker].setPosition(pos);
+		marker[imarker].setIcon('https://maps.google.com/mapfiles/ms/icons/'+pins[imarker]+'.png');
+		if(imarker==0)
+		    map.setCenter(pos);
+		distanciaSitios();
+	    });
+	}	
+    
+        function distanciaSitios(){
+	    var lats=[$('#ds_lat1').html(),$('#ds_lat2').html()];
+	    var lons=[$('#ds_lon1').html(),$('#ds_lon2').html()];
+	    var url='actions.php?action=distancia&lats='+lats[0]+","+lats[1]+'&lons='+lons[0]+','+lons[1]+'&obj=MOON&date='+$('#NEXTECLIPSE').val()+'&time='+$('#ds_time').val();
+	    console.log(url);
+	    $.ajax({
+		url:url,
+		success:function(result){
+		    var props=JSON.parse(result);
+		    $('#ds_distancia').html(props["distancia"])
+		    $('#ds_angulo').html(props["angulo"])
+		}
+	    });
+	}
+
 	function eclipseConditions(){
 
 	    $(".infinity").html($("#INFINITEC").val());
 
 	    var lat=parseFloat($('#LOCAL_LAT').val());
 	    var lon=parseFloat($('#LOCAL_LON').val());
+	    var sessid=$('#SESSID').val();
 	    var time=new Date($('#NEXTECLIPSE').val()+" 12:00:00 +000").getTime()/1000.0;
 	    
 	    getTimeZone(lat,lon,time,function(r){
 
 		var tzone=$('#TIMEZONE').val();
 		var toff=parseFloat($('#UTC_OFF').val())+parseFloat($('#DST_OFF').val());
-
+		var url='actions.php?action=eclipse&sessid='+sessid+'&lat='+lat+'&lon='+lon+'&date='+$('#NEXTECLIPSE').val()+'&luzvel='+$('#LUZVEL').val();
+		console.log("URL Eclipse:"+url);
 		$.ajax({
-		    url:'actions.php?action=eclipse&lat='+lat+'&lon='+lon+'&date='+$('#NEXTECLIPSE').val()+'&luzvel='+$('#LUZVEL').val(),
+		    url:url,
 		    success:function(result){
 			
 			var props=JSON.parse(result);
@@ -520,32 +590,46 @@ echo<<<CONTENT
 			
 			//SET ECLIPSE CONDITIONS
 			$('#type').html(props["type"]);
-			$('#tc1').html(timeZone(props["utc1"],toff));
-			$('#hc1').html(Math.round10(props["el_c1"],-1));
-			$('#tcmax').html(timeZone(props["utcmax"],toff));
-			$('#hmax').html(Math.round10(props["el_max"],-1));
-			$('#tc4').html(timeZone(props["utc4"],toff));
-			$('#hc4').html(Math.round10(props["el_c4"],-1));
 
+			$('#tc1').html(timeZone(props["utc1"],toff));
+			$('#hc1').html(Math.round10(props["el_c1"],-1)+"<sup>o</sup>");
+			$('#tcmax').html(timeZone(props["utcmax"],toff));
+			$('#hmax').html(Math.round10(props["el_max"],-1)+"<sup>o</sup>");
+			$('#tc4').html(timeZone(props["utc4"],toff));
+			$('#hc4').html(Math.round10(props["el_c4"],-1)+"<sup>o</sup>");
+
+			if(props["type"]=="Total"){
+			    $('.eclipse_total').show();
+			    $('#tc2').html(timeZone(props["utc2"],toff));
+			    $('#tc3').html(timeZone(props["utc3"],toff));
+			}else{
+			    $('.eclipse_total').hide();
+			}
 			$('#mag').html(Math.round10(props["mag"],-1)+"%");
 			$('#obs').html(Math.round10(props["obs"],-1)+"%");
-
+			
 			$('#duracion').html(props["duracion"]);
 
 			$('#dmoon').html(Math.round10(props["size_moon"],-3));
 			$('#dsun').html(Math.round10(props["size_sun"],-3));
 			$('#qtipo').html(props["qtipo"]);
 
-			$('#d_sun').html(Math.round10(props["d_sun"],-1));
-			$('#d_moon').html(Math.round10(props["d_moon"],-1));
+			$('#d_sun').html(Math.round10(props["d_sun"],-1)+" km");
+			$('#d_moon').html(Math.round10(props["d_moon"],-1)+" km");
 
-			$('#mu_sun').html(Math.round10(props["mu_sun"],-2));
-			$('#mu_moon').html(Math.round10(props["mu_moon"],-2));
+			$('#R_sun').html(Math.round10(props["size_sun"],-1)/2+"'");
+			$('#R_moon').html(Math.round10(props["size_moon"],-1)/2+"'");
+
+			$('#mu_sun').html(Math.round10(props["mu_sun"],-2)+'"/min');
+			$('#mu_moon').html(Math.round10(props["mu_moon"],-2)+'"/min');
 
 			$('#P1').html(Math.round10(props["P1"],-1)+"<sup>o</sup>");
-			$('#V1').html(Math.round10(props["V1"],-1)+" horas");
+			$('#V1').html(Math.round10(props["V1"],-1)+"<sup>o</sup>");
 			$('#P4').html(Math.round10(props["P4"],-1)+"<sup>o</sup>");
-			$('#V4').html(Math.round10(props["V4"],-1)+" horas");
+			$('#V4').html(Math.round10(props["V4"],-1)+"<sup>o</sup>");
+
+			$('#eclipse_archivo').attr("href",props["fname"]+".txt");
+
 
 			//UPDATE SIMULATION
 			updateSimulation();
@@ -682,7 +766,7 @@ echo<<<CONTENT
 
       <tr><td colspan=2>
       <center>
-	<div id="map_eclipse" style="width:50vw;height:70vh;z-index:100;float:left"></div>
+	<div id="map_eclipse" style="width:40vw;height:70vh;z-index:100;float:left"></div>
 	<canvas id="eclipse_conditions" style="border:solid white 0px;width:20vw;height:70vh">
       </center>
       </td></tr>
@@ -709,7 +793,15 @@ echo<<<CONTENT
       </center>
       </td></tr>
 
+      <tr><td colspan=2>
+	  <a name="eclipse_condiciones"></a>
+	  <center class="w3-text-light-grey w3-xlarge">
+	    Condiciones del Eclipse
+	  </center>
+      </td></tr>
+
       <tr>
+	  
 	<td colspan=2>
 	  <center><a href="#notas">Zona horaria</a>:<span class="tzone digprop">--</span></center>
 	  <div id="dsun" style="display:none">0</div>
@@ -745,14 +837,14 @@ echo<<<CONTENT
 	</center></td>
       </tr>
 
-      <tr>
+      <tr class="eclipse_total" style="display:none">
 	<td><center>
- 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Angulo inicio</a> <span class="infinity"></span>:</span><br/>
-	<div class="eclipse_val digprop" id="P1">--</div>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Inicio Totalidad</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="tc2">--</div>
 	</center></td>
 	<td><center>
-	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Dirección inicio</a> <span class="infinity"></span>:</span><br/>
-	<div class="eclipse_val digprop" id="V1">--</div>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Fin Totalidad</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="tc3">--</div>
 	</center></td>
       </tr>
 
@@ -780,17 +872,6 @@ echo<<<CONTENT
 
       <tr>
 	<td><center>
- 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Angulo fin</a> <span class="infinity"></span>:</span><br/>
-	<div class="eclipse_val digprop" id="P4">--</div>
-	</center></td>
-	<td><center>
-	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Dirección fin</a> <span class="infinity"></span>:</span><br/>
-	<div class="eclipse_val digprop" id="V4">--</div>
-	</center></td>
-      </tr>
-
-      <tr>
-	<td><center>
 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Magnitud</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="mag">--</div>
 	</center></td>
@@ -800,7 +881,47 @@ echo<<<CONTENT
 	</center></td>
       </tr>
 
-      <tr>
+      <tr><td colspan=2>
+	  <a name="eclipse_condiciones"></a>
+	  <center class="w3-text-light-grey">
+	    <a href="JavaScript:void(null)" onclick="$('.eclipse_detalles').toggle()">Más detalles / Menos detalles</a>
+	  </center>
+      </td></tr>
+
+      <tr class="eclipse_detalles">
+	<td><center>
+ 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Angulo inicio</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="P1">--</div>
+	</center></td>
+	<td><center>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Dirección inicio</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="V1">--</div>
+	</center></td>
+      </tr>
+
+      <tr class="eclipse_detalles">
+	<td><center>
+ 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Angulo fin</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="P4">--</div>
+	</center></td>
+	<td><center>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Dirección fin</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="V4">--</div>
+	</center></td>
+      </tr>
+
+      <tr class="eclipse_detalles">
+	<td><center>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Radio Sol</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="R_sun">--</div>
+	</center></td>
+	<td><center>
+	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Radio Luna</a> <span class="infinity"></span>:</span><br/>
+	<div class="eclipse_val digprop" id="R_moon">--</div>
+	</center></td>
+      </tr>
+
+      <tr class="eclipse_detalles">
 	<td><center>
 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Distancia Sol</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="d_sun">--</div>
@@ -811,7 +932,7 @@ echo<<<CONTENT
 	</center></td>
       </tr>
 
-      <tr>
+      <tr class="eclipse_detalles">
 	<td><center>
 	<span class="eclipse_prop"><a href="#notas" onclick="$('#notas').toggle()">Velocidad Sol</a> <span class="infinity"></span>:</span><br/>
 	<div class="eclipse_val digprop" id="mu_sun">--</div>
@@ -821,6 +942,13 @@ echo<<<CONTENT
 	<div class="eclipse_val digprop" id="mu_moon">--</div>
 	</center></td>
       </tr>
+
+      <tr><td colspan=2>
+	  <a name="eclipse_condiciones"></a>
+	  <center>
+	    <a id="eclipse_archivo" href="" target="_blank">Archivo con condiciones detalladas</a>
+	  </center>
+      </td></tr>
 
     </table>
     <span class="w3-xxlarge">
@@ -849,42 +977,50 @@ echo<<<CONTENT
       cambiar el tiempo de viaje de la luz tiene en la hora del
       eclipse.</li>
 
-      <li class="notes"><span class="eclipse_nota">Zona horaria</span>: Todos los
-      tiempos están dados en la hora que marcan los relojes del sitio
-      señalado. La "Zona Horaria" es la denominación oficial de la
-      zona de tiempo en la que se encuentra el lugar.  Normalmente
-      esta formado por dos partes "Continente"/"Zona".</li>
+      <li class="notes"><span class="eclipse_nota">Zona
+      horaria</span>: Todos los tiempos están dados en la hora que
+      marcan los relojes del sitio señalado. La "Zona Horaria" es la
+      denominación oficial de la zona de tiempo en la que se encuentra
+      el lugar.  Normalmente esta formado por dos partes
+      "Continente"/"Zona".</li>
 
-      <li class="notes"><span class="eclipse_nota">Latitud y Longitud</span>: estas
-      son la latitud y longitud geográfica del sitio de observación
-      medida en grados.  La latitud es positiva al norte del ecuador y
-      negativa al Sur.  La longitud es positiva al este del meridiano
-      de Greenwich y negativa al oeste.  La latitud y longitud se dan
-      con precisión de segundos de arco.</li>
+      <li class="notes"><span class="eclipse_nota">Latitud y
+      Longitud</span>: estas son la latitud y longitud geográfica del
+      sitio de observación medida en grados.  La latitud es positiva
+      al norte del ecuador y negativa al Sur.  La longitud es positiva
+      al este del meridiano de Greenwich y negativa al oeste.  La
+      latitud y longitud se dan con precisión de segundos de
+      arco.</li>
 
-      <li class="notes"><span class="eclipse_nota">Tipo</span>: Tipo de eclipse que
-      se observará en el lugar señalado.  Los tipos posibles son:
-      parcial (la luna no obstruye totalmente al Sol), total (la luna
-      tapa al Sol al menos por un breve período de tiempo), no eclipse
-      (desde la prosición la luna nunca tapa al Sol, ni siquiera
-      parcialmente, no visible (el eclipse no se puede ver porque el
-      Sol y la Luna están debajo del horizonte, es de noche).</li>
+      <li class="notes"><span class="eclipse_nota">Tipo</span>: Tipo
+      de eclipse que se observará en el lugar señalado.  Los tipos
+      posibles son: parcial (la luna no obstruye totalmente al Sol),
+      total (la luna tapa al Sol al menos por un breve período de
+      tiempo), no eclipse (desde la prosición la luna nunca tapa al
+      Sol, ni siquiera parcialmente, no visible (el eclipse no se
+      puede ver porque el Sol y la Luna están debajo del horizonte, es
+      de noche).</li>
       
-      <li class="notes"><span class="eclipse_nota">Duración</span>: Duración en
-      horas, minutos y segundos (hh:mm:ss.sss) de la fase más
-      interesante observable eclipse desde el lugar en cuestión.  En
-      lugares en los que el eclipse es parcial esta es la duración
+      <li class="notes"><span class="eclipse_nota">Duración</span>:
+      Duración en horas, minutos y segundos (hh:mm:ss.sss) de la fase
+      más interesante observable eclipse desde el lugar en cuestión.
+      En lugares en los que el eclipse es parcial esta es la duración
       desde que comienza el eclipse (primer contacto) hasta que
       termina (último contacto).  En lugares donde el eclipse es total
       la duración se refiere exclusivamente a la totalidad, es decir
       el tiempo en el que el Sol permanece completamente eclipsado y
       es visible la corona solar.</li>
 
-      <li class="notes"><span class="eclipse_nota">Hora de inicio</span>: Hora (en
-      tiempo local) del inicio del eclipse.  Este es el tiempo en el
-      que desde el sitio señalado se produce el primer contacto, es
-      decir en el que el disco de la luna tocal el disco solar por
-      primera vez.</li>
+      <li class="notes"><span class="eclipse_nota">Hora de
+      inicio</span>: Hora (en tiempo local) del inicio del eclipse.
+      Este es el tiempo en el que desde el sitio señalado se produce
+      el primer contacto, es decir en el que el disco de la luna tocal
+      el disco solar por primera vez.</li>
+
+      <li class="notes"><span class="eclipse_nota">Inicio, Fin de la
+      totalidad</span>: Hora (en tiempo local) del inicio y el fin de
+      la totalidad (solo sale cuando el eclipse es total).  Esta hora
+      no esta corregida por los accidentes lunares.</li>
 
       <li class="notes"><span class="eclipse_nota">Hora de máximo</span>: Hora (en
       tiempo local) del máximo eclipse.  Este es el tiempo en el que
@@ -898,45 +1034,70 @@ echo<<<CONTENT
       es decir el último momento en el que se ve el disco lunar
       "mordiendo" el disco solar.</li>
       
-      <li class="notes">Todos los tiempos tienen un error de aproximadamente 2
-      segundos debido a que no es posible predecir el desfase natural
-      entre la rotación de la Tierra y nuestras medidas de tiempo.  En
-      términos técnicos los tiempos son calculados en UT (Tiempo
-      Universal) pero las observaciones se hacen respecto al UTC
-      (Tiempo Universal Coordinado).  Para una explicación detallada
-      de estas escalas lea el
+      <li class="notes">Todos los tiempos tienen un error de
+      aproximadamente 2 segundos debido a que no es posible predecir
+      el desfase natural entre la rotación de la Tierra y nuestras
+      medidas de tiempo.  En términos técnicos los tiempos son
+      calculados en UT (Tiempo Universal) pero las observaciones se
+      hacen respecto al UTC (Tiempo Universal Coordinado).  Para una
+      explicación detallada de estas escalas lea el
       artículo <a href="http://www.investigacionyciencia.es/blogs/astronomia/76/posts/qu-hora-es-14889">"¿Qué
       hora es?" del scilog "Siderofilia"</a>.</li>
 
-      <li class="notes"><span class="eclipse_nota">Altura (inicio, máximo y
-      fin)</span>: Altura en grados sobre el horizonte a la que se
-      encuentra el Sol en cada etapa del eclipse.  Una altura cercana
-      a 0 grados corresponde a un Sol muy cercano al horizonte.  Una
-      altura cercana a 90 grados corresponde a un Sol muy alto en el
-      cielo.</li>
+      <li class="notes"><span class="eclipse_nota">Altura (inicio,
+      máximo y fin)</span>: Altura en grados sobre el horizonte a la
+      que se encuentra el Sol en cada etapa del eclipse.  Una altura
+      cercana a 0 grados corresponde a un Sol muy cercano al
+      horizonte.  Una altura cercana a 90 grados corresponde a un Sol
+      muy alto en el cielo.</li>
 
-      <li class="notes"><span class="eclipse_nota">Magnitud</span>: Fracción del
-      disco solar que es tapada por la Luna en el momento de máxima
-      obstrucción.  Si la magnitud es mayor o igual a uno el eclipse
-      es total.  Para el eclipse parcial la magnitud esta entre 0 (no
-      hay eclipse) y más de 1 (eclipse total).  Una magnitud del 50%
-      significa por ejemplo que la Luna esta tapando la mitad del
-      disco solar.</li>
+      <li class="notes"><span class="eclipse_nota">Magnitud</span>:
+      Fracción del disco solar que es tapada por la Luna en el momento
+      de máxima obstrucción.  Si la magnitud es mayor o igual a uno el
+      eclipse es total.  Para el eclipse parcial la magnitud esta
+      entre 0 (no hay eclipse) y más de 1 (eclipse total).  Una
+      magnitud del 50% significa por ejemplo que la Luna esta tapando
+      la mitad del disco solar.</li>
 
-      <li class="notes"><span class="eclipse_nota">Oscurecimiento</span>: Fracción
-      del area del disco solar que es tapada por la Luna en el momento
-      de máximo eclipse. Cuando el eclipse es total el oscurecimiento
-      es 100%. Si el eclipse es parcial el oscurecimiento esta entre
-      0% (no hay eclipse) y 100%.  Si el oscurecimiento es 90%
-      significa que el 90% de la superficie solar es tapada por la
-      Luna.  El oscurecimiento esta directamente relacionado (pero no
-      es exactamente igual) a la disminución en el brillo del Sol.
-      Debe tenerse en cuenta que la magnitud y el oscurecimiento no
-      son lo mismo. Así por ejemplo una magnitud de 25% corresponde a
-      un oscurecimiento de apenas 14.4%.  Para una explicación
-      detallada vaya
+      <li class="notes"><span class="eclipse_nota">Oscurecimiento</span>:
+      Fracción del area del disco solar que es tapada por la Luna en
+      el momento de máximo eclipse. Cuando el eclipse es total el
+      oscurecimiento es 100%. Si el eclipse es parcial el
+      oscurecimiento esta entre 0% (no hay eclipse) y 100%.  Si el
+      oscurecimiento es 90% significa que el 90% de la superficie
+      solar es tapada por la Luna.  El oscurecimiento esta
+      directamente relacionado (pero no es exactamente igual) a la
+      disminución en el brillo del Sol.  Debe tenerse en cuenta que la
+      magnitud y el oscurecimiento no son lo mismo. Así por ejemplo
+      una magnitud de 25% corresponde a un oscurecimiento de apenas
+      14.4%.  Para una explicación detallada vaya
       a <a href="http://www.cosmicriver.net/blog/solar-eclipses-magnitude-and-obscuration">este
       sitio interactivo</a>.</li>
+
+      <li class="notes"><span class="eclipse_nota">Ángulo de inicio o
+      de fin</span>: Ángulo con respecto al polo norte celeste medido
+      en dirección contraria a las manecillas del reloj (hacia el
+      este) en el cual se produce el contacto respectivo (primer
+      contacto al inicio o último contacto al fin. A este ángulo se lo
+      llama comunmente "ángulo de posición".
+
+	<center>
+	  <img src="img/ilustracion-AnguloPosicion.png" width="50%">
+	</center>
+      </li>
+
+      <li class="notes"><span class="eclipse_nota">Dirección de inicio
+      o de fin</span>: Dirección con respecto a la vertical (cenit)
+      medido en sentido de las manecillas del reloj en el cual se
+      produce el contacto respectivo (primer contacto al inicio o
+      último contacto al fin. A este ángulo se lo denota comunmente
+      con la letra "V" y se lo representa en horas del reloj, es decir
+      si es 180<sup>o</sup> V es 6, si es 270<sup>o</sup> V es 9 y así
+      sucesivamente.</li>
+
+      <li class="notes"><span class="eclipse_nota">Radio del Sol y de
+      la luna</span>. Radio de las imágenes del Sol y de la Luna en
+      minutos de arco (arcmin, equivalente a 1/60 de grado).</li>
 
       <li class="notes"><span class="eclipse_nota">Distancia Sol,
       Luna</span>: Distancias al Sol y a la Luna medida en kilómetros
@@ -955,6 +1116,7 @@ echo<<<CONTENT
 
     </ul>
 
+    <hr style="width:100%" class="w3-opacity">
     <h3 class="w3-text-light-grey">El eclipse en Latinoamérica</h3>
     
     <p>
@@ -1117,7 +1279,7 @@ echo<<<CONTENT
       A continuación se describen algunas observaciones o medidas que
       muchos de nosotros podemos hacer con equipos modestos y con la
       ayuda de otros entusiastas y que nos permitiran obtener datos
-      asombrosos sobre el Sol y la Luna.:
+      asombrosos sobre el Sol y la Luna:
     </p>
 
     <ul>
@@ -1125,32 +1287,246 @@ echo<<<CONTENT
       <li>
 
 	<p>
-	  <b class="w3-text-light-grey">Tamaños del Sol y la
-	  Luna</b>. Cuando se observa el disco lunar en un eclipse hay
-	  una oportunidad única para medir, con la ayuda de un amigo
-	  en otra ciudad o en otro país, nada más y nada menos que la
-	  distancia a la Luna. Para ello nos valemos de un fenómeno
-	  conocido como "paralaje" (ver figura).
+	  <b class="w3-text-light-grey">El tamaño del Sol</b>.  Los
+	  eclipses son las mejores oportunidades para comparar los
+	  tamaños del Sol y de la Luna.  Pero no los tamaños en el
+	  cielo, que son casi idénticos, sino sus tamaños reales
+	  (medidos en km).  Esta es la actividad más simple que se
+	  puede realizar en un eclipse parcial.
 	</p>
 
 	<p>
-	  <b class="w3-text-light-grey">Paralaje lunar</b>. Cuando se
-	  observa el disco lunar en un eclipse hay una oportunidad
-	  única para medir, con la ayuda de un amigo en otra ciudad o
-	  en otro país, nada más y nada menos que la distancia a la
-	  Luna. Para ello nos valemos de un fenómeno conocido como
-	  "paralaje" (ver figura)
+	  Para esta actividad nos basta tomar u obtener una imagen del
+	  Sol eclipsado parcialmente.  También necesitamos conocer la
+	  distancia a la que ambos, el Sol y la Luna se encuentran en
+	  el momento del eclipse y para el sitio donde la imagen fue
+	  tomada.  La distancia puede encontrarse arriba en
+	  la <a href="#eclipse_condiciones">tabla de condiciones del
+	  eclipse</a>.
+	</p>
+
+	<p>
+	  Una vez tengas la imagen encuentra el centro y el radio
+	  tanto de la imagen del Sol como de la imagen de la Luna.
+	  Para ello puedes usar el procedimiento mostrado en la
+	  siguiente imagen.
 	</p>
 
 	<center>
+	  <img src="img/ilustracion-RadioLunaSol.jpg" width="100%"><br/>
+	  <i class="footnote">Procedimiento para determinar el centro
+	  y el radio de la imagen de la luna en el eclipse parcial. Un
+	  procedimiento similar se puede usar para determinar el
+	  centro y el radio de la imagen del Sol.</i>
+	</center>
+
+	<p>
+	  El radio real del Sol R.Sol puede obtenerse a partir del
+	  radio real de la Luna (R.Luna 1737.1 km), combinando los
+	  radios medidos en la imagen, R.ima.Sol y R.ima.Luna, y sus
+	  distancias al observador, d.Sol y d.Luna, usando la
+	  siguiente operación aritmética:
+
+	  <center>
+	    <div class="formula">
+	      R.Sol = R.Luna x (R.ima.Sol/R.ima.Luna) x (d.Sol/d.Luna)
+	    </div>
+	  </center>
+	</p>
+	
+      </li>
+
+      <li>
+	<p>
+	  <b class="w3-text-light-grey">Magnitud del
+	  eclipse</b>. Puedes hacer un segumiento del avance del
+	  fenómeno, midiendo, en cada momento, la "magnitud del
+	  eclipse".  La magnitud se define como la fracción del
+	  diámetro solar que esta siendo ocultada por la Luna. Esta
+	  cantidad puede ser utilizada, como veremos más adelante,
+	  para medir la velocidad de la luz.
+	</p>
+	
+	<p>
+	  Para medir la magnitud del eclipse a partir de una imagen
+	  del eclipse parcial, debes usar el procedimiento descrito en
+	  la figura abajo.  Con este procedimiento podrás encontrar la
+	  dirección de un "diámetro solar", es decir la línea que
+	  divide el disco solar en dos mitades iguales.  Así mismo
+	  podrás medir el radio de la imagen del Sol.
+	</p>
+
+	<center>
+	  <img src="img/ilustracion-MagnitudEclipse.jpg"
+	  width="100%"><br/>
+	  <i class="footnote">Procedimiento para determinar el centro
+	  y el radio del Sol en la imagen del eclipse parcial y el
+	  tamaño del diámetro visible del Sol (no eclipsado).</i>
 	</center>
 	
 	<p>
-	  Si medimos la diferencia entre la posición de cualquier
-	  objeto visto desde dos lugares cuya distancia mutua es
-	  conocida (los dos sitios de observación) es posible estimar
-	  la distancia a la Luna.
+	  La magnitud del eclipse puede obtenerse a partir del tamaño
+	  del diámetro visible (D.vis.) y el radio de la imagen del
+	  Sol (R.ima.Sol) así:
+
+	  <center>
+	    <div class="formula">
+	      Magnitud=D.vis/(2 R.ima.Sol)
+	    </div>
+	  </center>
+
 	</p>
+
+      </li>
+
+      <li>
+	<p>
+	  <b class="w3-text-light-grey">Paralaje lunar</b>. La
+	  positbilidad de ver la luna durante el eclipse proyectada en
+	  un objeto muy lejano (el Sol), nos da una oportunidad única
+	  de medir, con medios muy sencillos, la distancia a nuestro
+	  satélite.  Para ello nos valemos de una técnica popular en
+	  astronomía conocida como "paralaje".
+	</p>
+
+	<p>
+	  Para medir el paralaje lunar es necesario tener dos
+	  fotografías del eclipse parcial tomadas en sitios muy
+	  distantes (cientos de kilómetros o más).  Las fotos deben
+	  tomarse exactamente a la misma hora. Para ello es necesario
+	  verificar si en los sitios elegidos el eclipse parcial será
+	  visible en horas comunes.
+	</p>
+
+	<p>
+	  Examinando el mapa de inicio y fin del eclipse provisto
+	  arriba, podemos verificar, por ejemplo, que en Medellín
+	  (Colombia) y en Santo Domingo (República Dominicana), el
+	  eclipse se desarrolla aproximadamente entre las 18:30:00 UTC
+	  y las 20:40:00 UTC para la primera ciudad y entre las
+	  18:05:00 UTC y las 20:40:00 UTC para la segunda.  Es decir
+	  en ambas ciudades el eclipse se verá aproximadamente en el
+	  mismo intervalo de tiempo.  Dos observadores en estas
+	  ciudades podrían usar sus fotografías para medir el paralaje
+	  lunar.
+	</p>
+
+	<p>
+	  Una vez tengamos las imágenes debemos usar los métodos en
+	  las actividades anteriores para determinar la posición del
+	  centro de la Luna y del Sol.
+	</p>
+
+	<p>
+	  Un dato adicional nos hace falta: necesitamos conocer las
+	  orientaciones correctas de las imágenes en ambos lugares.
+	  Debido a que en las fotos tomadas en los dos sitios el Sol
+	  eclipsado está a distintas alturas sobre el horizonte, su
+	  orientación en las fotos puede ser muy diferente.  Para
+	  conocer la orientación es necesario saber el valor del
+	  "ángulo de posición" del Sol.  En el "archivo de datos"
+	  sobre el eclipse que encontrarán en la "tabla de condiciones
+	  iniciales" puede encontrar el ángulo de posición para cada
+	  minuto del eclipse en la ubicación que desee.  Una vez
+	  conocido el ángulo de posición debes alinear las imágenes
+	  como se describe en la figura abajo.
+	</p>
+
+	<center>
+	  <img src="img/ilustracion-ParalajeEclipse.jpg"
+	  width="100%"><br/>
+	  <i class="footnote">Procedimiento para determinar el
+	  paralaje de la Luna usando la foto del eclipse parcial en
+	  dos lugares lejanos.</i>
+	</center>
+	
+	<p>
+	  Es importante entender que el paralaje medido al superponer
+	  las dos imágenes debe convertirse a minutos de arco.  Esto
+	  se hace comparando el paralaje medido sobre la imagen
+	  Par.med., con el radio de la imagen del Sol R.ima.Sol y el
+	  radio del Sol en minutos de arco Rad.sol obtenido de la tabla de
+	  condiciones iniciales:
+
+	  <center>
+	    <div class="formula">
+	      Paralaje=Par.med. x (Rad.sol/R.ima.Sol)
+	    </div>
+	  </center>
+
+	</p>
+
+	<p>
+	  El último dato que necesitamos es la ditancia en línea recta
+	  entre los dos sitios de observación, Dist.Sitios.  Use el
+	  mapa abajo para escoger los sitios y obtener la distancia en
+	  km medida en línea recta entre ellos:
+	</p>
+
+	<p>
+	  <center>
+	    <div id="map_eclipse_distancia" style="width:40vw;height:70vh;z-index:100;"></div><br/>
+
+	    Hora observación (UTC):
+	    <input class="coordinput" type="text" id="ds_time" value="18:00:00" size=30><a href="JavaScript:void(null)" onclick="distanciaSitios()">Actualizar</a>
+	    <p></p>
+	    <img src="https://maps.google.com/mapfiles/ms/icons/green-dot.png">Sitio 1
+	    <div class="digprop">Lat.<span id="ds_lat1"></span><br/>Lon.<span id="ds_lon1"></span></div><br/>
+	    <img src="https://maps.google.com/mapfiles/ms/icons/blue-dot.png">Sitio 2
+	    <div class="digprop">Lat.<span id="ds_lat2"></span><br/>Lon.<span id="ds_lon2"></span></div><br/>
+	    Distancia entre sitios:<div class="digprop"><span id="ds_distancia"></span>
+	    km</div> 
+	    <p></p>
+	    Ángulo Luna:
+	    <div class="digprop"><span id="ds_angulo"></span></div>
+	  </center>
+	</p>
+
+	<p>
+	  La distancia a la Luna calculada con este procedimiento será
+	  finalmente:
+
+	  <center>
+	    <div class="formula">
+	      Dist.Luna =  Dist.Sitios / sen(Paralaje)
+	    </div>
+	  </center>
+	</p>
+	
+	<p>
+	  "sen" es la función trigonométrica seno.  Al calcular el
+	  seno del paralaje debe tenerse en cuenta que hay que
+	  convertir su valor de arcmin a grados teniendo en cuenta que
+	  1 arcmin = 1/60 grados.
+	</p>
+
+	<p>
+	  En ciertas situaciones la fórmula anterior debe corregirse.
+	  Por ejemplo si la distancia entre los sitios de observación
+	  esta en una dirección que apunta hacia la Luna (las
+	  observaciones se hacen a una altura muy bajita y los sitios
+	  se encuentran en dirección este oeste), el valor obtenido
+	  con la fórmula anterior será mas grande que el real.  Si
+	  conocemos el ángulo que forma la dirección en la que se ve
+	  la Luna con respecto a la línea que une los dos sitios
+	  (Ang.Luna), la fórmula correcta será:
+	  <center>
+	    <div class="formula">
+	      Dist.Luna =  Dist.Sitios x sen (Ang.Luna) / sen(Paralaje) 
+	    </div>
+	  </center>
+	</p>
+
+	<center>
+	  <img src="img/ilustracion-DistanciaLuna.jpg"
+	  width="50%"><br/>
+	  <i class="footnote">La fórmula más sencilla para calcular la
+	  distancia a la Luna a partir del paralaje solo sirve cuando
+	  la Luna esta casi a 90 grados respecto a la línea que un los
+	  sitios de observación.  En situaciones más generales (como
+	  las mostradas en la figura) es necesario tener en cuenta el
+	  ángulo entre la Luna y la línea que une los sitios.</i>
+	</center>
 
       </li>
 
@@ -1159,47 +1535,100 @@ echo<<<CONTENT
 	  <b class="w3-text-light-grey">La velocidad de la
 	  luz</b>. Cuando vemos a la Luna eclipsar el Sol, algo
 	  extraordinario esta ocurriendo.  Por estar el Sol tan lejos,
-	  su luz nos llega mucho tiempo después de que nos ha llegado
-	  la luz de la Luna.  Para ser exactos a la luz del Sol le
-	  toma 500 segundos llegar a la Tierra (8.31 minutos).  Como
-	  resultado lo que vemos en el cielo durante un eclipse es
-	  como la Luna eclipsa una imagen pasada del Sol.
+	  su luz llega mucho tiempo después de que nos ha llegado la
+	  luz de la Luna.  Para ser exactos a la luz del Sol le toma
+	  en promedio 500 segundos llegar a la Tierra (8.31 minutos)
+	  mientras que a la luz de la Luna le toma poco más de 1
+	  segundo.  La Luna entonces, no eclipsa una imagen
+	  instantánea del Sol, sino su imagen pasada.
 	</p>
 	
 	<p>
-	  Hagamos cuentas.  El Sol se mueve (aparentemente) alrededor
-	  de la Tierra completando una vuelta en 365.25 días.  Esto
-	  corresponde a un avance de 0.986 grados/dia o 0.986*3600
-	  segundos de arco (arcoseg) por día (1 arcoseg = 1/3600
-	  grado).  Él día tiene 1440 minutos, por lo que la velocidad
-	  de avance del Sol en el cielo es de 2.46 arcoseg por minuto.
-	  Como la luz del Sol se demora 8.31 minutos en llegar a la
-	  Tierra, la imagen que vemos en el cielo esta realmente
-	  desplazada un total de 2.46*8.31 = 20.5 arcoseg.  Parece muy
-	  poco, pero para la Luna, que esta "persiguiendo" al Sol en
-	  el cielo, este efecto hace que la Luna empiece a tapar el
-	  Sol antes de tiempo.
+	  El tiempo de viaje de la luz desde el Sol crea una
+	  diferencia entre los tiempos en los que se produce el
+	  eclipse (tiempos de contacto) y aquellos en los que debería
+	  producirse realmente (asumiendo que la luz llegará
+	  instantáneamente a la Tierra).  Si medimos la magnitud de la
+	  diferencia entre estos tiempos podríamos estimar la
+	  velocidad de la luz.
+	</p>
+	
+	<center>
+	  <img src="img/ilustracion-VelocidadLuz.jpg"
+	  width="100%"><br/>
+	  <i class="footnote">Ilustración del efecto que tiene la
+	  velocidad de la luz en los tiempos de contacto en el eclipse
+	  de Sol.  Cuando observamos el primer contacto del eclipse,
+	  en realidad el Sol se encuentra en un lugar adelantado en su
+	  trayectoria sobre el cielo (panel central).  Si pudieramos
+	  ver la imagen del Sol tal y como es (suponiendo que la luz
+	  viaja muy rápido), el eclipse ocurriría más tarde (panel
+	  derecho).</i>
+	</center>
+
+	<p>
+	  Si llamamos t.luz al tiempo que le toma a la luz llegar
+	  desde el Sol, Vel.Sol y Vel.Luna, la velocidad de avance del
+	  Sol y la Luna respectivamente en el cielo y t.Adelanto al
+	  tiempo que se adelanta el eclipse, la relación existente
+	  entre estas cantidades es:
+
+	  <center>
+	    <div class="formula">
+	      Vel.Luna x t.Adelanto = Vel.Sol x t.luz + Vel.Sol x t.Adelanto
+	    </div>
+	  </center>
 	</p>
 
 	<p>
-	  La Luna se mueve alrededor de la Tierra con un período de
-	  29.2 días.  Si es así, en el cielo la Luna tiene una
-	  velocidad angular de 360/29.2 = 12.3 grados/día o
-	  equivalentemente a 30.8 arcoseg/min.  Si el Sol esta
-	  desplazado de su posición real por 20.5 arcoseg, la Luna
-	  llega a su cita con él 20.5/30.8=0.67 minutos (40 segundos)
-	  antes de lo esperado.
+	  Despejando t.luz obtenemos:
+	  <center>
+	    <div class="formula">
+	      t.luz = (Vel.Luna-Vel.Sol) x t.Adelanto / Vel.Sol
+	    </div>
+	  </center>
+	</p>
+	  
+	<p>
+	  Si estimamos Vel.Luna, Vel.Sol y t.Adelanto, podemos obtener
+	  t.luz y de allí la velocidad de la luz (Vel.luz =
+	  Dist.Sol/t.luz).
+	</p>
+	
+	<p>
+	  Un valor aproximado de Vel.Sol se obtiene reconociendo que
+	  el Sol recorre 360 grados en 365.25 días.  Es decir la
+	  velocidad del Sol es (360x3600 arcoseg)/(365.25x1440 min) =
+	  2.46 arcoseg/min.  
 	</p>
 
 	<p>
-	  Durante el eclipse podemos revertir este razonamiento.  Si
-	  observamos con atención y registramos el momento en el que
-	  la Luna toca al Sol por primera vez (primer contacto) o en
-	  el que termina el eclipse (cuarto contacto) y comparamos
-	  este tiempo con el que esperaríamos si la luz hubiera
-	  llegado instantáneamente desde el Sol, podemos obtener el
-	  tiempo que le tomo a la luz llegar desde el Sol. De allí
-	  podríamos calcular la velocidad de la luz.
+	  En el caso de la Luna ella recorre 360 grados en 27.321
+	  días, es decir (360x3600)/(27.321x1440)=32.9 arcoseg/min.
+	  Con una sutil diferencia. La órbita de la Luna en el cielo
+	  esta inclinada incl. 5.14<sup>o</sup> con respecto al camino
+	  del Sol (eclíptica).  Por lo tanto la velocidad de avance
+	  efectiva de la Luna es Vel.luna x cos(incl.)
+	</p>
+
+	<p>
+	  La actividad consiste entonces en medir t.Adelanto, es decir
+	  la diferencia entre el tiempo en el que inicia o finaliza el
+	  eclipse (o la totalidad) y el tiempo en el que debería
+	  iniciar o finalizar.  En la "tabla de condiciones del
+	  eclipse" se puede calcular los tiempos asumiendo que la
+	  velocidad de la luz es infinita.  Estos son los tiempos con
+	  respecto a los cuáles podemos comparar nuestras
+	  observaciones.
+	</p>
+
+	<p>
+	  Si se reúne en una sola fórmula el cálculo de la velocidad de la luz sería:
+	  <center>
+	    <div class="formula">
+	      Vel.luz = (Dist.Sol/t.Adelanto) x Vel.Sol / [Vel.Luna x cos(incl)-Vel.Sol]
+	    </div>
+	  </center>
 	</p>
 
       </li>

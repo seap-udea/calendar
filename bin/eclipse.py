@@ -7,11 +7,24 @@ from astrotiempo import *
 lat=float(argv[1])
 lon=float(argv[2])
 date=argv[3]
+sessid=argv[4]
+
 try:
-    if argv[4]=="infinitos":luzvel=1e10
-    else:luzvel=float(argv[4])
+    if argv[5]=="infinitos":
+        luzvel=1e10
+        lstring="infinitos"
+    else:
+        luzvel=float(argv[5])
+        lstring="%.0f"%luzvel
 except:
     luzvel=spy.clight()
+    lstring="%.0f"%luzvel
+
+# ############################################################
+# CREATE SESSION DIRECTORY
+# ############################################################
+dname="sessions/%s/"%sessid
+if not os.path.isdir(dname):os.system("mkdir -p %s"%dname)
 
 # ############################################################
 # OBSERVER POSITION
@@ -80,6 +93,8 @@ tipo="Parcial"
 duracion=0.0
 cal_c1=cal_max
 cal_c4=cal_max
+cal_c2=cal_max
+cal_c3=cal_max
 mag=0.0
 obsc=0.0
 el_c1=0.0
@@ -112,15 +127,17 @@ if dist<(size_sun+size_moon)/2:
 
     AZs=ephem_sun["az"];ELs=ephem_sun["el"];
     AZm=ephem_moon["az"];ELm=ephem_moon["el"];
-    V=positionAngle(AZs,AZm,ELs,ELm)
-    V1=(V*RAD/360.)*12
-    if V1<1:V1+=12
+    V1=positionAngle(AZs,AZm,ELs,ELm)*RAD
+    #V1=(V*RAD/360.)*12
+    #if V1<1:V1+=12
 
     # Determine if the eclipse is total or partial
     try:
         tc2=spy.jzero(contactFunction,t1,tecl,args=(obs,-1))
+        cal_c2=spy.timout(tc2,'MM/DD/YYYY HR:MN:SC.# +000',100)
         tipo="Total"
         tc3=spy.jzero(contactFunction,tecl,t2,args=(obs,-1))
+        cal_c3=spy.timout(tc3,'MM/DD/YYYY HR:MN:SC.# +000',100)
         duracion=dec2sex((tc3-tc2)/3600.0,sep=[":",":"])
         qtipo=2
     except:
@@ -142,9 +159,9 @@ if dist<(size_sun+size_moon)/2:
 
     AZs=ephem_sun["az"];ELs=ephem_sun["el"];
     AZm=ephem_moon["az"];ELm=ephem_moon["el"];
-    V=positionAngle(AZs,AZm,ELs,ELm)
-    V4=(V*RAD/360.)*12
-    if V4<1:V4+=12
+    V4=positionAngle(AZs,AZm,ELs,ELm)*RAD
+    #V4=(V*RAD/360.)*12
+    #if V4<1:V4+=12
 
     if el_c1<0:
         # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -155,6 +172,8 @@ if dist<(size_sun+size_moon)/2:
         cal_max=date+" 00:00:00.0 +000"
         cal_c1=cal_max
         cal_c4=cal_max
+        cal_c2=cal_max
+        cal_c3=cal_max
         mag=0.0
         obsc=0.0
         el_max=0.0
@@ -194,13 +213,44 @@ else:
     el_max=0.0
     cal_c1=cal_max
     cal_c4=cal_max
-    
+    cal_c2=cal_max
+    cal_c3=cal_max
     dist=0.0
+
+# ############################################################
+# ECLIPSE FILE
+# ############################################################
+fname="magnitud-lat%.5f_lon%.5f-t%.0f-c%s"%(lat,lon,t1,lstring)
+if qtipo>0:
+    dt=0.5*60
+    f=open("%s/%s.txt"%(dname,fname),"w")
+    f.write("%-15s%-15s%-15s%-15s\n"%("#t(s)",
+                                      "Dist (arcmin)",
+                                      "Mag.(%)",
+                                      "AP(o)"))
+    ts=np.arange(tc1,tc4+dt,dt)
+    for t in ts:
+        cal=spy.timout(t,'HR:MN:SC.#',100)
+        mat=spy.jrotmat(t)
+        ephem_sun=spy.jephem('SUN',t,obs,mat,cspeed=luzvel)
+        ephem_moon=spy.jephem('MOON',t,obs,mat,cspeed=luzvel)
+        dist=spy.jgcdist(ephem_sun["RA"],ephem_moon["RA"],
+                         ephem_sun["DEC"],ephem_moon["DEC"])
+        RAs=ephem_sun["RA"];DECs=ephem_sun["DEC"];
+        RAm=ephem_moon["RA"];DECm=ephem_moon["DEC"];
+        P=positionAngle(RAs,RAm,DECs,DECm)*RAD
+        R=size_moon/2
+        r=size_sun/2
+        OA=dist*RAD*60
+        imag=100*(R+r-OA)/(2*r)
+        if imag<0:imag=0
+        f.write("#%-15s\n%-15.2f%-15.3f%-15.2f%-15.2f\n"%(cal,t,OA,imag,P))
+    f.close()
 
 # ############################################################
 # RESULTS
 # ############################################################
-print """{"qtipo":%d,"type":"%s","size_sun":%.3f,"size_moon":%.3f,"dist":%.3f,"tc1":"%s","el_c1":%.5f,"tcmax":"%s","el_max":%.5f,"tc4":"%s","el_c4":%.5f,"mag":%.2f,"obs":%.2f,"ratio":%.7f,"duracion":"%s","d_sun":%.1f,"d_moon":%.1f,"mu_sun":%.3f,"mu_moon":%.3f,"P1":%.3f,"V1":%.3f,"P4":%.3f,"V4":%.3f}"""%\
+print """{"qtipo":%d,"type":"%s","size_sun":%.3f,"size_moon":%.3f,"dist":%.3f,"tc1":"%s","el_c1":%.5f,"tc2":"%s","tc3":"%s","tcmax":"%s","el_max":%.5f,"tc4":"%s","el_c4":%.5f,"mag":%.2f,"obs":%.2f,"ratio":%.7f,"duracion":"%s","d_sun":%.1f,"d_moon":%.1f,"mu_sun":%.3f,"mu_moon":%.3f,"P1":%.3f,"V1":%.3f,"P4":%.3f,"V4":%.3f,"fname":"%s"}"""%\
     (qtipo,
      tipo,
      size_sun,
@@ -208,6 +258,8 @@ print """{"qtipo":%d,"type":"%s","size_sun":%.3f,"size_moon":%.3f,"dist":%.3f,"t
      dist,
      cal_c1,
      el_c1,
+     cal_c2,
+     cal_c3,
      cal_max,
      el_max,
      cal_c4,
@@ -221,5 +273,6 @@ print """{"qtipo":%d,"type":"%s","size_sun":%.3f,"size_moon":%.3f,"dist":%.3f,"t
      mu_sun,
      mu_moon,
      P1,V1,
-     P4,V4)
+     P4,V4,
+     dname+fname)
 

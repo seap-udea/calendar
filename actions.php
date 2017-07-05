@@ -10,11 +10,23 @@ require_once("php/calendar.php");
 if(isset($action)){
 
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  //DISTANCIA ENTRE SITIOS
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if($action=="distancia"){
+    //RUN SCRIPT
+    $cmd="$PYTHON bin/distancia-sitios.py $lats $lons '$date $time' $obj";
+    //echo $cmd;
+    $out=shell_exec($cmd);
+    echo $out;
+  }		
+
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   //ECLIPSE CONDITIONS
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if($action=="eclipse"){
     //RUN SCRIPT
-    $cmd="$PYTHON bin/eclipse.py $lat $lon $date $luzvel";
+    $cmd="$PYTHON bin/eclipse.py $lat $lon $date $sessid $luzvel";
+    //echo "$cmd<br/>";
     $out=shell_exec($cmd);
     $json=preg_replace("/}/","",$out).",";
     $props=json_decode($out,true);
@@ -25,6 +37,14 @@ if(isset($action)){
     $utc1=$props["tc1"];
     $utc1=date("U",strtotime($utc1));
     $json.='"utc1":"'.$utc1.'",';
+
+    //Second and third contacts
+    $utc2=$props["tc2"];
+    $utc2=date("U",strtotime($utc2));
+    $json.='"utc2":"'.$utc2.'",';
+    $utc3=$props["tc3"];
+    $utc3=date("U",strtotime($utc3));
+    $json.='"utc3":"'.$utc3.'",';
 
     //Maximum
     $utcmax=$props["tcmax"];

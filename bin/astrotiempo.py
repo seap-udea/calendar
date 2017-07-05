@@ -607,3 +607,6 @@ def positionAngle(lamb1,lamb2,phi1,phi2):
     P=np.arccos(cosP)
     if dlamb<0:P=2*np.pi-P
     return P
+
+def distCart(pos1,pos2):
+    return ((pos1[0]-pos2[0])**2+(pos1[1]-pos2[1])**2+(pos1[2]-pos2[2])**2)**0.5
